@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func Server(port int) {
+func Server(port int) (*http.Server, error) {
 	server := &http.Server{
 		Addr:           ":8088",
 		ReadTimeout:    120 * time.Second,
@@ -29,10 +29,12 @@ func Server(port int) {
 	if err != nil {
 		log.Fatal("Error starting the server:", err)
 	}
+
+	return server, err
 }
 
 func ProcessImage(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Server", "imgine "+Version)
+	w.Header().Set("Server", "imgine "+Version)
 
 	file, mimeType, err := getPayload(r)
 
