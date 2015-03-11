@@ -1,6 +1,6 @@
 # imgine
 
-Blazing fast image processing as HTTP service 
+Simple but blazing fast image processing HTTP microservice
 
 ## License
 

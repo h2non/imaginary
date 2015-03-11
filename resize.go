@@ -2,8 +2,6 @@ package main
 
 import (
 	"github.com/daddye/vips"
-	//"io/ioutil"
-	//"os"
 )
 
 func Resize(imageBuf []byte) ([]byte, error) {

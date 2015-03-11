@@ -4,9 +4,14 @@ import (
 	"github.com/daddye/vips"
 )
 
-type Options struct {
-	*vips.Options
-	Width  int
-	Height int
-	Crop   bool
+func NewOptions(width int, height int, quality int) *vips.Options {
+	return &vips.Options{
+		Width:        width,
+		Height:       height,
+		Quality:      quality,
+		Crop:         false,
+		Extend:       vips.EXTEND_WHITE,
+		Interpolator: vips.BILINEAR,
+		Gravity:      vips.CENTRE,
+	}
 }

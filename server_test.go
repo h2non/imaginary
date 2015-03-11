@@ -70,6 +70,8 @@ func TestUploadForm(t *testing.T) {
 		t.Error("Cannot send request ", err.Error())
 	}
 
+	defer res.Body.Close()
+
 	// Check the response
 	if res.StatusCode != http.StatusOK {
 		t.Error("Invalid response code ", res.StatusCode)
