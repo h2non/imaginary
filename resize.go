@@ -6,13 +6,13 @@ import (
 
 func Resize(imageBuf []byte) ([]byte, error) {
 	options := vips.Options{
-		Width:        300,
-		Height:       240,
-		Crop:         false,
+		Width:        562,
+		Height:       562,
+		Crop:         true,
 		Extend:       vips.EXTEND_WHITE,
 		Interpolator: vips.BILINEAR,
 		Gravity:      vips.CENTRE,
-		Quality:      95,
+		Quality:      100,
 	}
 
 	return vips.Resize(imageBuf, options)
