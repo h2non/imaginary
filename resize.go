@@ -1,19 +1,19 @@
 package main
 
 import (
-	"github.com/daddye/vips"
+	"gopkg.in/h2non/bimg.v0"
 )
 
 func Resize(imageBuf []byte) ([]byte, error) {
-	options := vips.Options{
+	options := bimg.Options{
 		Width:        562,
 		Height:       562,
 		Crop:         true,
-		Extend:       vips.EXTEND_WHITE,
-		Interpolator: vips.BILINEAR,
-		Gravity:      vips.CENTRE,
+		Extend:       bimg.EXTEND_WHITE,
+		Interpolator: bimg.BILINEAR,
+		Gravity:      bimg.CENTRE,
 		Quality:      100,
 	}
 
-	return vips.Resize(imageBuf, options)
+	return bimg.Resize(imageBuf, options)
 }

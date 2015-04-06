@@ -3,5 +3,14 @@
 go build
 
 ./imgine -p 8088 > /dev/null &
+sleep 1
 
-boom -n 1000 -c 20 http://localhost:8088 -m POST -T "image/jpeg" -d 
+echo "Running resize tests"
+
+ab -c 1 -n 1 -v 4 \
+  -p benchmark/data.txt \
+  -T "multipart/form-data; boundary=1234567890" \
+  http://localhost:8088/resize
+
+echo
+echo "Running crop tests"

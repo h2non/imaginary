@@ -15,7 +15,7 @@ const maxMemory int64 = 1024 * 1024 * 1024
 
 func NewServer(port int) {
 	mux := http.NewServeMux()
-	mux.Handle("/", middleware(mainHandler))
+	mux.Handle("/", middleware(indexHandler))
 	mux.Handle("/resize", middleware(processImage))
 	mux.Handle("/crop", middleware(processImage))
 
@@ -65,7 +65,7 @@ func validate(next http.Handler) http.Handler {
 	})
 }
 
-func mainHandler(w http.ResponseWriter, r *http.Request) {
+func indexHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	w.Write([]byte("imgine server " + Version))
 }

@@ -39,3 +39,4 @@ ui/static/application.min.js
 ui/dist/
 
 *.swp
+/imagine

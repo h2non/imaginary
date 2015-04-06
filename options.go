@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/daddye/vips"
+	"gopkg.in/h2non/bimg.v0"
 )
 
-func NewOptions(width int, height int, quality int) *vips.Options {
-	return &vips.Options{
+func NewOptions(width int, height int, quality int) bimg.Options {
+	return bimg.Options{
 		Width:        width,
 		Height:       height,
 		Quality:      quality,
