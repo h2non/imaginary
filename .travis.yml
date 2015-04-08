@@ -2,6 +2,12 @@ language: go
 go:
   - 1.4
   - 1.3
-  - 1.2
   - release
   - tip
+before_install:
+  - go get github.com/axw/gocov/gocov
+  - go get github.com/mattn/goveralls
+  - if ! go get code.google.com/p/go.tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
+  - curl -s https://raw.githubusercontent.com/lovell/sharp/master/preinstall.sh | sudo bash -
+script:
+    - $HOME/gopath/bin/goveralls -service=travis-ci

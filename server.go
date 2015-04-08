@@ -37,7 +37,7 @@ func handler(fn func(http.ResponseWriter, *http.Request)) http.Handler {
 func middleware(fn func(http.ResponseWriter, *http.Request)) http.Handler {
 	next := httpgzip.NewHandler(http.HandlerFunc(fn))
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Server", "imgine "+Version)
+		w.Header().Set("Server", "imaginary "+Version)
 
 		logger(w, r)
 		validate(next).ServeHTTP(w, r)
@@ -67,7 +67,7 @@ func validate(next http.Handler) http.Handler {
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
-	w.Write([]byte("imgine server " + Version))
+	w.Write([]byte("imaginary server " + Version))
 }
 
 func processImage(w http.ResponseWriter, r *http.Request) {

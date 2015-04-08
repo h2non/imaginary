@@ -6,13 +6,10 @@ import (
 
 func Resize(imageBuf []byte) ([]byte, error) {
 	options := bimg.Options{
-		Width:        562,
-		Height:       562,
-		Crop:         true,
-		Extend:       bimg.EXTEND_WHITE,
-		Interpolator: bimg.BILINEAR,
-		Gravity:      bimg.CENTRE,
-		Quality:      100,
+		Width:   562,
+		Height:  562,
+		Crop:    true,
+		Quality: 95,
 	}
 
 	return bimg.Resize(imageBuf, options)

@@ -6,12 +6,9 @@ import (
 
 func NewOptions(width int, height int, quality int) bimg.Options {
 	return bimg.Options{
-		Width:        width,
-		Height:       height,
-		Quality:      quality,
-		Crop:         false,
-		Extend:       vips.EXTEND_WHITE,
-		Interpolator: vips.BILINEAR,
-		Gravity:      vips.CENTRE,
+		Width:   width,
+		Height:  height,
+		Quality: quality,
+		Crop:    false,
 	}
 }
