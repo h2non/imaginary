@@ -11,23 +11,40 @@ import (
 	"time"
 )
 
-const maxMemory int64 = 1024 * 1024 * 1024
+const maxMemory int64 = 1024 * 1024 * 64
 
-func NewServer(port int) {
+type ServerOptions struct {
+	Port    int
+	Address string
+}
+
+func NewServer(o ServerOptions) error {
 	mux := http.NewServeMux()
-	mux.Handle("/", middleware(indexHandler))
+	mux.Handle("/form", middleware(uploadForm))
+	mux.Handle("/extract", middleware(processImage))
+	mux.Handle("/enlarge", middleware(processImage))
 	mux.Handle("/resize", middleware(processImage))
 	mux.Handle("/crop", middleware(processImage))
+	mux.Handle("/thumbnail", middleware(processImage))
+	mux.Handle("/rotate", middleware(processImage))
+	mux.Handle("/flip", middleware(processImage))
+	mux.Handle("/flop", middleware(processImage))
+	mux.Handle("/zoom", middleware(processImage))
+	mux.Handle("/format", middleware(processImage))
+	mux.Handle("/convert", middleware(processImage))
+	mux.Handle("/watermark", middleware(processImage))
+	mux.Handle("/", middleware(indexHandler))
 
+	addr := o.Address + ":" + strconv.Itoa(o.Port)
 	server := &http.Server{
-		Addr:           ":" + strconv.Itoa(port),
+		Addr:           addr,
 		Handler:        mux,
 		ReadTimeout:    60 * time.Second,
 		WriteTimeout:   60 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	server.ListenAndServe()
+	return server.ListenAndServe()
 }
 
 func handler(fn func(http.ResponseWriter, *http.Request)) http.Handler {
@@ -38,25 +55,27 @@ func middleware(fn func(http.ResponseWriter, *http.Request)) http.Handler {
 	next := httpgzip.NewHandler(http.HandlerFunc(fn))
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Server", "imaginary "+Version)
-
-		logger(w, r)
-		validate(next).ServeHTTP(w, r)
+		logger(r)
+		validateRequest(next).ServeHTTP(w, r)
 	})
 }
 
-func logger(w http.ResponseWriter, r *http.Request) {
+func logger(r *http.Request) {
 	remoteAddr := r.Header.Get("X-Forwarded-For")
 	if remoteAddr == "" {
 		remoteAddr = r.RemoteAddr
 	}
-
 	log.Printf("[%s] %s %q\n", r.Method, remoteAddr, r.URL.String())
 }
 
-func validate(next http.Handler) http.Handler {
+func validateRequest(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Check for a request body
-		if r.Method != "GET" && r.ContentLength == 0 {
+		if r.Method != "GET" && r.Method != "POST" {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+
+		if r.Method == "POST" && r.ContentLength == 0 {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -68,6 +87,38 @@ func validate(next http.Handler) http.Handler {
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	w.Write([]byte("imaginary server " + Version))
+}
+
+const formText = `
+<html>
+<body>
+<h1>Resize</h1>
+<form method="POST" action="/resize?width=400&height=300" enctype="multipart/form-data">
+  <input type="file" name="file" />
+  <input type="submit" value="Upload" />
+</form>
+<h1>Crop</h1>
+<form method="POST" action="/crop" enctype="multipart/form-data">
+  <input type="file" name="file" />
+  <input type="submit" value="Upload" />
+</form>
+<h1>Flip</h1>
+<form method="POST" action="/flip" enctype="multipart/form-data">
+  <input type="file" name="file" />
+  <input type="submit" value="Upload" />
+</form>
+<h1>Thumbnail</h1>
+<form method="POST" action="/thumbnail" enctype="multipart/form-data">
+  <input type="file" name="file" />
+  <input type="submit" value="Upload" />
+</form>
+</body>
+</html>
+`
+
+func uploadForm(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	w.Write([]byte(formText))
 }
 
 func processImage(w http.ResponseWriter, r *http.Request) {
@@ -95,7 +146,7 @@ func processImage(w http.ResponseWriter, r *http.Request) {
 
 	err := r.ParseMultipartForm(maxMemory)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 

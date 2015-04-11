@@ -9,30 +9,29 @@ import (
 )
 
 var (
-	p      = flag.Int("p", 8088, "port to listen")
-	v      = flag.Bool("v", false, "")
-	c      = flag.Int("c", 50, "")
-	n      = flag.Int("n", 200, "")
-	cpus   = flag.Int("cpus", runtime.GOMAXPROCS(-1), "")
-	memory = flag.Int64("memory", maxMemory, "")
-	help   = flag.Bool("help", false, "")
+	aAddr  = flag.String("a", "", "bind address")
+	aPort  = flag.Int("p", 8088, "port to listen")
+	aVers  = flag.Bool("v", false, "")
+	aVersl = flag.Bool("version", false, "")
+	aHelp  = flag.Bool("h", false, "")
+	aHelpl = flag.Bool("help", false, "")
+	aCpus  = flag.Int("cpus", runtime.GOMAXPROCS(-1), "")
 )
 
-const usage = `imgine server %s
+const usage = `imaginary server %s
 
 Usage:
-  imgine [--address a]
-  imgine -h | --help
-  imgine --version
+  imaginary -p 80
+  imaginary -h | -help
+  imaginary -v | -version
 
 Options:
-  -a        bind address [default: *:8088]
-  -p        HTTP server port [default: 8088]
-  -h        output help
-  -v        output version
-  -cpus     Number of used cpu cores.
-            (default for current machine is %d cores)
-  -memory   Max vips memory limit. Defaul to 100MB
+  -a <addr>     bind address [default: *]
+  -p <port>     bind port [default: 8088]
+  -h, -help     output help
+  -v, -version  output version
+  -cpus <num>   Number of used cpu cores.
+                (default for current machine is %d cores)
 `
 
 func main() {
@@ -41,31 +40,40 @@ func main() {
 	}
 	flag.Parse()
 
-	showHelp := *help
-	showVersion := *v
-	port := *p
-
-	if showHelp {
+	if *aHelp || *aHelpl {
 		showUsage()
 	}
 
-	if showVersion {
-		fmt.Fprintln(os.Stdout, Version)
+	if *aVers || *aVersl {
+		fmt.Println(Version)
 		return
 	}
 
-	runtime.GOMAXPROCS(*cpus)
+	runtime.GOMAXPROCS(*aCpus)
 
+	port := getPort(*aPort)
+	opts := ServerOptions{
+		Port:    port,
+		Address: *aAddr,
+	}
+
+	debug("imaginary server listening on port %d", port)
+
+	err := NewServer(opts)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "cannot start the server: %s\n", err)
+		os.Exit(1)
+	}
+}
+
+func getPort(port int) int {
 	if portEnv := os.Getenv("PORT"); portEnv != "" {
 		newPort, _ := strconv.Atoi(portEnv)
 		if newPort > 0 {
 			port = newPort
 		}
 	}
-
-	defer NewServer(port)
-
-	fmt.Fprintf(os.Stdin, "imgine server listening on port %d\n", port)
+	return port
 }
 
 func showUsage() {

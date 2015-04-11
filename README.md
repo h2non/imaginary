@@ -25,6 +25,45 @@ curl -s https://raw.githubusercontent.com/lovell/sharp/master/preinstall.sh | su
 
 The [install script](https://github.com/lovell/sharp/blob/master/preinstall.sh) requires `curl` and `pkg-config`
 
+### Docker
+
+```
+docker pull h2non/imaginary
+```
+
+See [Dockerfile](https://github.com/h2non/imaginary/blob/master/Dockerfile) for more details.
+
+### Heroku 
+
+Required buildpacks. Add them in `.buildpacks`:
+```
+https://github.com/alex88/heroku-buildpack-vips.git
+https://github.com/kr/heroku-buildpack-go.git
+```
+
+## Supported image operations
+
+- Resize
+- Enlarge
+- Crop
+- Rotate (with auto-rotate based on EXIF orientation)
+- Flip (with auto-flip based on EXIF metadata)
+- Flop
+- Zoom
+- Thumbnail
+- Extract area
+- Watermark (fully customizable text-based)
+- Format conversion (with additional quality/compression settings)
+
+## Performance
+
+libvips is probably the faster open source solution for image processing. 
+Here you can see some performance test comparisons for multiple scenarios:
+
+- [libvips speed and memory usage](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use)
+- [sharp performance tests](https://github.com/lovell/sharp#the-task) 
+- [bimg](https://github.com/h2non/bimg#Performance) (Go library with C bindings to libvips)
+
 ## Usage
 
 ```
