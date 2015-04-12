@@ -35,9 +35,11 @@ func Server(o ServerOptions) error {
 	mux.Handle("/info", image(Info))
 
 	addr := o.Address + ":" + strconv.Itoa(o.Port)
+	handler := NewLog(mux, os.Stdout)
+
 	server := &http.Server{
 		Addr:           addr,
-		Handler:        NewLog(mux, os.Stdout),
+		Handler:        handler,
 		ReadTimeout:    60 * time.Second,
 		WriteTimeout:   60 * time.Second,
 		MaxHeaderBytes: 1 << 20,
