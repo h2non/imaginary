@@ -43,7 +43,7 @@ Fetch the image
 docker pull h2non/imaginary
 ```
 
-Run the container
+Start the container with optional flags
 ```
 docker run -t h2non/imaginary -port 8088 -cors -gzip
 ```

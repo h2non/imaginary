@@ -1,3 +1,8 @@
+test:
+	go test
+
+bench:
+	go test -bench=.
 
 docker-build:
 	docker build -t h2non/imaginary:$(VERSION) .
