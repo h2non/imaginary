@@ -6,7 +6,7 @@ Simple and fast HTTP microservice for image processing powered by [bimg](https:/
 imaginary is almost dependency-free and only uses low-level Go native packages for a higher performance.
 
 It supports a common set of [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
-with additional support for API token-based authentication, gzip compression and CORS support for direct web browser access.
+with additional support for API token-based authorization, built-in gzip compression and CORS support for direct web browser access.
 
 It can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them. 
 It supports common [image operations](#supported-image-operations) such as crop, resize, rotate, zoom, watermark... 
