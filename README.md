@@ -24,7 +24,7 @@ imaginary uses internally libvips, a powerful library written in C for binary im
 ## Installation
 
 ```bash
-go get -u gopkg.in/h2non/imaginary.v0
+go get -u github.com/h2non/imaginary
 ```
 
 ### libvips

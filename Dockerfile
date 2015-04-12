@@ -36,7 +36,7 @@ ENV PATH /go/bin:$PATH
 WORKDIR /go
 
 # Fetch the latest version of the package
-RUN go get gopkg.in/h2non/imaginary.v0
+RUN go get -u github.com/h2non/imaginary
 
 # Run the outyet command by default when the container starts.
 ENTRYPOINT /go/bin/imaginary -cors -gzip
