@@ -5,8 +5,12 @@ go:
   - release
   - tip
 before_install:
-  - go install
   #- go get github.com/axw/gocov/gocov
   #- go get github.com/mattn/goveralls
   #- if ! go get code.google.com/p/go.tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
   - curl -s https://raw.githubusercontent.com/lovell/sharp/master/preinstall.sh | sudo bash -
+  # This shouldn't be required...
+  - go get github.com/daaku/go.httpgzip
+  - go get github.com/rs/cors
+  - go get github.com/tj/go-debug
+  - go get gopkg.in/h2non/bimg.v0
