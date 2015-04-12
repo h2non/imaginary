@@ -25,7 +25,6 @@ type ImageOptions struct {
 	Font        string
 	Type        string
 	Color       []uint8
-	Mime        string
 }
 
 type Image struct {
