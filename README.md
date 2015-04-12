@@ -38,8 +38,24 @@ The [install script](https://github.com/lovell/sharp/blob/master/preinstall.sh) 
 
 ### Docker
 
+Fetch the image
 ```
 docker pull h2non/imaginary
+```
+
+Run the container
+```
+docker run -t h2non/imaginary -port 8088 -cors -gzip
+```
+
+Enter to the interactive shell in a running container
+```
+sudo docker exec -it <containerIdOrName> bash
+```
+
+Stop the container
+```
+docker stop h2non/imaginary
 ```
 
 See [Dockerfile](https://github.com/h2non/imaginary/blob/master/Dockerfile) for more details.
