@@ -43,7 +43,7 @@ func BimgOptions(o ImageOptions) bimg.Options {
 		Width:       o.Width,
 		Height:      o.Height,
 		Quality:     o.Quality,
-		Compression: o.Quality,
+		Compression: o.Compression,
 		Type:        ImageType(o.Type),
 	}
 }
@@ -169,6 +169,9 @@ func Convert(buf []byte, o ImageOptions) (Image, error) {
 	if o.Type == "" {
 		return Image{}, NewError("Missing required params: type", BAD_REQUEST)
 	}
+	if ImageType(o.Text) == bimg.UNKNOWN {
+		return Image{}, NewError("Invalid image type: "+o.Text, BAD_REQUEST)
+	}
 
 	return Process(buf, BimgOptions(o))
 }
@@ -176,10 +179,6 @@ func Convert(buf []byte, o ImageOptions) (Image, error) {
 func Watermark(buf []byte, o ImageOptions) (Image, error) {
 	if o.Text == "" {
 		return Image{}, NewError("Missing required params: text", BAD_REQUEST)
-	}
-
-	if o.TextWidth == 0 {
-		o.TextWidth = 100
 	}
 
 	opts := BimgOptions(o)
@@ -201,6 +200,9 @@ func Watermark(buf []byte, o ImageOptions) (Image, error) {
 func Extract(buf []byte, o ImageOptions) (Image, error) {
 	if o.Top == 0 || o.Left == 0 {
 		return Image{}, NewError("Missing required params: top, left", BAD_REQUEST)
+	}
+	if o.AreaWidth == 0 && o.AreaHeight == 0 {
+		return Image{}, NewError("Missing required params: areawidth or areaheight", BAD_REQUEST)
 	}
 
 	return Process(buf, BimgOptions(o))

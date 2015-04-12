@@ -4,6 +4,9 @@ test:
 bench:
 	go test -bench=.
 
+test-load:
+	bash bench.sh
+
 docker-build:
 	docker build -t h2non/imaginary:$(VERSION) .
 

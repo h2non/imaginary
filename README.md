@@ -151,6 +151,31 @@ Host: localhost:8088
 API-Key: secret
 ```
 
+### Params
+
+Complete list of available params. See the specific endpoint to see the supported in each case. 
+Image measures are always in pixels unless otherwise indicated.
+
+- width       `int`   - Width of image area to extract/resize
+- height      `int`   - Height of image area to extract/resize 
+- top         `int`   - Top edge of area to extract. Example: `100`
+- left        `int`   - Left edge of area to extract. Example: `100`
+- areawidth   `int`   - Height area to extract. Example: `300`
+- areaheight  `int`   - Width area to extract. Example: `300`
+- quality     `int`   - JPEG image quality between 1-100. Default `80`
+- compression `int`   - PNG compression level. Default: `6`
+- rotate      `int`   - Image rotation angle. Must be multiple of `90`. Example: `180`
+- factor      `int`   - Zoom factor level. Example: `2`
+- margin      `int`   - Text area margin for watermark. Example: `50`
+- dpi         `int`   - DPI value for watermark. Example: `150`
+- textwidth   `int`   - Text area width for watermark. Example: `200`
+- opacity     `float` - Opacity level for watermark text. Default: `0.2`
+- noreplicate `bool`  - Disable text replication in watermark. Default `false`
+- text        `string` - Watermark text content. Example: `copyright (c) 2189`
+- font        `string` - Watermark text font type and format. Example: `sans bold 12`
+- color       `string` - Watermark text RGB decimal base color. Example: `255,200,150`
+- type        `string` - Specify the image format to output. Possible values are: `jpeg`, `png` and `webp`
+
 #### GET /form
 Content Type: `text/html`
 
@@ -159,7 +184,19 @@ Serves an ugly HTML form, just for testing/playground purposes
 #### POST /info
 Accept: `image/*, multipart/form-data`. Content-Type: `application/json` 
 
-Returns the image metadata as JSON
+Returns the image metadata as JSON:
+```json
+{
+  "width": 550,
+  "height": 740,
+  "type": "jpeg",
+  "space": "srgb",
+  "hasAlpha": false,
+  "hasProfile": true,
+  "channels": 3,
+  "orientation": 1
+}
+```
 
 #### POST /crop
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -168,12 +205,11 @@ Crop the image by a given width or height. Image ratio is maintained
 
 ##### Allowed params
 
-- width `int`
+- width `int` `required`
 - height `int`
-
-##### Required params
-
-- `width` or `height`
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+- type `string` 
 
 #### POST /resize
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -182,39 +218,120 @@ Resize an image by width or height. Image aspect ratio is maintained
 
 ##### Allowed params
 
-- width `int`
+- width `int` `required`
 - height `int`
-
-##### Required params
-
-- `width` or `height`
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+- type `string` 
 
 #### POST /enlarge
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
+##### Allowed params
+
+- width `int` `required`
+- height `int` `required`
+- height `int`
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+- type `string` 
+
 #### POST /extract
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+
+##### Allowed params
+
+- top `int` `required`
+- left `int`
+- areawidth `int` `required`
+- areaheight `int`
+- width `int`
+- height `int` 
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+- type `string` 
 
 #### POST /zoom
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
+##### Allowed params
+
+- width `int`
+- height `int` 
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+- type `string` 
+
 #### POST /thumbnail
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+
+##### Allowed params
+
+- width `int`
+- height `int` 
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+- type `string` 
 
 #### POST /rotate
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
+##### Allowed params
+
+- rotate `int` `required`
+- width `int`
+- height `int` 
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+- type `string` 
+
 #### POST /flip
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+
+##### Allowed params
+
+- width `int`
+- height `int` 
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+- type `string` 
 
 #### POST /flop
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
+##### Allowed params
+
+- width `int`
+- height `int` 
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+- type `string` 
+
 #### POST /convert
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
+##### Allowed params
+
+- type `string` `required`
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+
 #### POST /watermark
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+
+##### Allowed params
+
+- text `string` `required`
+- margin `int`
+- dpi `int`
+- textwidth `int`
+- opacity `float`
+- noreplicate `bool`
+- font `string`
+- color `string` 
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+- type `string` 
 
 ## License
 

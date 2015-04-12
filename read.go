@@ -27,7 +27,6 @@ var allowedParams = map[string]string{
 	"noreplicate": "bool",
 	"text":        "string",
 	"font":        "string",
-	"format":      "string",
 	"type":        "string",
 	"color":       "color",
 }
