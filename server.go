@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 )
@@ -36,7 +37,7 @@ func Server(o ServerOptions) error {
 	addr := o.Address + ":" + strconv.Itoa(o.Port)
 	server := &http.Server{
 		Addr:           addr,
-		Handler:        NewLog(mux),
+		Handler:        NewLog(mux, os.Stdout),
 		ReadTimeout:    60 * time.Second,
 		WriteTimeout:   60 * time.Second,
 		MaxHeaderBytes: 1 << 20,

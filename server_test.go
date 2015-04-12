@@ -2,78 +2,139 @@ package main
 
 import (
 	"bytes"
-	//"fmt"
+	"gopkg.in/h2non/bimg.v0"
 	"io"
+	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"net/http/httptest"
 	"os"
+	"path"
+	"strings"
 	"testing"
 )
 
-func StartServer(t *testing.T) {
-	// start the server
-	_, err := Server(8088)
+func TestIndex(t *testing.T) {
+	ts := testServer(indexController)
+	defer ts.Close()
+
+	res, err := http.Get(ts.URL)
 	if err != nil {
-		t.Error("Cannot start the server")
+		t.Fatal(err)
+	}
+
+	if res.StatusCode != 200 {
+		t.Fatalf("Invalid response status: %s", res.Status)
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if strings.Contains(string(body), "imaginary server") == false {
+		t.Fatalf("Invalid body response: %s", body)
 	}
 }
 
-func TestUploadForm(t *testing.T) {
-	//var server *http.Server
-	url := "http://localhost:8088"
-	file := "fixtures/large.jpg"
+func TestCrop(t *testing.T) {
+	ts := testServer(controller(Crop))
+	buf := readFile("large.jpg")
+	url := ts.URL + "?width=300"
+	defer ts.Close()
 
-	/*
-		  defer (func() {
-				_, err := Server(8088)
-				if err != nil {
-					t.Error("Cannot start the server")
-				}
-			})()
-
-			fmt.Println("Start server")
-	*/
-
-	// Prepare a form that you will submit to that URL.
-	var b bytes.Buffer
-	w := multipart.NewWriter(&b)
-	// Add your image file
-	f, err := os.Open(file)
+	res, err := http.Post(url, "image/jpeg", buf)
 	if err != nil {
-		return
+		t.Fatal("Cannot perform the request")
 	}
-	fw, err := w.CreateFormFile("image", file)
+
+	if res.StatusCode != 200 {
+		t.Fatalf("Invalid response status: %s", res.Status)
+	}
+
+	image, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return
+		t.Fatal(err)
+	}
+	if len(image) == 0 {
+		t.Fatalf("Empty response body")
 	}
 
-	io.Copy(fw, f)
-	w.CreateFormField("key")
-	fw.Write([]byte("KEY"))
+	if bimg.DetermineImageTypeName(image) != "jpeg" {
+		t.Fatalf("Invalid image type")
+	}
+}
 
-	// Don't forget to close the multipart writer.
-	// If you don't close it, your request will be missing the terminating boundary.
-	w.Close()
+func TestResize(t *testing.T) {
+	ts := testServer(controller(Resize))
+	buf := readFile("large.jpg")
+	url := ts.URL + "?width=300"
+	defer ts.Close()
 
-	// Now that you have a form, you can submit it to your handler.
-	req, err := http.NewRequest("POST", url, &b)
+	res, err := http.Post(url, "image/jpeg", buf)
 	if err != nil {
-		return
+		t.Fatal("Cannot perform the request")
 	}
-	// Don't forget to set the content type, this will contain the boundary.
-	req.Header.Set("Content-Type", "multipart/form-data")
 
-	// Submit the request
-	client := &http.Client{}
-	res, err := client.Do(req)
+	if res.StatusCode != 200 {
+		t.Fatalf("Invalid response status: %s", res.Status)
+	}
+
+	image, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		t.Error("Cannot send request ", err.Error())
+		t.Fatal(err)
+	}
+	if len(image) == 0 {
+		t.Fatalf("Empty response body")
 	}
 
-	defer res.Body.Close()
-
-	// Check the response
-	if res.StatusCode != http.StatusOK {
-		t.Error("Invalid response code ", res.StatusCode)
+	if bimg.DetermineImageTypeName(image) != "jpeg" {
+		t.Fatalf("Invalid image type")
 	}
+}
+
+// Todo
+func testFormUpload(t *testing.T) {
+	ts := testServer(controller(Crop))
+	file, _ := os.Open("fixtures/large.jpg")
+	defer ts.Close()
+
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+	part, _ := writer.CreateFormFile("file", "fixtures/large.jpg")
+	io.Copy(part, file)
+	writer.Close()
+
+	res, err := http.Post(ts.URL, "multipart/form-data", body)
+	if err != nil {
+		t.Fatal("Cannot perform the request")
+	}
+
+	if res.StatusCode != 200 {
+		t.Fatalf("Invalid response status: %s", res.Status)
+	}
+
+	image, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(image) == 0 {
+		t.Fatalf("Empty response body")
+	}
+}
+
+func controller(op Operation) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		imageController(w, r, op)
+	}
+}
+
+func testServer(fn func(w http.ResponseWriter, r *http.Request)) *httptest.Server {
+	return httptest.NewServer(http.HandlerFunc(fn))
+}
+
+func readFile(file string) io.Reader {
+	buf, _ := os.Open(path.Join("fixtures", file))
+	return buf
 }

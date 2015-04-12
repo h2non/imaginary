@@ -33,7 +33,7 @@ func ImageMiddleware(o ServerOptions) func(Operation) http.Handler {
 func validate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" && r.Method != "POST" {
-			errorResponse(w, "Method not allowed: "+r.Method, NOT_ALLOWED)
+			ErrorReply(w, "Method not allowed: "+r.Method, NOT_ALLOWED)
 			return
 		}
 		next.ServeHTTP(w, r)
@@ -48,7 +48,7 @@ func validateApiKey(next http.Handler, validKey string) http.Handler {
 		}
 
 		if key != validKey {
-			errorResponse(w, "Invalid or missing API key", UNAUTHORIZED)
+			ErrorReply(w, "Invalid or missing API key", UNAUTHORIZED)
 			return
 		}
 

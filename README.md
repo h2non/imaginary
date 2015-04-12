@@ -104,7 +104,7 @@ Start the server on a custom port
 imaginary -p 8080
 ```
 
-You can pass it also as environment variable
+Also, you can pass the port as environment variable
 ```bash
 POST=8080 imaginary 
 ```
@@ -114,7 +114,7 @@ Enable debug mode
 DEBUG=* imaginary -p 8080
 ```
 
-Or filter verbose output by package
+Or filter debug output by package
 ```
 DEBUG=imaginary imaginary -p 8080
 ```
@@ -124,11 +124,11 @@ DEBUG=imaginary imaginary -p 8080
 ### Authorization
 
 imaginary supports a simple token-based API authorization. 
-To enable it, you should specific the flag `-key secret` to the binary.
+To enable it, you should specific the flag `-key secret` when you call the binary.
 
-API token can be define in the HTTP client as header (`API-Key`) or query param (`key`).
+API token can be defined as HTTP header (`API-Key`) or query param (`key`).
 
-Example request with API token:
+Example request with API key:
 ```
 POST /crop HTTP/1.1
 Host: localhost:8088
@@ -136,32 +136,69 @@ API-Key: secret
 ```
 
 #### GET /form
+Content Type: `text/html`
 
-Serves a very ugly HTML form, just for testing/playground purposes
+Serves an ugly HTML form, just for testing/playground purposes
 
 #### POST /info
+Accept: `image/*, multipart/form-data`. Content-Type: `application/json` 
+
+Returns the image metadata as JSON
 
 #### POST /crop
+Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+
+Crop the image by a given width or height. Image ratio is maintained
+
+##### Allowed params
+
+- width `int`
+- height `int`
+
+##### Required params
+
+- `width` or `height`
 
 #### POST /resize
+Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+
+Resize an image by width or height. Image aspect ratio is maintained
+
+##### Allowed params
+
+- width `int`
+- height `int`
+
+##### Required params
+
+- `width` or `height`
 
 #### POST /enlarge
-
-#### POST /zoom
-
-#### POST /thumbnail
-
-#### POST /rotate
-
-#### POST /flip
-
-#### POST /flop
+Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 #### POST /extract
+Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+
+#### POST /zoom
+Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+
+#### POST /thumbnail
+Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+
+#### POST /rotate
+Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+
+#### POST /flip
+Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+
+#### POST /flop
+Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 #### POST /convert
+Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 #### POST /watermark
+Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ## License
 

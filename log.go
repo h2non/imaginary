@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 )
@@ -40,10 +39,11 @@ func (r *LogRecord) WriteHeader(status int) {
 
 type LogHandler struct {
 	handler http.Handler
+	io      io.Writer
 }
 
-func NewLog(handler http.Handler) http.Handler {
-	return &LogHandler{handler}
+func NewLog(handler http.Handler, io io.Writer) http.Handler {
+	return &LogHandler{handler, io}
 }
 
 func (h *LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -70,5 +70,5 @@ func (h *LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	record.time = finishTime.UTC()
 	record.elapsedTime = finishTime.Sub(startTime)
 
-	record.Log(os.Stdout)
+	record.Log(h.io)
 }

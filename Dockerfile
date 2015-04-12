@@ -14,8 +14,8 @@ ENV PORT 80
 # Update
 RUN apt-get update
 
-# Install curl
-RUN apt-get install -y curl
+# Install dependencies
+RUN apt-get install -y curl git
 
 # gcc for cgo
 RUN apt-get install -y \
@@ -34,8 +34,6 @@ RUN mkdir -p /go/src /go/bin && chmod -R 777 /go
 ENV GOPATH /go
 ENV PATH /go/bin:$PATH
 WORKDIR /go
-
-COPY go-wrapper /usr/local/bin/
 
 # Fetch the latest version of the package
 RUN go get gopkg.in/h2non/imaginary.v0

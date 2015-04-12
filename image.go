@@ -60,7 +60,7 @@ type ImageInfo struct {
 }
 
 func Info(buf []byte, o ImageOptions) (Image, error) {
-	image := Image{}
+	image := Image{Mime: "application/json"}
 
 	meta, err := bimg.Metadata(buf)
 	if err != nil {
@@ -80,17 +80,17 @@ func Info(buf []byte, o ImageOptions) (Image, error) {
 
 	body, _ := json.Marshal(info)
 	image.Body = body
-	image.Mime = "application/json"
 
 	return image, nil
 }
 
 func Resize(buf []byte, o ImageOptions) (Image, error) {
-	if o.Width == 0 || o.Height == 0 {
-		return Image{}, NewError("Missing required params: height, width", BAD_REQUEST)
+	if o.Width == 0 && o.Height == 0 {
+		return Image{}, NewError("Missing required param: height or width", BAD_REQUEST)
 	}
 
 	opts := BimgOptions(o)
+	opts.Embed = true
 	return Process(buf, opts)
 }
 
@@ -105,6 +105,10 @@ func Enlarge(buf []byte, o ImageOptions) (Image, error) {
 }
 
 func Crop(buf []byte, o ImageOptions) (Image, error) {
+	if o.Width == 0 && o.Height == 0 {
+		return Image{}, NewError("Missing required param: height or width", BAD_REQUEST)
+	}
+
 	opts := BimgOptions(o)
 	opts.Crop = true
 	return Process(buf, opts)
@@ -137,8 +141,7 @@ func Thumbnail(buf []byte, o ImageOptions) (Image, error) {
 		return Image{}, NewError("Missing required params: width or height", BAD_REQUEST)
 	}
 
-	opts := BimgOptions(o)
-	return Process(buf, opts)
+	return Process(buf, BimgOptions(o))
 }
 
 func Zoom(buf []byte, o ImageOptions) (Image, error) {
@@ -167,8 +170,7 @@ func Convert(buf []byte, o ImageOptions) (Image, error) {
 		return Image{}, NewError("Missing required params: type", BAD_REQUEST)
 	}
 
-	opts := BimgOptions(o)
-	return Process(buf, opts)
+	return Process(buf, BimgOptions(o))
 }
 
 func Watermark(buf []byte, o ImageOptions) (Image, error) {
@@ -201,8 +203,7 @@ func Extract(buf []byte, o ImageOptions) (Image, error) {
 		return Image{}, NewError("Missing required params: top, left", BAD_REQUEST)
 	}
 
-	opts := BimgOptions(o)
-	return Process(buf, opts)
+	return Process(buf, BimgOptions(o))
 }
 
 func Process(buf []byte, opts bimg.Options) (Image, error) {

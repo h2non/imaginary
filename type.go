@@ -6,7 +6,7 @@ import (
 )
 
 func ExtractImageTypeFromMime(mime string) string {
-	mime = strings.Split(mime, " ")[0]
+	mime = strings.Split(mime, ";")[0]
 	part := strings.Split(mime, "/")
 	if len(part) < 2 {
 		return ""
@@ -14,14 +14,14 @@ func ExtractImageTypeFromMime(mime string) string {
 	return strings.ToLower(part[1])
 }
 
-func IsImageTypeSupported(mime string) bool {
+func IsImageMimeTypeSupported(mime string) bool {
 	format := ExtractImageTypeFromMime(mime)
 	return bimg.IsTypeNameSupported(format)
 }
 
-func ImageType(mime string) bimg.ImageType {
+func ImageType(name string) bimg.ImageType {
 	format := bimg.UNKNOWN
-	switch strings.ToLower(mime) {
+	switch strings.ToLower(name) {
 	case "jpeg":
 		format = bimg.JPEG
 		break
@@ -46,6 +46,9 @@ func GetImageMimeType(code bimg.ImageType) string {
 		break
 	case bimg.WEBP:
 		mime = "image/webp"
+		break
+	case bimg.TIFF:
+		mime = "image/tiff"
 		break
 	}
 	return mime
