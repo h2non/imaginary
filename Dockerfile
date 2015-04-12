@@ -6,7 +6,7 @@ FROM marcbachmann/libvips
 ENV GOLANG_VERSION 1.4.2
 
 # Server port to listen
-ENV PORT 8088
+ENV PORT 9000
 
 # Install dependencies
 RUN apt-get update -y && \
@@ -38,4 +38,4 @@ ENTRYPOINT ["/go/bin/imaginary"]
 CMD ["-help"]
 
 # Expose the server TCP port
-EXPOSE 8088
+EXPOSE 9000

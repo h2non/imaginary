@@ -45,7 +45,7 @@ docker pull h2non/imaginary
 
 Start the container with optional flags
 ```
-docker run -t h2non/imaginary -p 8088 -cors -gzip
+docker run -t h2non/imaginary -p 9000 -cors -gzip
 ```
 
 Enter to the interactive shell in a running container
