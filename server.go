@@ -1,36 +1,37 @@
 package main
 
 import (
-	"github.com/daaku/go.httpgzip"
 	"net/http"
 	"strconv"
 	"time"
 )
 
-const maxMemory int64 = 1024 * 1024 * 64
-
 type ServerOptions struct {
 	Port    int
+	CORS    bool
+	Gzip    bool
 	Address string
+	ApiKey  string
 }
 
 func Server(o ServerOptions) error {
 	mux := http.NewServeMux()
 
-	mux.Handle("/", middleware(indexController))
-	mux.Handle("/form", middleware(formController))
-	mux.Handle("/resize", imageHandler(Resize))
-	mux.Handle("/enlarge", imageHandler(Enlarge))
-	mux.Handle("/extract", imageHandler(Extract))
-	mux.Handle("/crop", imageHandler(Crop))
-	mux.Handle("/rotate", imageHandler(Rotate))
-	mux.Handle("/flip", imageHandler(Flip))
-	mux.Handle("/flop", imageHandler(Flop))
-	mux.Handle("/thumbnail", imageHandler(Thumbnail))
-	mux.Handle("/zoom", imageHandler(Zoom))
-	mux.Handle("/convert", imageHandler(Convert))
-	mux.Handle("/watermark", imageHandler(Watermark))
-	mux.Handle("/info", imageHandler(Info))
+	image := ImageMiddleware(o)
+	mux.Handle("/", Middleware(indexController, o))
+	mux.Handle("/form", Middleware(formController, o))
+	mux.Handle("/resize", image(Resize))
+	mux.Handle("/enlarge", image(Enlarge))
+	mux.Handle("/extract", image(Extract))
+	mux.Handle("/crop", image(Crop))
+	mux.Handle("/rotate", image(Rotate))
+	mux.Handle("/flip", image(Flip))
+	mux.Handle("/flop", image(Flop))
+	mux.Handle("/thumbnail", image(Thumbnail))
+	mux.Handle("/zoom", image(Zoom))
+	mux.Handle("/convert", image(Convert))
+	mux.Handle("/watermark", image(Watermark))
+	mux.Handle("/info", image(Info))
 
 	addr := o.Address + ":" + strconv.Itoa(o.Port)
 	server := &http.Server{
@@ -42,26 +43,4 @@ func Server(o ServerOptions) error {
 	}
 
 	return server.ListenAndServe()
-}
-
-func imageHandler(fn Operation) http.Handler {
-	return middleware(mainController(fn))
-}
-
-func middleware(fn func(http.ResponseWriter, *http.Request)) http.Handler {
-	next := httpgzip.NewHandler(http.HandlerFunc(fn))
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Server", "imaginary "+Version)
-		validate(next).ServeHTTP(w, r)
-	})
-}
-
-func validate(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" && r.Method != "POST" {
-			errorResponse(w, "Method not allowed: "+r.Method, NOT_ALLOWED)
-			return
-		}
-		next.ServeHTTP(w, r)
-	})
 }

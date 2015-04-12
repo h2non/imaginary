@@ -2,9 +2,19 @@
 
 <img src="https://github.com/h2non/imaginary/blob/master/fixtures/imaginary.jpg" width="200" align="right" />
 
-Simple and fast HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips)
+Simple and fast HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips).
 
-`Work in progress`
+Think about imaginary as private or public HTTP service for massive image processing/resizing as part of your project backend infraestructure. 
+
+It supports a common set of [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
+with additional support for API token-based authentication, gzip compression and CORS support for direct web browser access.
+
+It can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them. It supports common [image operations](#supported-image-operations) such as crop, resize, rotate, zoom, watermark... 
+For getting started, take a look to the [HTTP API](#http-api) documentation.
+
+imaginary uses internally libvips, a powerful library written in C for binary image processing which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick settings or Go  native `image` package, and in some cases it's even 8x faster processing JPEG images. 
+
+**Note**: imaginary is still beta. Do not use in production yet
 
 ## Prerequisites
 
@@ -74,6 +84,7 @@ imaginary server
 
 Usage:
   imaginary -p 80
+  imaginary -cors -gzip
   imaginary -h | -help
   imaginary -v | -version
 
@@ -82,6 +93,9 @@ Options:
   -p <port>     bind port [default: 8088]
   -h, -help     output help
   -v, -version  output version
+  -cors         Enable CORS support [default: false]
+  -gzip         Enable gzip compression [default: false]
+  -key <key>    Define API key
   -cpus <num>   Number of used cpu cores.
                 (default for current machine is 8 cores)
 ```
@@ -96,11 +110,18 @@ You can pass it also as environment variable
 POST=8080 imaginary 
 ```
 
+Enable debug mode
+```
+DEBUG=* imaginary -p 8080
+```
+
 ## HTTP API
 
 #### GET /form
 
 Serve a very ugly HTML form just for testing purposes
+
+#### POST /info
 
 #### POST /crop
 
@@ -121,8 +142,6 @@ Serve a very ugly HTML form just for testing purposes
 #### POST /extract
 
 #### POST /convert
-
-#### POST /info
 
 #### POST /watermark
 

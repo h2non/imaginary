@@ -9,6 +9,8 @@ import (
 	"strconv"
 )
 
+var debug = Debug("imaginary")
+
 var (
 	aAddr  = flag.String("a", "", "bind address")
 	aPort  = flag.Int("p", 8088, "port to listen")
@@ -16,15 +18,17 @@ var (
 	aVersl = flag.Bool("version", false, "")
 	aHelp  = flag.Bool("h", false, "")
 	aHelpl = flag.Bool("help", false, "")
+	aCors  = flag.Bool("cors", false, "")
+	aGzip  = flag.Bool("gzip", false, "")
+	aKey   = flag.String("key", "", "")
 	aCpus  = flag.Int("cpus", runtime.GOMAXPROCS(-1), "")
 )
-
-var debug = Debug("imaginary")
 
 const usage = `imaginary server %s
 
 Usage:
   imaginary -p 80
+  imaginary -cors -gzip
   imaginary -h | -help
   imaginary -v | -version
 
@@ -33,6 +37,9 @@ Options:
   -p <port>     bind port [default: 8088]
   -h, -help     output help
   -v, -version  output version
+  -cors         Enable CORS support [default: false]
+  -gzip         Enable gzip compression [default: false]
+  -key <key>    Define API key
   -cpus <num>   Number of used cpu cores.
                 (default for current machine is %d cores)
 `
@@ -58,6 +65,9 @@ func main() {
 	opts := ServerOptions{
 		Port:    port,
 		Address: *aAddr,
+		Gzip:    *aGzip,
+		CORS:    *aCors,
+		ApiKey:  *aKey,
 	}
 
 	debug("imaginary server listening on port %d", port)

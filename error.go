@@ -11,6 +11,7 @@ const (
 	BAD_REQUEST
 	NOT_ALLOWED
 	UNSUPPORTED
+	UNAUTHORIZED
 	INTERNAL
 )
 
@@ -42,6 +43,9 @@ func (e *Error) HttpCode() int {
 		break
 	case INTERNAL:
 		code = http.StatusInternalServerError
+		break
+	case UNAUTHORIZED:
+		code = http.StatusUnauthorized
 		break
 	}
 	return code
