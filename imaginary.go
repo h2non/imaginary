@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	. "github.com/tj/go-debug"
 	"os"
 	"runtime"
 	"strconv"
@@ -17,6 +18,8 @@ var (
 	aHelpl = flag.Bool("help", false, "")
 	aCpus  = flag.Int("cpus", runtime.GOMAXPROCS(-1), "")
 )
+
+var debug = Debug("imaginary")
 
 const usage = `imaginary server %s
 
@@ -59,7 +62,7 @@ func main() {
 
 	debug("imaginary server listening on port %d", port)
 
-	err := NewServer(opts)
+	err := Server(opts)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "cannot start the server: %s\n", err)
 		os.Exit(1)

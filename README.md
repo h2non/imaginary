@@ -54,6 +54,7 @@ https://github.com/kr/heroku-buildpack-go.git
 - Extract area
 - Watermark (fully customizable text-based)
 - Format conversion (with additional quality/compression settings)
+- Info (image size, format, orientation, alpha...)
 
 ## Performance
 
@@ -67,14 +68,61 @@ Here you can see some performance test comparisons for multiple scenarios:
 ## Usage
 
 ```
+imaginary server
+
+Usage:
+  imaginary -p 80
+  imaginary -h | -help
+  imaginary -v | -version
+
+Options:
+  -a <addr>     bind address [default: *]
+  -p <port>     bind port [default: 8088]
+  -h, -help     output help
+  -v, -version  output version
+  -cpus <num>   Number of used cpu cores.
+                (default for current machine is 8 cores)
+```
+
+Start the server on a custom port
+```bash
 imaginary -p 8080
+```
+
+You can pass it also as environment variable
+```bash
+POST=8080 imaginary 
 ```
 
 ## HTTP API
 
-#### GET /crop
+#### GET /form
+
+Serve a very ugly HTML form just for testing purposes
 
 #### POST /crop
+
+#### POST /resize
+
+#### POST /enlarge
+
+#### POST /zoom
+
+#### POST /thumbnail
+
+#### POST /rotate
+
+#### POST /flip
+
+#### POST /flop
+
+#### POST /extract
+
+#### POST /convert
+
+#### POST /info
+
+#### POST /watermark
 
 ## License
 
