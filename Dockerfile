@@ -6,16 +6,11 @@ FROM marcbachmann/libvips
 ENV GOLANG_VERSION 1.4.2
 
 # Server port to listen
-ENV PORT 80
-
-# Enable debug mode?
-#ENV DEBUG *
-
-# Update
-RUN apt-get update
+ENV PORT 8088
 
 # Install dependencies
-RUN apt-get install -y curl git
+RUN apt-get update -y && \
+  apt-get install -y curl git
 
 # gcc for cgo
 RUN apt-get install -y \
@@ -39,7 +34,7 @@ WORKDIR /go
 RUN go get -u github.com/h2non/imaginary
 
 # Run the outyet command by default when the container starts.
-ENTRYPOINT /go/bin/imaginary -cors -gzip
+ENTRYPOINT /go/bin/imaginary
 
 # Expose the server TCP port
-EXPOSE 80
+EXPOSE 8088
