@@ -15,7 +15,7 @@ ENV PORT 80
 RUN apt-get update
 
 # Install curl
-RUN apt-get -y curl
+RUN apt-get install -y curl
 
 # gcc for cgo
 RUN apt-get install -y \

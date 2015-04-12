@@ -53,8 +53,8 @@ type ImageInfo struct {
 	Height      int    `json:"height"`
 	Type        string `json:"type"`
 	Space       string `json:"space"`
-	Alpha       bool   `json:"alpha"`
-	Profile     bool   `json:"profile"`
+	Alpha       bool   `json:"hasAlpha"`
+	Profile     bool   `json:"hasProfile"`
 	Channels    int    `json:"channels"`
 	Orientation int    `json:"orientation"`
 }

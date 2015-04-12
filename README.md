@@ -1,20 +1,19 @@
 # imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![GitHub release](https://img.shields.io/github/tag/h2non/imaginary.svg)](https://github.com/h2non/imaginary/releases) [![GoDoc](https://godoc.org/github.com/h2non/imaginary?status.png)](https://godoc.org/github.com/h2non/imaginary) [![Coverage Status](https://coveralls.io/repos/h2non/imaginary/badge.svg?branch=master)](https://coveralls.io/r/h2non/imaginary?branch=master)
 
-<img src="https://github.com/h2non/imaginary/blob/master/fixtures/imaginary.jpg" width="260" align="right" />
+<img src="https://github.com/h2non/imaginary/blob/master/fixtures/imaginary.jpg" width="240" align="right" />
 
-Simple and fast HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips).
-
-Think about imaginary as private or public HTTP service for massive image processing/resizing as part of your project backend infraestructure. 
+Simple and fast HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). Think about imaginary as private or public HTTP service for massive image processing/resizing.
 
 It supports a common set of [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
 with additional support for API token-based authentication, gzip compression and CORS support for direct web browser access.
 
-It can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them. It supports common [image operations](#supported-image-operations) such as crop, resize, rotate, zoom, watermark... 
+It can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them. 
+It supports common [image operations](#supported-image-operations) such as crop, resize, rotate, zoom, watermark... 
 For getting started, take a look to the [HTTP API](#http-api) documentation.
 
 imaginary uses internally libvips, a powerful library written in C for binary image processing which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick settings or Go  native `image` package, and in some cases it's even 8x faster processing JPEG images. 
 
-**Note**: imaginary is still beta. Do not use in production yet
+**Note**: imaginary is still beta. Do not use in compromised environments yet
 
 ## Prerequisites
 
@@ -115,11 +114,30 @@ Enable debug mode
 DEBUG=* imaginary -p 8080
 ```
 
+Or filter verbose output by package
+```
+DEBUG=imaginary imaginary -p 8080
+```
+
 ## HTTP API
+
+### Authorization
+
+imaginary supports a simple token-based API authorization. 
+To enable it, you should specific the flag `-key secret` to the binary.
+
+API token can be define in the HTTP client as header (`API-Key`) or query param (`key`).
+
+Example request with API token:
+```
+POST /crop HTTP/1.1
+Host: localhost:8088
+API-Key: secret
+```
 
 #### GET /form
 
-Serve a very ugly HTML form just for testing purposes
+Serves a very ugly HTML form, just for testing/playground purposes
 
 #### POST /info
 
