@@ -2,7 +2,8 @@
 
 <img src="https://github.com/h2non/imaginary/blob/master/fixtures/imaginary.jpg" width="240" align="right" />
 
-Simple and fast HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). Think about imaginary as private or public HTTP service for massive image processing/resizing.
+Simple and fast HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). Think about imaginary as a private or public HTTP service for massive image processing/resizing.
+imaginary is almost dependency-free and only uses low-level Go native packages for a higher performance.
 
 It supports a common set of [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
 with additional support for API token-based authentication, gzip compression and CORS support for direct web browser access.

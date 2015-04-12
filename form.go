@@ -2,6 +2,11 @@ package main
 
 import "net/http"
 
+func formController(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	w.Write([]byte(formText))
+}
+
 const formText = `
 <html>
 <body>
@@ -58,8 +63,3 @@ const formText = `
 </body>
 </html>
 `
-
-func formController(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(formText))
-}
