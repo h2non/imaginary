@@ -2,15 +2,15 @@
 
 <img src="https://github.com/h2non/imaginary/blob/master/fixtures/imaginary.jpg" width="240" align="right" />
 
-Simple and fast HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). Think about imaginary as a private or public HTTP service for massive image processing/resizing.
-imaginary is almost dependency-free and only uses low-level Go native packages for a higher performance.
+Simple and fast HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). Think about imaginary as a private or public HTTP service for massive image processing/resizing. 
+imaginary is almost dependency-free and only uses low-level Go native packages for a higher [performance](#performance).
 
 It supports a common set of [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
 with additional support for API token-based authorization, built-in gzip compression and CORS support for direct web browser access.
 
-It can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them. 
+IT can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them. 
 It supports common [image operations](#supported-image-operations) such as crop, resize, rotate, zoom, watermark... 
-For getting started, take a look to the [HTTP API](#http-api) documentation.
+For getting started, take a look to the [HTTP API](#http-api) documentation and [benchmark](#benchmarks) results.
 
 imaginary uses internally libvips, a powerful library written in C for binary image processing which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick settings or Go  native `image` package, and in some cases it's even 8x faster processing JPEG images. 
 
@@ -92,6 +92,22 @@ Here you can see some performance test comparisons for multiple scenarios:
 - [libvips speed and memory usage](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use)
 - [sharp performance tests](https://github.com/lovell/sharp#the-task) 
 - [bimg](https://github.com/h2non/bimg#Performance) (Go library with C bindings to libvips)
+
+## Benchmarks
+
+See [bench.sh](https://github.com/h2non/imaginary/blob/master/bench.sh) for more details
+
+Tested using Go 1.4.2 and libvips-7.42.3 in OSX i7 2.7Ghz
+
+```
+Requests  [total]       300
+Duration  [total, attack, wait]   59.834621961s, 59.800317301s, 34.30466ms
+Latencies [mean, 50, 95, 99, max]   34.50446ms, 32.424309ms, 45.467123ms, 50.64353ms, 85.370933ms
+Bytes In  [total, mean]     2256600, 7522.00
+Bytes Out [total, mean]     263275500, 877585.00
+Success   [ratio]       100.00%
+Status Codes  [code:count]      200:300  
+```
 
 ## Usage
 
