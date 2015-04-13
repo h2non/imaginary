@@ -10,11 +10,10 @@ host="http://localhost:8088"
 
 echo "Resize -----------------------------------"
 echo "POST $host/resize?width=300" | vegeta attack \
-  -duration=60s \
+  -duration=10s \
   -rate=10 \
   -body="./fixtures/large.jpg" \ | vegeta report
 
-exit 0
 echo 
 
 echo "Extract -------------------------------------"
