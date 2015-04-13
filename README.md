@@ -1,6 +1,6 @@
 # imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![GitHub release](https://img.shields.io/github/tag/h2non/imaginary.svg)](https://github.com/h2non/imaginary/releases) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://registry.hub.docker.com/u/h2non/imaginary/) [![Coverage Status](https://coveralls.io/repos/h2non/imaginary/badge.svg?branch=master)](https://coveralls.io/r/h2non/imaginary?branch=master)
 
-<img src="https://github.com/h2non/imaginary/blob/master/fixtures/imaginary.jpg" width="240" align="right" />
+<img src="https://github.com/h2non/imaginary/blob/master/fixtures/imaginary.jpg" width="200" align="right" />
 
 Simple and [fast](#benchmarks) HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). Think about imaginary as a private or public HTTP service for massive image processing/resizing. 
 imaginary is almost dependency-free and only uses low-level Go native packages for a higher [performance](#performance).
@@ -8,7 +8,7 @@ imaginary is almost dependency-free and only uses low-level Go native packages f
 It supports a common set of [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
 with additional support for API token-based authorization, built-in gzip compression and CORS support for direct web browser access.
 
-IT can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them. 
+It can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them. 
 It supports common [image operations](#supported-image-operations) such as crop, resize, rotate, zoom, watermark... 
 For getting started, take a look to the [HTTP API](#http-api) documentation and [benchmark](#benchmarks) results.
 
@@ -69,6 +69,10 @@ https://github.com/alex88/heroku-buildpack-vips.git
 https://github.com/kr/heroku-buildpack-go.git
 ```
 
+**Recommended resources**
+
+- 1GB of RAM (up to 2GB for a high-load service)
+
 ## Supported image operations
 
 - Resize
@@ -97,7 +101,7 @@ Here you can see some performance test comparisons for multiple scenarios:
 
 See [bench.sh](https://github.com/h2non/imaginary/blob/master/bench.sh) for more details
 
-Tested using Go 1.4.2 and libvips-7.42.3 in OSX i7 2.7Ghz
+Results using Go 1.4.2 and libvips-7.42.3 in OSX i7 2.7Ghz
 
 ```
 Requests  [total]       300
