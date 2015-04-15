@@ -16,7 +16,7 @@ const formText = `
   <input type="submit" value="Upload" />
 </form>
 <h1>Crop</h1>
-<form method="POST" action="/crop?width=600&quality=100" enctype="multipart/form-data">
+<form method="POST" action="/crop?width=562&height=562&quality=95" enctype="multipart/form-data">
   <input type="file" name="file" />
   <input type="submit" value="Upload" />
 </form>

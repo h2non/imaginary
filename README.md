@@ -2,8 +2,8 @@
 
 <img src="https://github.com/h2non/imaginary/blob/master/fixtures/imaginary.jpg" width="200" align="right" />
 
-Simple and [fast](#benchmarks) HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). Think about imaginary as a private or public HTTP service for massive image processing/resizing. 
-imaginary is almost dependency-free and only uses low-level Go native packages for a better [performance](#performance).
+Simple and [fast](#benchmarks) HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). Think about imaginary as a private or public HTTP service for massive image processing/resizing.
+imaginary is almost dependency-free and only uses `net/http` native package for better [performance](#performance).
 
 It supports a common set of [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
 with additional support for API token-based authorization, built-in gzip compression, HTTP traffic throttle and CORS support for direct web browser access.
@@ -71,7 +71,7 @@ https://github.com/kr/heroku-buildpack-go.git
 
 **Recommended resources**
 
-- 1GB of RAM (up to 2GB for a high-load service)
+- 512MB of RAM is usually enough. Up to 2GB for high-load HTTP services
 
 ## Supported image operations
 
@@ -135,8 +135,7 @@ Options:
   -concurreny <num>    Throttle concurrency limit per second [default: disabled]
   -burst <num>         Throttle burst max cache size [default: 100]
   -mrelease <num>      Force OS memory release inverval in seconds [default: 30]
-  -cpus <num>          Number of used cpu cores.
-                       (default for current machine is 8 cores)
+  -cpus <num>          Number of used cpu cores (default to current machine cores)
 ```
 
 Start the server on a custom port

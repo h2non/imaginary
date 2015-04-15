@@ -11,7 +11,7 @@ host="http://localhost:8088"
 echo "Resize -----------------------------------"
 echo "POST $host/resize?width=200" | vegeta attack \
   -duration=10s \
-  -rate=200 \
+  -rate=100 \
   -body="./fixtures/large.jpg" \ | vegeta report
 
 echo 
