@@ -174,8 +174,8 @@ API-Key: secret
 
 ### Params
 
-Complete list of available params. See the specific endpoint to see the supported in each case. 
-Image measures are always in pixels unless otherwise indicated.
+Complete list of available params. Take a look to each specific endpoint to see which params are supported. 
+Image measures are always in pixels, unless otherwise indicated.
 
 - width       `int`   - Width of image area to extract/resize
 - height      `int`   - Height of image area to extract/resize 

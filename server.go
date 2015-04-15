@@ -1,23 +1,44 @@
 package main
 
 import (
+	"github.com/PuerkitoBio/throttled"
 	"net/http"
 	"os"
-	//"runtime"
 	"strconv"
 	"time"
-	//"github.com/PuerkitoBio/throttled"
 )
 
 type ServerOptions struct {
-	Port    int
-	CORS    bool
-	Gzip    bool
-	Address string
-	ApiKey  string
+	Port        int
+	CORS        bool
+	Gzip        bool
+	Address     string
+	ApiKey      string
+	Burst       int
+	Concurrency int
 }
 
 func Server(o ServerOptions) error {
+	addr := o.Address + ":" + strconv.Itoa(o.Port)
+	handler := NewLog(NewServerMux(o), os.Stdout)
+
+	if o.Concurrency > 0 {
+		th := throttled.Interval(throttled.PerSec(o.Concurrency), o.Burst, &throttled.VaryBy{Method: true}, o.Burst)
+		handler = th.Throttle(handler)
+	}
+
+	server := &http.Server{
+		Addr:           addr,
+		Handler:        handler,
+		ReadTimeout:    60 * time.Second,
+		WriteTimeout:   60 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+
+	return server.ListenAndServe()
+}
+
+func NewServerMux(o ServerOptions) http.Handler {
 	mux := http.NewServeMux()
 
 	image := ImageMiddleware(o)
@@ -36,29 +57,5 @@ func Server(o ServerOptions) error {
 	mux.Handle("/watermark", image(Watermark))
 	mux.Handle("/info", image(Info))
 
-	addr := o.Address + ":" + strconv.Itoa(o.Port)
-	handler := NewLog(mux, os.Stdout)
-
-	// Throttle by interval
-	//th := throttled.Interval(throttled.PerSec(10), 100, &throttled.VaryBy{Path: true}, 50)
-	//h := th.Throttle(myHandler)
-	//http.ListenAndServe(":9000", h)
-	// Throttle by memory
-	//th := throttled.MemStats(throttled.MemThresholds(&runtime.MemStats{NumGC: 10}, 10*time.Millisecond)
-	//h := th.Throttle(myHandler)
-	//http.ListenAndServe(":9000", h)
-	// Throttle by rate
-	//th := throttled.RateLimit(throttled.PerMin(30), &throttled.VaryBy{RemoteAddr: true}, store.NewMemStore(1000))
-	//h := th.Throttle(myHandler)
-	//http.ListenAndServe(":9000", h)
-
-	server := &http.Server{
-		Addr:           addr,
-		Handler:        handler,
-		ReadTimeout:    60 * time.Second,
-		WriteTimeout:   60 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}
-
-	return server.ListenAndServe()
+	return mux
 }
