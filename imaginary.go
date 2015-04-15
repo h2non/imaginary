@@ -25,7 +25,7 @@ var (
 	aKey         = flag.String("key", "", "")
 	aConcurrency = flag.Int("concurrency", 0, "")
 	aBurst       = flag.Int("burst", 100, "")
-	aMRelease    = flag.Int("mrelease", 10, "")
+	aMRelease    = flag.Int("mrelease", 30, "")
 	aCpus        = flag.Int("cpus", runtime.GOMAXPROCS(-1), "")
 )
 
@@ -47,7 +47,7 @@ Options:
   -key <key>           Define API key for authorization
   -concurreny <num>    Throttle concurrency limit per second [default: disabled]
   -burst <num>         Throttle burst max cache size [default: 100]
-  -mrelease <num>      Force OS memory release inverval in seconds [default: 60]
+  -mrelease <num>      Force OS memory release inverval in seconds [default: 30]
   -cpus <num>          Number of used cpu cores.
                        (default for current machine is %d cores)
 `
