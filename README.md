@@ -134,7 +134,7 @@ Options:
   -key <key>           Define API key for authorization
   -concurreny <num>    Throttle concurrency limit per second [default: disabled]
   -burst <num>         Throttle burst max cache size [default: 100]
-  -mrelease <num>      Force OS memory release inverval in seconds [default: 60]
+  -mrelease <num>      Force OS memory release inverval in seconds [default: 30]
   -cpus <num>          Number of used cpu cores.
                        (default for current machine is 8 cores)
 ```
@@ -157,6 +157,16 @@ DEBUG=* imaginary -p 8080
 Or filter debug output by package
 ```
 DEBUG=imaginary imaginary -p 8080
+```
+
+Enable HTTP server throttle strategy (max 10 request/second)
+```
+imaginary -p 8080 -concurrency 10
+```
+
+Increase libvips threads concurrency (experimental)
+```
+VIPS_CONCURRENCY=10 imaginary -p 8080 -concurrency 10
 ```
 
 ## HTTP API
