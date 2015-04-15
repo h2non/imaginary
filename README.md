@@ -3,16 +3,16 @@
 <img src="https://github.com/h2non/imaginary/blob/master/fixtures/imaginary.jpg" width="200" align="right" />
 
 Simple and [fast](#benchmarks) HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). Think about imaginary as a private or public HTTP service for massive image processing/resizing. 
-imaginary is almost dependency-free and only uses low-level Go native packages for a higher [performance](#performance).
+imaginary is almost dependency-free and only uses low-level Go native packages for a better [performance](#performance).
 
 It supports a common set of [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
-with additional support for API token-based authorization, built-in gzip compression and CORS support for direct web browser access.
+with additional support for API token-based authorization, built-in gzip compression, HTTP traffic throttle and CORS support for direct web browser access.
 
 It can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them. 
 It supports common [image operations](#supported-image-operations) such as crop, resize, rotate, zoom, watermark... 
 For getting started, take a look to the [HTTP API](#http-api) documentation and [benchmark](#benchmarks) results.
 
-imaginary uses internally libvips, a powerful library written in C for binary image processing which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick settings or Go  native `image` package, and in some cases it's even 8x faster processing JPEG images. 
+imaginary uses internally libvips, a powerful and efficient library written in C for binary image processing which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick settings or Go  native `image` package, and in some cases it's even 8x faster processing JPEG images. 
 
 **Note**: imaginary is still beta. Do not use in compromised environments yet
 
@@ -104,9 +104,9 @@ See [bench.sh](https://github.com/h2non/imaginary/blob/master/bench.sh) for more
 Results using Go 1.4.2 and libvips-7.42.3 in OSX i7 2.7Ghz
 
 ```
-Requests  [total]       300
-Duration  [total, attack, wait]   59.834621961s, 59.800317301s, 34.30466ms
-Latencies [mean, 50, 95, 99, max]   34.50446ms, 32.424309ms, 45.467123ms, 50.64353ms, 85.370933ms
+Requests  [total] 300
+Duration  [total, attack, wait] 59.834621961s, 59.800317301s, 34.30466ms
+Latencies [mean, 50, 95, 99, max] 34.50446ms, 32.424309ms, 45.467123ms, 50.64353ms, 85.370933ms
 Bytes In  [total, mean]     2256600, 7522.00
 Bytes Out [total, mean]     263275500, 877585.00
 Success   [ratio]       100.00%
@@ -125,15 +125,18 @@ Usage:
   imaginary -v | -version
 
 Options:
-  -a <addr>     bind address [default: *]
-  -p <port>     bind port [default: 8088]
-  -h, -help     output help
-  -v, -version  output version
-  -cors         Enable CORS support [default: false]
-  -gzip         Enable gzip compression [default: false]
-  -key <key>    Define API key
-  -cpus <num>   Number of used cpu cores.
-                (default for current machine is 8 cores)
+  -a <addr>            bind address [default: *]
+  -p <port>            bind port [default: 8088]
+  -h, -help            output help
+  -v, -version         output version
+  -cors                Enable CORS support [default: false]
+  -gzip                Enable gzip compression [default: false]
+  -key <key>           Define API key for authorization
+  -concurreny <num>    Throttle concurrency limit per second [default: disabled]
+  -burst <num>         Throttle burst max cache size [default: 100]
+  -mrelease <num>      Force OS memory release inverval in seconds [default: 60]
+  -cpus <num>          Number of used cpu cores.
+                       (default for current machine is 8 cores)
 ```
 
 Start the server on a custom port
