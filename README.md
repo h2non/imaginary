@@ -73,6 +73,10 @@ https://github.com/kr/heroku-buildpack-go.git
 
 - 512MB of RAM is usually enough. Up to 2GB for high-load HTTP services
 
+## Clients
+
+- [Node/io.js](https://github.com/h2non/node-imaginary)
+
 ## Supported image operations
 
 - Resize
