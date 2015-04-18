@@ -7,6 +7,11 @@ func indexController(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("imaginary server " + Version))
 }
 
+func formController(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	w.Write([]byte(formText))
+}
+
 func imageController(w http.ResponseWriter, r *http.Request, Operation Operation) {
 	if r.Method != "POST" {
 		ErrorReply(w, "Method not allowed for this endpoint", NOT_ALLOWED)
