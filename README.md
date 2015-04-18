@@ -303,6 +303,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 ##### Allowed params
 
+- factor `number` `required`
 - width `int`
 - height `int` 
 - quality `int` (JPEG-only)
