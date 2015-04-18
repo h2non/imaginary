@@ -2,11 +2,11 @@
 
 <img src="https://github.com/h2non/imaginary/blob/master/fixtures/imaginary.jpg" width="200" align="right" />
 
-Simple and [fast](#benchmarks) HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). Think about imaginary as a private or public HTTP service for massive image processing/resizing.
+Simple, [fast](#benchmarks) and multithreaded HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). Think about imaginary as a private or public HTTP service for massive image processing/resizing. 
 imaginary is almost dependency-free and only uses `net/http` native package for better [performance](#performance).
 
 It supports a common set of [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
-with additional support for API token-based authorization, built-in gzip compression, HTTP traffic throttle and CORS support for direct web browser access.
+with additional features such as API token-based authorization, built-in gzip compression, HTTP traffic throttle limit and CORS support for direct web browser access.
 
 It can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them. 
 It supports common [image operations](#supported-image-operations) such as crop, resize, rotate, zoom, watermark... 
@@ -124,7 +124,7 @@ Latencies [mean, 50, 95, 99, max] 34.50446ms, 32.424309ms, 45.467123ms, 50.64353
 Bytes In  [total, mean]     2256600, 7522.00
 Bytes Out [total, mean]     263275500, 877585.00
 Success   [ratio]       100.00%
-Status Codes  [code:count]      200:300  
+Status Codes  [code:count]      200:300
 ```
 
 ## Usage
