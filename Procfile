@@ -1,1 +1,1 @@
-web: pkg-config --libs vips 
+web: imaginary -cors -gzip
