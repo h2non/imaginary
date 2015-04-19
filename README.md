@@ -69,11 +69,6 @@ https://github.com/alex88/heroku-buildpack-vips.git
 https://github.com/kr/heroku-buildpack-go.git
 ```
 
-Add the following line to `.godir`:
-```
-github.com/h2non/imaginary
-```
-
 Alternatively you can create a `Procfile` to specify custom server flags:
 ```
 web: imaginary -cors -gzip -k blablabla
