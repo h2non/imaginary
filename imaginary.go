@@ -94,9 +94,6 @@ func main() {
 }
 
 func getPort(port int) int {
-	if port != 0 {
-		return port
-	}
 	if portEnv := os.Getenv("PORT"); portEnv != "" {
 		newPort, _ := strconv.Atoi(portEnv)
 		if newPort > 0 {
