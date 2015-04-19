@@ -8,7 +8,7 @@ test-load:
 	bash bench.sh
 
 docker-build:
-	docker build -t h2non/imaginary:$(VERSION) .
+	docker build --no-cache=true -t h2non/imaginary:$(VERSION) .
 
 docker-push:
 	docker push h2non/imaginary
