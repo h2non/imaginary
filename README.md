@@ -61,15 +61,24 @@ See [Dockerfile](https://github.com/h2non/imaginary/blob/master/Dockerfile) for 
 
 ### Heroku 
 
-Required buildpacks. Add them in `.buildpacks`:
+Clone this repository:
 ```
-https://github.com/alex88/heroku-buildpack-vips.git
-https://github.com/kr/heroku-buildpack-go.git
+git clone https://github.com/h2non/imaginary.git
 ```
 
-Alternatively you can create a `Procfile` to specify custom server flags:
+Define the default buildpack
 ```
-web: imaginary -cors -gzip -k blablabla
+heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git
+```
+
+Add Heroku git remote:
+```
+heroku git:remote -a your-application
+```
+
+Deploy it!
+```
+git push heroku master
 ```
 
 **Recommended resources**
