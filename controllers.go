@@ -3,6 +3,10 @@ package main
 import "net/http"
 
 func indexController(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		ErrorReply(w, "Not found", NOT_FOUND)
+		return
+	}
 	w.Header().Set("Content-Type", "text/plain")
 	w.Write([]byte("imaginary server " + Version))
 }

@@ -13,6 +13,7 @@ const (
 	UNSUPPORTED
 	UNAUTHORIZED
 	INTERNAL
+	NOT_FOUND
 )
 
 type Error struct {
@@ -46,6 +47,9 @@ func (e *Error) HttpCode() int {
 		break
 	case UNAUTHORIZED:
 		code = http.StatusUnauthorized
+		break
+	case NOT_FOUND:
+		code = http.StatusNotFound
 		break
 	}
 	return code
