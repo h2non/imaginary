@@ -42,9 +42,9 @@ Fetch the image
 docker pull h2non/imaginary
 ```
 
-Start the container with optional flags
+Start the container with optional flags (default listening on port 9000)
 ```
-docker run -t h2non/imaginary -p 9000 -cors -gzip
+docker run -t h2non/imaginary -cors -gzip
 ```
 
 Enter to the interactive shell in a running container
