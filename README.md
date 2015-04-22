@@ -66,9 +66,9 @@ Clone this repository:
 git clone https://github.com/h2non/imaginary.git
 ```
 
-Define the default buildpack
+Set the buildpack for your application
 ```
-heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git
+heroku config:add BUILDPACK_URL=https://github.com/h2non/heroku-buildpack-imaginary.git
 ```
 
 Add Heroku git remote:
@@ -83,7 +83,7 @@ git push heroku master
 
 **Recommended resources**
 
-- 512MB of RAM is usually enough. Up to 2GB for high-load HTTP services
+- 512MB of RAM is usually enough for small services. Up to 2GB for high-load HTTP services
 
 ## Clients
 
