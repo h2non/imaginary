@@ -3,16 +3,16 @@
 Simple, [fast](#benchmarks) and multithreaded HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). Think about imaginary as a private or public HTTP service for massive image processing/resizing. 
 imaginary is almost dependency-free and only uses `net/http` native package for better [performance](#performance).
 
-It supports a common set of [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
-with additional features such as API token-based authorization, built-in gzip compression, HTTP traffic throttle limit and CORS support for direct web browser access.
+It supports a multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
+with additional features such as API token-based authorization, built-in gzip compression, HTTP traffic throttle limit 
+and CORS support for direct web browser access.
+imaginary can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them. 
 
-It can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them. 
-It supports common [image operations](#supported-image-operations) such as crop, resize, rotate, zoom, watermark... 
 For getting started, take a look to the [HTTP API](#http-api) documentation and [benchmark](#benchmarks) results.
 
-imaginary uses internally libvips, a powerful and efficient library written in C for binary image processing which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick settings or Go  native `image` package, and in some cases it's even 8x faster processing JPEG images. 
-
-**Note**: imaginary is still beta. Do not use in compromised environments yet
+imaginary uses internally libvips, a powerful and efficient library written in C for binary image processing which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) 
+and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick 
+settings or Go  native `image` package, and in some cases it's even 8x faster processing JPEG images. 
 
 ## Prerequisites
 
