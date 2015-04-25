@@ -14,9 +14,10 @@ imaginary can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and 
 
 For getting started, take a look to the [HTTP API](#http-api) documentation and [benchmark](#benchmarks) results.
 
-imaginary uses internally libvips, a powerful and efficient library written in C for binary image processing which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) 
+imaginary uses internally libvips, a powerful and efficient library written in C for binary image processing 
+which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) 
 and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick 
-settings or Go  native `image` package, and in some cases it's even 8x faster processing JPEG images. 
+settings or Go native `image` package, and in some cases it's even 8x faster processing JPEG images. 
 
 ## Prerequisites
 
@@ -224,6 +225,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - textwidth   `int`   - Text area width for watermark. Example: `200`
 - opacity     `float` - Opacity level for watermark text. Default: `0.2`
 - noreplicate `bool`  - Disable text replication in watermark. Default `false`
+- norotation  `bool`  - Disable auto rotation based on EXIF orientation. Default `false`
 - text        `string` - Watermark text content. Example: `copyright (c) 2189`
 - font        `string` - Watermark text font type and format. Example: `sans bold 12`
 - color       `string` - Watermark text RGB decimal base color. Example: `255,200,150`

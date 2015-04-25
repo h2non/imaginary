@@ -20,6 +20,7 @@ type ImageOptions struct {
 	DPI         int
 	TextWidth   int
 	NoReplicate bool
+	NoRotation  bool
 	Opacity     float64
 	Text        string
 	Font        string
@@ -40,11 +41,12 @@ func (o Operation) Run(buf []byte, opts ImageOptions) (Image, error) {
 
 func BimgOptions(o ImageOptions) bimg.Options {
 	return bimg.Options{
-		Width:       o.Width,
-		Height:      o.Height,
-		Quality:     o.Quality,
-		Compression: o.Compression,
-		Type:        ImageType(o.Type),
+		Width:        o.Width,
+		Height:       o.Height,
+		Quality:      o.Quality,
+		Compression:  o.Compression,
+		NoAutoRotate: o.NoRotation,
+		Type:         ImageType(o.Type),
 	}
 }
 

@@ -22,6 +22,7 @@ var allowedParams = map[string]string{
 	"textwidth":   "int",
 	"opacity":     "float",
 	"noreplicate": "bool",
+	"norotation":  "bool",
 	"text":        "string",
 	"font":        "string",
 	"type":        "string",
@@ -81,6 +82,7 @@ func mapImageParams(params map[string]interface{}) ImageOptions {
 		Type:        params["type"].(string),
 		Opacity:     params["opacity"].(float64),
 		NoReplicate: params["noreplicate"].(bool),
+		NoRotation:  params["norotation"].(bool),
 	}
 }
 
