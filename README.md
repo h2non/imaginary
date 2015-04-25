@@ -12,7 +12,7 @@ with additional features such as API token-based authorization, built-in gzip co
 and CORS support for direct web browser access.
 imaginary can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them. 
 
-For getting started, take a look to the [HTTP API](#http-api) documentation and [benchmark](#benchmarks) results.
+For getting started, take a look to the [HTTP API](#http-api) documentation.
 
 imaginary uses internally libvips, a powerful and efficient library written in C for binary image processing 
 which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) 
