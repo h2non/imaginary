@@ -121,8 +121,8 @@ func Extract(buf []byte, o ImageOptions) (Image, error) {
 	if o.Top == 0 || o.Left == 0 {
 		return Image{}, NewError("Missing required params: top, left", BAD_REQUEST)
 	}
-	if o.AreaWidth == 0 && o.AreaHeight == 0 {
-		return Image{}, NewError("Missing required params: areawidth or areaheight", BAD_REQUEST)
+	if o.AreaWidth == 0 || o.AreaHeight == 0 {
+		return Image{}, NewError("Missing required params: areawidth, areaheight", BAD_REQUEST)
 	}
 
 	opts := BimgOptions(o)

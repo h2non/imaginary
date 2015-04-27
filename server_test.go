@@ -140,7 +140,7 @@ func TestEnlarge(t *testing.T) {
 func TestExtract(t *testing.T) {
 	ts := testServer(controller(Extract))
 	buf := readFile("large.jpg")
-	url := ts.URL + "?top=100&left=100&width=200"
+	url := ts.URL + "?top=100&left=100&areawidth=200&areaheight=120"
 	defer ts.Close()
 
 	res, err := http.Post(url, "image/jpeg", buf)
@@ -160,7 +160,7 @@ func TestExtract(t *testing.T) {
 		t.Fatalf("Empty response body")
 	}
 
-	err = assertSize(image, 199, 112)
+	err = assertSize(image, 200, 120)
 	if err != nil {
 		t.Error(err)
 	}

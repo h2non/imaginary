@@ -70,7 +70,7 @@ func mapImageParams(params map[string]interface{}) ImageOptions {
 		Top:         params["top"].(int),
 		Left:        params["left"].(int),
 		AreaWidth:   params["areawidth"].(int),
-		AreaHeight:  params["areawidth"].(int),
+		AreaHeight:  params["areaheight"].(int),
 		DPI:         params["dpi"].(int),
 		Quality:     params["quality"].(int),
 		TextWidth:   params["textwidth"].(int),
