@@ -19,6 +19,7 @@ type ImageOptions struct {
 	Factor      int
 	DPI         int
 	TextWidth   int
+	NoCrop      bool
 	NoReplicate bool
 	NoRotation  bool
 	Opacity     float64
@@ -93,6 +94,11 @@ func Resize(buf []byte, o ImageOptions) (Image, error) {
 
 	opts := BimgOptions(o)
 	opts.Embed = true
+
+	if o.NoCrop == false {
+		opts.Crop = true
+	}
+
 	return Process(buf, opts)
 }
 
@@ -103,7 +109,29 @@ func Enlarge(buf []byte, o ImageOptions) (Image, error) {
 
 	opts := BimgOptions(o)
 	opts.Enlarge = true
+
+	if o.NoCrop == false {
+		opts.Crop = true
+	}
+
 	return Process(buf, opts)
+}
+
+func Extract(buf []byte, o ImageOptions) (Image, error) {
+	if o.Top == 0 || o.Left == 0 {
+		return Image{}, NewError("Missing required params: top, left", BAD_REQUEST)
+	}
+	if o.Width != 0 {
+		o.AreaWidth = o.Width
+	}
+	if o.Height != 0 {
+		o.AreaHeight = o.Height
+	}
+	if o.AreaWidth == 0 && o.AreaHeight == 0 {
+		return Image{}, NewError("Missing required params: areawidth or areaheight", BAD_REQUEST)
+	}
+
+	return Process(buf, BimgOptions(o))
 }
 
 func Crop(buf []byte, o ImageOptions) (Image, error) {
@@ -161,6 +189,10 @@ func Zoom(buf []byte, o ImageOptions) (Image, error) {
 		opts.Left = o.Left
 		opts.AreaWidth = o.AreaWidth
 		opts.AreaHeight = o.AreaHeight
+
+		if o.NoCrop == false {
+			opts.Crop = true
+		}
 	}
 
 	opts.Zoom = o.Factor
@@ -197,17 +229,6 @@ func Watermark(buf []byte, o ImageOptions) (Image, error) {
 	}
 
 	return Process(buf, opts)
-}
-
-func Extract(buf []byte, o ImageOptions) (Image, error) {
-	if o.Top == 0 || o.Left == 0 {
-		return Image{}, NewError("Missing required params: top, left", BAD_REQUEST)
-	}
-	if o.AreaWidth == 0 && o.AreaHeight == 0 {
-		return Image{}, NewError("Missing required params: areawidth or areaheight", BAD_REQUEST)
-	}
-
-	return Process(buf, BimgOptions(o))
 }
 
 func Process(buf []byte, opts bimg.Options) (Image, error) {

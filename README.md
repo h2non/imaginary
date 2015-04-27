@@ -224,6 +224,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - dpi         `int`   - DPI value for watermark. Example: `150`
 - textwidth   `int`   - Text area width for watermark. Example: `200`
 - opacity     `float` - Opacity level for watermark text. Default: `0.2`
+- nocrop      `bool`  - Disable crop transformation enabled by default by some operations. Default: `false`
 - noreplicate `bool`  - Disable text replication in watermark. Default `false`
 - norotation  `bool`  - Disable auto rotation based on EXIF orientation. Default `false`
 - text        `string` - Watermark text content. Example: `copyright (c) 2189`

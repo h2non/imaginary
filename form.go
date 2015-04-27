@@ -13,6 +13,16 @@ const formText = `
   <input type="file" name="file" />
   <input type="submit" value="Upload" />
 </form>
+<h1>Extract</h1>
+<form method="POST" action="/extract?top=100&left=100width=300&height=200&quality=95" enctype="multipart/form-data">
+  <input type="file" name="file" />
+  <input type="submit" value="Upload" />
+</form>
+<h1>Enlarge</h1>
+<form method="POST" action="/enlarge?width=300&height=200&quality=95" enctype="multipart/form-data">
+  <input type="file" name="file" />
+  <input type="submit" value="Upload" />
+</form>
 <h1>Flip</h1>
 <form method="POST" action="/flip" enctype="multipart/form-data">
   <input type="file" name="file" />
