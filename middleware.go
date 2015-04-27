@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/PuerkitoBio/throttled"
 	"github.com/daaku/go.httpgzip"
 	"github.com/rs/cors"
 	"net/http"
@@ -9,6 +10,9 @@ import (
 func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) http.Handler {
 	next := http.Handler(http.HandlerFunc(fn))
 
+	if o.Concurrency > 0 {
+		next = throttle(next, o)
+	}
 	if o.Gzip {
 		next = httpgzip.NewHandler(next)
 	}
@@ -28,6 +32,11 @@ func ImageMiddleware(o ServerOptions) func(Operation) http.Handler {
 			imageController(w, r, Operation(fn))
 		}, o)
 	}
+}
+
+func throttle(next http.Handler, o ServerOptions) http.Handler {
+	th := throttled.Interval(throttled.PerSec(o.Concurrency), o.Burst, &throttled.VaryBy{Method: true}, o.Burst)
+	return th.Throttle(next)
 }
 
 func validate(next http.Handler) http.Handler {

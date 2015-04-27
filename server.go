@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/PuerkitoBio/throttled"
 	"net/http"
 	"os"
 	"strconv"
@@ -21,11 +20,6 @@ type ServerOptions struct {
 func Server(o ServerOptions) error {
 	addr := o.Address + ":" + strconv.Itoa(o.Port)
 	handler := NewLog(NewServerMux(o), os.Stdout)
-
-	if o.Concurrency > 0 {
-		th := throttled.Interval(throttled.PerSec(o.Concurrency), o.Burst, &throttled.VaryBy{Method: true}, o.Burst)
-		handler = th.Throttle(handler)
-	}
 
 	server := &http.Server{
 		Addr:           addr,
