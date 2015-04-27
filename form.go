@@ -14,12 +14,12 @@ const formText = `
   <input type="submit" value="Upload" />
 </form>
 <h1>Extract</h1>
-<form method="POST" action="/extract?top=100&left=100width=300&height=200&quality=95" enctype="multipart/form-data">
+<form method="POST" action="/extract?top=100&left=100&areawidth=300&areaheight=200&quality=95" enctype="multipart/form-data">
   <input type="file" name="file" />
   <input type="submit" value="Upload" />
 </form>
 <h1>Enlarge</h1>
-<form method="POST" action="/enlarge?width=300&height=200&quality=95" enctype="multipart/form-data">
+<form method="POST" action="/enlarge?width=1440&height=900&quality=95" enctype="multipart/form-data">
   <input type="file" name="file" />
   <input type="submit" value="Upload" />
 </form>

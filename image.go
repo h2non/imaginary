@@ -121,17 +121,17 @@ func Extract(buf []byte, o ImageOptions) (Image, error) {
 	if o.Top == 0 || o.Left == 0 {
 		return Image{}, NewError("Missing required params: top, left", BAD_REQUEST)
 	}
-	if o.Width != 0 {
-		o.AreaWidth = o.Width
-	}
-	if o.Height != 0 {
-		o.AreaHeight = o.Height
-	}
 	if o.AreaWidth == 0 && o.AreaHeight == 0 {
 		return Image{}, NewError("Missing required params: areawidth or areaheight", BAD_REQUEST)
 	}
 
-	return Process(buf, BimgOptions(o))
+	opts := BimgOptions(o)
+	opts.Top = o.Top
+	opts.Left = o.Left
+	opts.AreaWidth = o.AreaWidth
+	opts.AreaHeight = o.AreaHeight
+
+	return Process(buf, opts)
 }
 
 func Crop(buf []byte, o ImageOptions) (Image, error) {
@@ -203,8 +203,8 @@ func Convert(buf []byte, o ImageOptions) (Image, error) {
 	if o.Type == "" {
 		return Image{}, NewError("Missing required params: type", BAD_REQUEST)
 	}
-	if ImageType(o.Text) == bimg.UNKNOWN {
-		return Image{}, NewError("Invalid image type: "+o.Text, BAD_REQUEST)
+	if ImageType(o.Type) == bimg.UNKNOWN {
+		return Image{}, NewError("Invalid image type: "+o.Type, BAD_REQUEST)
 	}
 
 	return Process(buf, BimgOptions(o))
