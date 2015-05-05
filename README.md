@@ -132,6 +132,9 @@ Success   [ratio]       100.00%
 Status Codes  [code:count]      200:300
 ```
 
+Humanazing the benchmark results, imaginary can deal with 20 request/sec
+cropping an image of 5MB and taking for each request around 100ms
+
 ## Usage
 
 ```
