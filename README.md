@@ -84,19 +84,20 @@ Deploy it!
 git push heroku master
 ```
 
-**Recommended resources**
+### Recommended resources
 
-- 512MB of RAM is usually enough for small services with low concurrency. Up to 2GB for high concurrency
+512MB of RAM is usually enough for small services with low concurrency (<5 c/rps). 
+Up to 2GB for high-load HTTP service.
 
-Note: if you wanna expose `imaginary` as public HTTP server, it's highly recommended to protect the service against DDoS-like attacks. imaginary support a traffic throttle limit strategy to deal with this, limiting the number of concurrent request per second.  
-The recommended limit is up to `15` c/rps.
+Note: if you wanna expose `imaginary` as public HTTP server, it's highly recommended to protect the service against DDoS-like attacks. imaginary has built-in support for HTTP traffic throttle strategy to deal with this properly, limiting the number of concurrent request per second and caching the waiting requests if necessary.
+The recommended concurrency limit per server is up to `15` c/rps.
 
 You can enable simply it passing a flag to the binary:
 ```
 $ imaginary -concurreny 15
 ```
 
-**Scalability**
+### Scalability
 
 If you're looking for a large-scale solution based on imaginary, you should the scale it horizontally and distribute the HTTP load over a pool of imaginary servers (cluster).
 It's recommended you to enable the throttle limit strategy in `imaginary`.
