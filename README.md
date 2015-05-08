@@ -4,8 +4,7 @@ Simple, [fast](#benchmarks) and multithreaded HTTP microservice for image proces
 imaginary is almost dependency-free and only uses `net/http` native package for better [performance](#performance).
 
 It support multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
-with additional features such as API token-based authorization, built-in gzip compression, HTTP traffic throttle limit 
-and CORS support for direct web browser access.
+with additional features such as API token-based authorization, built-in gzip compression, HTTP traffic throttle strategy and CORS support for direct web browser access.
 imaginary can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them. 
 
 For getting started, take a look to the [HTTP API](#http-api) documentation.
@@ -15,7 +14,7 @@ which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.ph
 and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick 
 settings or Go native `image` package, and in some cases it's even 8x faster processing JPEG images. 
 
-imaginary is used in production projects processing thousands of images per day
+imaginary is used in production processing thousands of images per day
 
 ## Prerequisites
 
@@ -86,23 +85,23 @@ git push heroku master
 
 ### Recommended resources
 
-512MB of RAM is usually enough for small services with low concurrency (<5 c/rps). 
+512MB of RAM is usually enough for small services with low concurrency (<5 concurrent rps). 
 Up to 2GB for high-load HTTP service.
 
-Note: if you wanna expose `imaginary` as public HTTP server, it's highly recommended to protect the service against DDoS-like attacks. imaginary has built-in support for HTTP traffic throttle strategy to deal with this properly, limiting the number of concurrent request per second and caching the waiting requests if necessary.
-The recommended concurrency limit per server is up to `15` c/rps.
+If you wanna expose `imaginary` as public HTTP server, it's highly recommended to protect the service against DDoS-like attacks. imaginary has built-in support for HTTP traffic throttle strategy to deal with this properly, limiting the number of concurrent request per second and caching the waiting requests if necessary.
+The recommended concurrency limit per server is up to `15` requests per second.
 
-You can enable simply it passing a flag to the binary:
+You can enable this passing a flag to the binary:
 ```
-$ imaginary -concurreny 15
+$ imaginary -concurrency 15
 ```
 
 ### Scalability
 
-If you're looking for a large-scale solution based on imaginary, you should the scale it horizontally and distribute the HTTP load over a pool of imaginary servers (cluster).
+If you're looking for a large-scale solution based on imaginary, you should the scale it horizontally and distribute the HTTP load over a pool of imaginary servers cluster.
 It's recommended you to enable the throttle limit strategy in `imaginary`.
 
-Assuming you want to have a high availability to deal with up to 100 concurrent request per second, this could be a reasonable scenario using a public balancer (HAProxy, for instance):
+Assuming that you want to have a high availability to deal efficiently with up to 100 concurrent request per second, this could be a reasonable scenario using a front balancer (HAProxy for instance) and delegating the request control flow and quality of service in the balancer:
 
 ```
         |==============|
@@ -123,7 +122,7 @@ Assuming you want to have a high availability to deal with up to 100 concurrent 
 
 ## Clients
 
-- [Node/io.js](https://github.com/h2non/node-imaginary)
+- [node.js/io.js](https://github.com/h2non/node-imaginary)
 
 ## Supported image operations
 
