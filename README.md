@@ -161,8 +161,8 @@ Success   [ratio]       100.00%
 Status Codes  [code:count]      200:300
 ```
 
-imaginary can deal efficiently with 20 request/sec
-cropping an image of 5MB and spending for each request around 100ms
+**Conclusion**: imaginary can deal properly up to 20 request/sec, 
+where it crops a JPEG image of 5MB and spending per each request around 100ms
 
 ## Usage
 
