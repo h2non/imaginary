@@ -1,13 +1,10 @@
 # imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![GitHub release](https://img.shields.io/github/tag/h2non/imaginary.svg)](https://github.com/h2non/imaginary/releases) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://registry.hub.docker.com/u/h2non/imaginary/) 
 
-Simple, [fast](#benchmarks) and multithreaded HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). Think about imaginary as a private or public HTTP service for massive image processing/resizing. 
-imaginary is almost dependency-free and only uses `net/http` native package for better [performance](#performance).
+[Fast](#benchmarks) HTTP microservice for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). imaginary can be used as private or public HTTP service for massive image processing. It's almost dependency-free and only uses `net/http` native package for better [performance](#performance).
 
 It support multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
 with additional features such as API token-based authorization, built-in gzip compression, HTTP traffic throttle strategy and CORS support for direct web browser access.
-imaginary can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them. 
-
-For getting started, take a look to the [HTTP API](#http-api) documentation.
+imaginary can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them.
 
 imaginary uses internally libvips, a powerful and efficient library written in C for binary image processing 
 which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) 
