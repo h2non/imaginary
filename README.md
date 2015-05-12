@@ -96,7 +96,6 @@ $ imaginary -concurrency 15
 ### Scalability
 
 If you're looking for a large-scale solution based on imaginary, you should the scale it horizontally and distribute the HTTP load over a pool of imaginary servers cluster.
-It's recommended you to enable the throttle limit strategy in `imaginary`.
 
 Assuming that you want to have a high availability to deal efficiently with up to 100 concurrent request per second, this could be a reasonable scenario using a front balancer (HAProxy for instance) and delegating the request control flow and quality of service in the balancer:
 
