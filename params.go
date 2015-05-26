@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"math"
 )
 
 var allowedParams = map[string]string{
@@ -89,14 +90,12 @@ func mapImageParams(params map[string]interface{}) ImageOptions {
 }
 
 func parseColor(val string) []uint8 {
-	buf := []uint8{}
+	const max float64 = 255
+        buf := []uint8{}
 	if val != "" {
 		for _, num := range strings.Split(val, ",") {
 			n, _ := strconv.ParseUint(strings.Trim(num, " "), 10, 8)
-			if n > 255 {
-				n = 255
-			}
-			buf = append(buf, uint8(n))
+			buf = append(buf, uint8(math.Min(float64(n), max)))
 		}
 	}
 	return buf
