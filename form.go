@@ -49,7 +49,7 @@ const formText = `
   <input type="submit" value="Upload" />
 </form>
 <h1>Watermark</h1>
-<form method="POST" action="/watermark?width=100&text=Hello&font=sans%2012&opacity=0.5&color=255,200,50" enctype="multipart/form-data">
+<form method="POST" action="/watermark?textwidth=100&text=Hello&font=sans%2012&opacity=0.5&color=255,200,50" enctype="multipart/form-data">
   <input type="file" name="file" />
   <input type="submit" value="Upload" />
 </form>

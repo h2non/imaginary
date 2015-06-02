@@ -1,10 +1,10 @@
 package main
 
 import (
+	"math"
 	"net/http"
 	"strconv"
 	"strings"
-	"math"
 )
 
 var allowedParams = map[string]string{
@@ -82,16 +82,16 @@ func mapImageParams(params map[string]interface{}) ImageOptions {
 		Text:        params["text"].(string),
 		Font:        params["font"].(string),
 		Type:        params["type"].(string),
-		Opacity:     params["opacity"].(float64),
 		NoCrop:      params["nocrop"].(bool),
 		NoReplicate: params["noreplicate"].(bool),
 		NoRotation:  params["norotation"].(bool),
+		Opacity:     float32(params["opacity"].(float64)),
 	}
 }
 
 func parseColor(val string) []uint8 {
 	const max float64 = 255
-        buf := []uint8{}
+	buf := []uint8{}
 	if val != "" {
 		for _, num := range strings.Split(val, ",") {
 			n, _ := strconv.ParseUint(strings.Trim(num, " "), 10, 8)

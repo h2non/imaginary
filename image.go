@@ -22,7 +22,7 @@ type ImageOptions struct {
 	NoCrop      bool
 	NoReplicate bool
 	NoRotation  bool
-	Opacity     float64
+	Opacity     float32
 	Text        string
 	Font        string
 	Type        string
@@ -221,13 +221,14 @@ func Watermark(buf []byte, o ImageOptions) (Image, error) {
 	opts.Watermark.Font = o.Font
 	opts.Watermark.Margin = o.Margin
 	opts.Watermark.Width = o.TextWidth
+	opts.Watermark.Opacity = o.Opacity
 	opts.Watermark.NoReplicate = o.NoReplicate
-	opts.Watermark.Opacity = float32(o.Opacity)
 
 	if len(o.Color) > 2 {
 		opts.Watermark.Background = bimg.Color{o.Color[0], o.Color[1], o.Color[2]}
 	}
 
+	debug("Watermark options: %#v", opts)
 	return Process(buf, opts)
 }
 
