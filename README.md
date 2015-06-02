@@ -82,8 +82,7 @@ git push heroku master
 
 ### Recommended resources
 
-512MB of RAM is usually enough for small services with low concurrency (<5 concurrent rps). 
-Up to 2GB for high-load HTTP service.
+Given the multithreaded native nature of Go, in term of CPUs, most cores means more concurrency and therefore, a better performance can be achieved. From the other hand, in terms of memory, 512MB of RAM is usually enough for small services with low concurrency (<5 request/second). Up to 2GB for high-load HTTP service processing large images.
 
 If you wanna expose `imaginary` as public HTTP server, it's highly recommended to protect the service against DDoS-like attacks. imaginary has built-in support for HTTP traffic throttle strategy to deal with this properly, limiting the number of concurrent request per second and caching the waiting requests if necessary.
 The recommended concurrency limit per server is up to `15` requests per second.
@@ -160,7 +159,7 @@ Success   [ratio]       100.00%
 Status Codes  [code:count]      200:300
 ```
 
-**Conclusion**: imaginary can deal properly up to 20 request/sec, 
+**Conclusion**: imaginary can deal properly up to 20 request/sec running in a multicore machine, 
 where it crops a JPEG image of 5MB and spending per each request around 100ms
 
 ## Usage
