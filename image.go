@@ -228,7 +228,6 @@ func Watermark(buf []byte, o ImageOptions) (Image, error) {
 		opts.Watermark.Background = bimg.Color{o.Color[0], o.Color[1], o.Color[2]}
 	}
 
-	debug("Watermark options: %#v", opts)
 	return Process(buf, opts)
 }
 
