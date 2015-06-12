@@ -232,8 +232,6 @@ func Watermark(buf []byte, o ImageOptions) (Image, error) {
 }
 
 func Process(buf []byte, opts bimg.Options) (Image, error) {
-	opts.Interlace = true
-
 	buf, err := bimg.Resize(buf, opts)
 	if err != nil {
 		return Image{}, err
