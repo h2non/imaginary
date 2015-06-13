@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"github.com/PuerkitoBio/throttled"
 	"github.com/daaku/go.httpgzip"
 	"github.com/rs/cors"
+	"gopkg.in/h2non/bimg.v0"
 	"net/http"
 )
 
@@ -67,7 +69,7 @@ func validateApiKey(next http.Handler, validKey string) http.Handler {
 
 func defaultHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Server", "imaginary "+Version)
+		w.Header().Set("Server", fmt.Sprintf("imaginary %s (using bimg %s)", Version, bimg.Version))
 		next.ServeHTTP(w, r)
 	})
 }
