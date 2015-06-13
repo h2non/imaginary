@@ -110,9 +110,9 @@ Assuming that you want to have a high availability to deal efficiently with up t
           /         \
          /           \
         /             \
- |-----------|   |-----------|
+ /-----------\   /-----------\
  | imaginary |   | imaginary | (*N)
- |-----------|   |-----------|
+ \-----------/   \-----------/
 ```
 
 ## Clients
