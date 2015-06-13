@@ -255,6 +255,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - nocrop      `bool`  - Disable crop transformation enabled by default by some operations. Default: `false`
 - noreplicate `bool`  - Disable text replication in watermark. Default `false`
 - norotation  `bool`  - Disable auto rotation based on EXIF orientation. Default `false`
+- noprofile   `bool`  - Disable adding ICC profile metadata. Default `false`
 - text        `string` - Watermark text content. Example: `copyright (c) 2189`
 - font        `string` - Watermark text font type and format. Example: `sans bold 12`
 - color       `string` - Watermark text RGB decimal base color. Example: `255,200,150`

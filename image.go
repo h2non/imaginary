@@ -22,6 +22,7 @@ type ImageOptions struct {
 	NoCrop      bool
 	NoReplicate bool
 	NoRotation  bool
+	NoProfile   bool
 	Opacity     float32
 	Text        string
 	Font        string
@@ -47,6 +48,7 @@ func BimgOptions(o ImageOptions) bimg.Options {
 		Quality:      o.Quality,
 		Compression:  o.Compression,
 		NoAutoRotate: o.NoRotation,
+		NoProfile:    o.NoProfile,
 		Type:         ImageType(o.Type),
 	}
 }

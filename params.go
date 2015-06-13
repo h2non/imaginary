@@ -22,9 +22,10 @@ var allowedParams = map[string]string{
 	"dpi":         "int",
 	"textwidth":   "int",
 	"opacity":     "float",
-	"noreplicate": "bool",
-	"norotation":  "bool",
 	"nocrop":      "bool",
+	"noprofile":   "bool",
+	"norotation":  "bool",
+	"noreplicate": "bool",
 	"text":        "string",
 	"font":        "string",
 	"type":        "string",
@@ -85,6 +86,7 @@ func mapImageParams(params map[string]interface{}) ImageOptions {
 		NoCrop:      params["nocrop"].(bool),
 		NoReplicate: params["noreplicate"].(bool),
 		NoRotation:  params["norotation"].(bool),
+		NoProfile:   params["noprofile"].(bool),
 		Opacity:     float32(params["opacity"].(float64)),
 	}
 }
