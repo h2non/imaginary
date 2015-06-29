@@ -16,19 +16,16 @@ func formController(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(formText))
 }
 
-func imageController(w http.ResponseWriter, r *http.Request, Operation Operation) {
-	if r.Method != "POST" {
-		ErrorReply(w, "Method not allowed for this endpoint", NOT_ALLOWED)
-		return
-	}
-
-	buf, err := readBody(r)
-	if err != nil {
-		ErrorReply(w, "Cannot read the body: "+err.Error(), BAD_REQUEST)
-		return
-	}
+func imageController(w http.ResponseWriter, r *http.Request, buf []byte, Operation Operation) {
+	/*
+		buf, err := readBody(r)
+		if err != nil {
+			ErrorReply(w, "Cannot read the payload: "+err.Error(), BAD_REQUEST)
+			return
+		}
+	*/
 	if len(buf) == 0 {
-		ErrorReply(w, "Empty or invalid body", BAD_REQUEST)
+		ErrorReply(w, "Empty or invalid payload", BAD_REQUEST)
 		return
 	}
 

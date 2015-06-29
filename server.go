@@ -13,6 +13,7 @@ type ServerOptions struct {
 	Gzip        bool
 	Address     string
 	ApiKey      string
+	Mount       string
 	Burst       int
 	Concurrency int
 }

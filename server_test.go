@@ -1,12 +1,10 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"gopkg.in/h2non/bimg.v0"
 	"io"
 	"io/ioutil"
-	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -170,40 +168,10 @@ func TestExtract(t *testing.T) {
 	}
 }
 
-// Todo
-func testFormUpload(t *testing.T) {
-	ts := testServer(controller(Crop))
-	file, _ := os.Open("fixtures/large.jpg")
-	defer ts.Close()
-
-	body := &bytes.Buffer{}
-	writer := multipart.NewWriter(body)
-	part, _ := writer.CreateFormFile("file", "fixtures/large.jpg")
-	io.Copy(part, file)
-	writer.Close()
-
-	res, err := http.Post(ts.URL, "multipart/form-data", body)
-	if err != nil {
-		t.Fatal("Cannot perform the request")
-	}
-
-	if res.StatusCode != 200 {
-		t.Fatalf("Invalid response status: %s", res.Status)
-	}
-
-	image, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if len(image) == 0 {
-		t.Fatalf("Empty response body")
-	}
-}
-
 func controller(op Operation) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		imageController(w, r, op)
+		buf, _ := ioutil.ReadAll(r.Body)
+		imageController(w, r, buf, op)
 	}
 }
 

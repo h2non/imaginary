@@ -6,7 +6,10 @@ import (
 	"github.com/daaku/go.httpgzip"
 	"github.com/rs/cors"
 	"gopkg.in/h2non/bimg.v0"
+	"io/ioutil"
 	"net/http"
+	"path"
+	"strings"
 )
 
 func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) http.Handler {
@@ -31,7 +34,38 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 func ImageMiddleware(o ServerOptions) func(Operation) http.Handler {
 	return func(fn Operation) http.Handler {
 		return Middleware(func(w http.ResponseWriter, r *http.Request) {
-			imageController(w, r, Operation(fn))
+			validMethod := r.Method != "POST" || (r.Method == "GET" && o.Mount != "")
+
+			if validMethod == false {
+				ErrorReply(w, "Method not allowed for this endpoint", NOT_ALLOWED)
+				return
+			}
+
+			file := r.URL.Query().Get("file")
+			if file != "" && r.Method == "GET" {
+				file = path.Clean(path.Join(o.Mount, file))
+				if strings.HasPrefix(file, o.Mount) == false {
+					ErrorReply(w, "Invalid local file path", BAD_REQUEST)
+					return
+				}
+
+				buf, err := ioutil.ReadFile(file)
+				if err != nil {
+					ErrorReply(w, "Invalid local file path", BAD_REQUEST)
+					return
+				}
+
+				imageController(w, r, buf, Operation(fn))
+				return
+			}
+
+			buf, err := readBody(r)
+			if err != nil {
+				ErrorReply(w, "Cannot read the payload: "+err.Error(), BAD_REQUEST)
+				return
+			}
+
+			imageController(w, r, buf, Operation(fn))
 		}, o)
 	}
 }
@@ -69,7 +103,7 @@ func validateApiKey(next http.Handler, validKey string) http.Handler {
 
 func defaultHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Server", fmt.Sprintf("imaginary %s (with bimg %s)", Version, bimg.Version))
+		w.Header().Set("Server", fmt.Sprintf("imaginary %s (using bimg %s)", Version, bimg.Version))
 		next.ServeHTTP(w, r)
 	})
 }

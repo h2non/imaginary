@@ -23,6 +23,7 @@ var (
 	aCors        = flag.Bool("cors", false, "")
 	aGzip        = flag.Bool("gzip", false, "")
 	aKey         = flag.String("key", "", "")
+	aMount       = flag.String("mount", "", "")
 	aConcurrency = flag.Int("concurrency", 0, "")
 	aBurst       = flag.Int("burst", 100, "")
 	aMRelease    = flag.Int("mrelease", 30, "")
@@ -45,6 +46,7 @@ Options:
   -cors                Enable CORS support [default: false]
   -gzip                Enable gzip compression [default: false]
   -key <key>           Define API key for authorization
+  -mount <path>        Mount directory
   -concurreny <num>    Throttle concurrency limit per second [default: disabled]
   -burst <num>         Throttle burst max cache size [default: 100]
   -mrelease <num>      Force OS memory release inverval in seconds [default: 30]
@@ -78,10 +80,24 @@ func main() {
 		ApiKey:      *aKey,
 		Concurrency: *aConcurrency,
 		Burst:       *aBurst,
+		Mount:       *aMount,
 	}
 
 	if *aMRelease > 0 {
 		memoryRelease(*aMRelease)
+	}
+
+	// check if the mount dir exist
+	if *aMount != "" {
+		src, err := os.Stat(*aMount)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "cannot read the directory: %s\n", err)
+			os.Exit(1)
+		}
+		if src.IsDir() == false {
+			fmt.Fprintf(os.Stderr, "mount path is not a directory: %s\n", err)
+			os.Exit(1)
+		}
 	}
 
 	debug("imaginary server listening on port %d", port)
