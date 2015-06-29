@@ -205,7 +205,7 @@ Enable HTTP server throttle strategy (max 10 request/second)
 imaginary -p 8080 -concurrency 10
 ```
 
-Mount local directory
+Mount local directory (now you can do GET request passing the `file` query param)
 ```
 imaginary -p 8080 -mount ~/images
 ```
