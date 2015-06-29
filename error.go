@@ -60,9 +60,10 @@ func NewError(err string, code uint8) *Error {
 	return &Error{err, code}
 }
 
-func ErrorReply(w http.ResponseWriter, msg string, code uint8) {
+func ErrorReply(w http.ResponseWriter, msg string, code uint8) error {
 	err := NewError(msg, code)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(err.HttpCode())
 	w.Write(err.JSON())
+	return err
 }

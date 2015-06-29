@@ -46,7 +46,7 @@ Options:
   -cors                Enable CORS support [default: false]
   -gzip                Enable gzip compression [default: false]
   -key <key>           Define API key for authorization
-  -mount <path>        Mount directory
+  -mount <path>        Mount server directory
   -concurreny <num>    Throttle concurrency limit per second [default: disabled]
   -burst <num>         Throttle burst max cache size [default: 100]
   -mrelease <num>      Force OS memory release inverval in seconds [default: 30]
@@ -87,9 +87,10 @@ func main() {
 		memoryRelease(*aMRelease)
 	}
 
-	// check if the mount dir exist
-	if *aMount != "" {
-		src, err := os.Stat(*aMount)
+	// Check if the mount dir exist
+	mount := *aMount
+	if mount != "" {
+		src, err := os.Stat(mount)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "cannot read the directory: %s\n", err)
 			os.Exit(1)

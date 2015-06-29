@@ -6,10 +6,7 @@ import (
 	"github.com/daaku/go.httpgzip"
 	"github.com/rs/cors"
 	"gopkg.in/h2non/bimg.v0"
-	"io/ioutil"
 	"net/http"
-	"path"
-	"strings"
 )
 
 func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) http.Handler {
@@ -34,34 +31,16 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 func ImageMiddleware(o ServerOptions) func(Operation) http.Handler {
 	return func(fn Operation) http.Handler {
 		return Middleware(func(w http.ResponseWriter, r *http.Request) {
-			validMethod := r.Method != "POST" || (r.Method == "GET" && o.Mount != "")
+			var buf []byte
+			var err error
 
-			if validMethod == false {
-				ErrorReply(w, "Method not allowed for this endpoint", NOT_ALLOWED)
-				return
+			if o.Mount != "" && r.Method == "GET" {
+				buf, err = readLocalImage(w, r, o.Mount)
+			} else {
+				buf, err = readPayload(w, r)
 			}
 
-			file := r.URL.Query().Get("file")
-			if file != "" && r.Method == "GET" {
-				file = path.Clean(path.Join(o.Mount, file))
-				if strings.HasPrefix(file, o.Mount) == false {
-					ErrorReply(w, "Invalid local file path", BAD_REQUEST)
-					return
-				}
-
-				buf, err := ioutil.ReadFile(file)
-				if err != nil {
-					ErrorReply(w, "Invalid local file path", BAD_REQUEST)
-					return
-				}
-
-				imageController(w, r, buf, Operation(fn))
-				return
-			}
-
-			buf, err := readBody(r)
 			if err != nil {
-				ErrorReply(w, "Cannot read the payload: "+err.Error(), BAD_REQUEST)
 				return
 			}
 

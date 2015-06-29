@@ -11,6 +11,8 @@ which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.ph
 and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick 
 settings or Go native `image` package, and in some cases it's even 8x faster processing JPEG images. 
 
+For getting started, take a look the [installation](#installation) process, [usage](#usage) cases and [API](#http-api) docs
+
 imaginary is used in production processing thousands of images per day
 
 ## Prerequisites
@@ -130,7 +132,7 @@ Assuming that you want to have a high availability to deal efficiently with up t
 - Zoom
 - Thumbnail
 - Extract area
-- Watermark (fully customizable text-based)
+- Watermark (customizable by text)
 - Format conversion (with additional quality/compression settings)
 - Info (image size, format, orientation, alpha...)
 
@@ -181,6 +183,7 @@ Options:
   -cors                Enable CORS support [default: false]
   -gzip                Enable gzip compression [default: false]
   -key <key>           Define API key for authorization
+  -mount <path>        Mount server directory
   -concurreny <num>    Throttle concurrency limit per second [default: disabled]
   -burst <num>         Throttle burst max cache size [default: 100]
   -mrelease <num>      Force OS memory release inverval in seconds [default: 30]
@@ -197,6 +200,21 @@ Also, you can pass the port as environment variable
 POST=8080 imaginary 
 ```
 
+Enable HTTP server throttle strategy (max 10 request/second)
+```
+imaginary -p 8080 -concurrency 10
+```
+
+Mount local directory
+```
+imaginary -p 8080 -mount ~/images
+```
+
+Increase libvips threads concurrency (experimental)
+```
+VIPS_CONCURRENCY=10 imaginary -p 8080 -concurrency 10
+```
+
 Enable debug mode
 ```
 DEBUG=* imaginary -p 8080
@@ -205,16 +223,6 @@ DEBUG=* imaginary -p 8080
 Or filter debug output by package
 ```
 DEBUG=imaginary imaginary -p 8080
-```
-
-Enable HTTP server throttle strategy (max 10 request/second)
-```
-imaginary -p 8080 -concurrency 10
-```
-
-Increase libvips threads concurrency (experimental)
-```
-VIPS_CONCURRENCY=10 imaginary -p 8080 -concurrency 10
 ```
 
 ## HTTP API
@@ -260,6 +268,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - font        `string` - Watermark text font type and format. Example: `sans bold 12`
 - color       `string` - Watermark text RGB decimal base color. Example: `255,200,150`
 - type        `string` - Specify the image format to output. Possible values are: `jpeg`, `png` and `webp`
+- file        `string` - Server image file path. To use this you must pass the `-mount` flag
 
 #### GET /form
 Content Type: `text/html`
@@ -283,7 +292,8 @@ Returns the image metadata as JSON:
 }
 ```
 
-#### POST /crop
+
+#### GET|POST /crop
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 Crop the image by a given width or height. Image ratio is maintained
@@ -294,9 +304,10 @@ Crop the image by a given width or height. Image ratio is maintained
 - height `int`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
-- type `string` 
+- type `string`
+- file `string` - Only GET method and if the `-mount` flag is present
 
-#### POST /resize
+#### GET|POST /resize
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 Resize an image by width or height. Image aspect ratio is maintained
@@ -307,9 +318,10 @@ Resize an image by width or height. Image aspect ratio is maintained
 - height `int`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
-- type `string` 
+- type `string`
+- file `string` - Only GET method and if the `-mount` flag is present
 
-#### POST /enlarge
+#### GET|POST /enlarge
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -318,9 +330,10 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - height `int` `required`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
-- type `string` 
+- type `string`
+- file `string` - Only GET method and if the `-mount` flag is present
 
-#### POST /extract
+#### GET|POST /extract
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -333,9 +346,10 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - height `int` 
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
-- type `string` 
+- type `string`
+- file `string` - Only GET method and if the `-mount` flag is present
 
-#### POST /zoom
+#### GET|POST /zoom
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -346,8 +360,9 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
 - type `string` 
+- file `string` - Only GET method and if the `-mount` flag is present
 
-#### POST /thumbnail
+#### GET|POST /thumbnail
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -356,9 +371,10 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - height `int` 
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
-- type `string` 
+- type `string`
+- file `string` - Only GET method and if the `-mount` flag is present
 
-#### POST /rotate
+#### GET|POST /rotate
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -368,9 +384,10 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - height `int` 
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
-- type `string` 
+- type `string`
+- file `string` - Only GET method and if the `-mount` flag is present
 
-#### POST /flip
+#### GET|POST /flip
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -379,9 +396,10 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - height `int` 
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
-- type `string` 
+- type `string`
+- file `string` - Only GET method and if the `-mount` flag is present
 
-#### POST /flop
+#### GET|POST /flop
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -390,9 +408,10 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - height `int` 
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
-- type `string` 
+- type `string`
+- file `string` - Only GET method and if the `-mount` flag is present
 
-#### POST /convert
+#### GET|POST /convert
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -400,8 +419,9 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string` `required`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
+- file `string` - Only GET method and if the `-mount` flag is present
 
-#### POST /watermark
+#### GET|POST /watermark
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -416,7 +436,8 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - color `string` 
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
-- type `string` 
+- type `string`
+- file `string` - Only GET method and if the `-mount` flag is present
 
 ## License
 

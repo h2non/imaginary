@@ -17,15 +17,8 @@ func formController(w http.ResponseWriter, r *http.Request) {
 }
 
 func imageController(w http.ResponseWriter, r *http.Request, buf []byte, Operation Operation) {
-	/*
-		buf, err := readBody(r)
-		if err != nil {
-			ErrorReply(w, "Cannot read the payload: "+err.Error(), BAD_REQUEST)
-			return
-		}
-	*/
 	if len(buf) == 0 {
-		ErrorReply(w, "Empty or invalid payload", BAD_REQUEST)
+		ErrorReply(w, "Empty payload", BAD_REQUEST)
 		return
 	}
 

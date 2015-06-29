@@ -168,6 +168,71 @@ func TestExtract(t *testing.T) {
 	}
 }
 
+func TestMountDirectory(t *testing.T) {
+	fn := ImageMiddleware(ServerOptions{Mount: "fixtures"})(Crop)
+	ts := httptest.NewServer(fn)
+	url := ts.URL + "?width=200&height=200&file=large.jpg"
+	defer ts.Close()
+
+	res, err := http.Get(url)
+	if err != nil {
+		t.Fatal("Cannot perform the request")
+	}
+
+	if res.StatusCode != 200 {
+		t.Fatalf("Invalid response status: %d", res.StatusCode)
+	}
+
+	image, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(image) == 0 {
+		t.Fatalf("Empty response body")
+	}
+
+	err = assertSize(image, 200, 200)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if bimg.DetermineImageTypeName(image) != "jpeg" {
+		t.Fatalf("Invalid image type")
+	}
+}
+
+func TestMountInvalidDirectory(t *testing.T) {
+	fn := ImageMiddleware(ServerOptions{Mount: "_invalid_"})(Crop)
+	ts := httptest.NewServer(fn)
+	url := ts.URL + "?top=100&left=100&areawidth=200&areaheight=120&file=large.jpg"
+	defer ts.Close()
+
+	res, err := http.Get(url)
+	if err != nil {
+		t.Fatal("Cannot perform the request")
+	}
+
+	if res.StatusCode != 400 {
+		t.Fatalf("Invalid response status: %d", res.StatusCode)
+	}
+}
+
+func TestMountInvalidPath(t *testing.T) {
+	fn := ImageMiddleware(ServerOptions{Mount: "_invalid_"})(Crop)
+	ts := httptest.NewServer(fn)
+	url := ts.URL + "?top=100&left=100&areawidth=200&areaheight=120&file=../../large.jpg"
+	defer ts.Close()
+
+	res, err := http.Get(url)
+	if err != nil {
+		t.Fatal("Cannot perform the request")
+	}
+
+	if res.StatusCode != 400 {
+		t.Fatalf("Invalid response status: %s", res.Status)
+	}
+}
+
 func controller(op Operation) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		buf, _ := ioutil.ReadAll(r.Body)
