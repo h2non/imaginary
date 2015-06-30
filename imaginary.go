@@ -86,9 +86,8 @@ func main() {
 	if *aMRelease > 0 {
 		memoryRelease(*aMRelease)
 	}
-
-	// Check if the mount dir exist
-	mount := *aMount
+  
+  mount := *aMount
 	if mount != "" {
 		src, err := os.Stat(mount)
 		if err != nil {
