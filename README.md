@@ -292,8 +292,7 @@ Returns the image metadata as JSON:
 }
 ```
 
-
-#### GET|POST /crop
+#### GET | POST /crop
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 Crop the image by a given width or height. Image ratio is maintained
@@ -307,7 +306,7 @@ Crop the image by a given width or height. Image ratio is maintained
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 
-#### GET|POST /resize
+#### GET | POST /resize
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 Resize an image by width or height. Image aspect ratio is maintained
@@ -333,7 +332,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 
-#### GET|POST /extract
+#### GET | POST /extract
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -349,7 +348,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 
-#### GET|POST /zoom
+#### GET | POST /zoom
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -362,7 +361,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string` 
 - file `string` - Only GET method and if the `-mount` flag is present
 
-#### GET|POST /thumbnail
+#### GET | POST /thumbnail
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -374,7 +373,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 
-#### GET|POST /rotate
+#### GET | POST /rotate
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -387,7 +386,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 
-#### GET|POST /flip
+#### GET | POST /flip
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -399,7 +398,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 
-#### GET|POST /flop
+#### GET | POST /flop
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -411,7 +410,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 
-#### GET|POST /convert
+#### GET | POST /convert
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
@@ -421,7 +420,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - file `string` - Only GET method and if the `-mount` flag is present
 
-#### GET|POST /watermark
+#### GET | POST /watermark
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
