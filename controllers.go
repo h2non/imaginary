@@ -13,7 +13,7 @@ func indexController(w http.ResponseWriter, r *http.Request) {
 
 func formController(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(formText))
+	w.Write([]byte(htmlForm()))
 }
 
 func imageController(w http.ResponseWriter, r *http.Request, buf []byte, Operation Operation) {

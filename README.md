@@ -86,7 +86,7 @@ git push heroku master
 
 Given the multithreaded native nature of Go, in term of CPUs, most cores means more concurrency and therefore, a better performance can be achieved. From the other hand, in terms of memory, 512MB of RAM is usually enough for small services with low concurrency (<5 request/second). Up to 2GB for high-load HTTP service processing large images.
 
-If you wanna expose `imaginary` as public HTTP server, it's highly recommended to protect the service against DDoS-like attacks. imaginary has built-in support for HTTP traffic throttle strategy to deal with this properly, limiting the number of concurrent request per second and caching the waiting requests if necessary.
+If you need to expose `imaginary` as public HTTP server, it's highly recommended to protect the service against DDoS-like attacks. imaginary has built-in support for HTTP traffic throttle strategy to deal with this properly, limiting the number of concurrent request per second and caching the waiting requests if necessary.
 The recommended concurrency limit per server is up to `15` requests per second.
 
 You can enable this passing a flag to the binary:
@@ -96,9 +96,9 @@ $ imaginary -concurrency 15
 
 ### Scalability
 
-If you're looking for a large-scale solution based on imaginary, you should the scale it horizontally and distribute the HTTP load over a pool of imaginary servers cluster.
+If you're looking for a large scale solution based on imaginary, you should scale it horizontally and distribute the HTTP load over a pool of imaginary servers.
 
-Assuming that you want to have a high availability to deal efficiently with up to 100 concurrent request per second, this could be a reasonable scenario using a front balancer (HAProxy for instance) and delegating the request control flow and quality of service in the balancer:
+Assuming that you want to have a high availability to deal efficiently with up to 100 concurrent request per second, this could be a reasonable scenario using a front balancer (HAProxy, for instance) and delegating the request control flow and quality of service in the balancer:
 
 ```
         |==============|
@@ -205,7 +205,7 @@ Enable HTTP server throttle strategy (max 10 request/second)
 imaginary -p 8080 -concurrency 10
 ```
 
-Mount local directory (now you can do GET request passing the `file` query param)
+Mount local directory (then you can do GET request passing the `file=image.jpg` query param)
 ```
 imaginary -p 8080 -mount ~/images
 ```
@@ -268,7 +268,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - font        `string` - Watermark text font type and format. Example: `sans bold 12`
 - color       `string` - Watermark text RGB decimal base color. Example: `255,200,150`
 - type        `string` - Specify the image format to output. Possible values are: `jpeg`, `png` and `webp`
-- file        `string` - Server image file path. To use this you must pass the `-mount` flag
+- file        `string` - Use image from server local file path. To use this you must pass the `-mount=<dir>` flag
 
 #### GET /form
 Content Type: `text/html`

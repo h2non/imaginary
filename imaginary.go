@@ -87,12 +87,12 @@ func main() {
 		memoryRelease(*aMRelease)
 	}
 
-	// Check if the mount dir exist
+	// Check if the mount directory exists
 	mount := *aMount
 	if mount != "" {
 		src, err := os.Stat(mount)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "cannot read the directory: %s\n", err)
+			fmt.Fprintf(os.Stderr, "error while mounting directory: %s\n", err)
 			os.Exit(1)
 		}
 		if src.IsDir() == false {
