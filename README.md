@@ -320,7 +320,7 @@ Resize an image by width or height. Image aspect ratio is maintained
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 
-#### GET|POST /enlarge
+#### GET | POST /enlarge
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
