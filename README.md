@@ -1,19 +1,19 @@
 # imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![GitHub release](https://img.shields.io/github/tag/h2non/imaginary.svg)](https://github.com/h2non/imaginary/releases) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://registry.hub.docker.com/u/h2non/imaginary/) 
 
-[Fast](#benchmarks) HTTP microservice written in Go for image processing powered by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). imaginary can be used as private or public HTTP service for massive image processing. It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package for better [performance](#performance).
+[Fast](#benchmarks) HTTP microservice written in Go for image processing backed by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). imaginary can be used as private or public HTTP service for massive image processing. It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package for better [performance](#performance).
 
-It support multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
-with additional features such as API token-based authorization, built-in gzip compression, HTTP traffic throttle strategy and CORS support for direct web browser access.
+Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
+with additional features such as API token-based authorization, built-in gzip compression, HTTP traffic throttle strategy and CORS support for web browser clients.
 imaginary can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them.
 
-imaginary uses internally libvips, a powerful and efficient library written in C for binary image processing 
+It uses internally libvips, a powerful and efficient library written in C for image processing 
 which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) 
 and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick 
 settings or Go native `image` package, and in some cases it's even 8x faster processing JPEG images. 
 
-For getting started, take a look the [installation](#installation) process, [usage](#usage) cases and [API](#http-api) docs
+To get started, take a look the [installation](#installation) process, [usage](#usage) cases and [API](#http-api) docs
 
-imaginary is used in production processing thousands of images per day
+imaginary is currently used in production processing thousands of images per day.
 
 ## Prerequisites
 
@@ -327,7 +327,7 @@ Resize an image by width or height. Image aspect ratio is maintained
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 
-#### GET|POST /enlarge
+#### GET | POST /enlarge
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
