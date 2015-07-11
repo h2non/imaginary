@@ -24,6 +24,8 @@ var (
 	aGzip        = flag.Bool("gzip", false, "")
 	aKey         = flag.String("key", "", "")
 	aMount       = flag.String("mount", "", "")
+	aCertFile    = flag.String("certfile", "", "")
+	aKeyFile     = flag.String("keyfile", "", "")
 	aConcurrency = flag.Int("concurrency", 0, "")
 	aBurst       = flag.Int("burst", 100, "")
 	aMRelease    = flag.Int("mrelease", 30, "")
@@ -47,6 +49,8 @@ Options:
   -gzip                Enable gzip compression [default: false]
   -key <key>           Define API key for authorization
   -mount <path>        Mount server directory
+  -certfile <path>     TLS certificate file path
+  -keyfile <path>      TLS key file path
   -concurreny <num>    Throttle concurrency limit per second [default: disabled]
   -burst <num>         Throttle burst max cache size [default: 100]
   -mrelease <num>      Force OS memory release inverval in seconds [default: 30]
@@ -81,6 +85,8 @@ func main() {
 		Concurrency: *aConcurrency,
 		Burst:       *aBurst,
 		Mount:       *aMount,
+		CertFile:    *aCertFile,
+		KeyFile:     *aKeyFile,
 	}
 
 	if *aMRelease > 0 {

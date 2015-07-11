@@ -185,10 +185,13 @@ Options:
   -gzip                Enable gzip compression [default: false]
   -key <key>           Define API key for authorization
   -mount <path>        Mount server directory
+  -certfile <path>     TLS certificate file path
+  -keyfile <path>      TLS key file path
   -concurreny <num>    Throttle concurrency limit per second [default: disabled]
   -burst <num>         Throttle burst max cache size [default: 100]
   -mrelease <num>      Force OS memory release inverval in seconds [default: 30]
-  -cpus <num>          Number of used cpu cores (default to current machine cores)
+  -cpus <num>          Number of used cpu cores.
+                       (default for current machine is 8 cores)
 ```
 
 Start the server on a custom port

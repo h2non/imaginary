@@ -14,6 +14,8 @@ type ServerOptions struct {
 	Address     string
 	ApiKey      string
 	Mount       string
+	CertFile    string
+	KeyFile     string
 	Burst       int
 	Concurrency int
 }
@@ -30,7 +32,14 @@ func Server(o ServerOptions) error {
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	return server.ListenAndServe()
+	return listenAndServe(server, o)
+}
+
+func listenAndServe(s *http.Server, o ServerOptions) error {
+	if o.CertFile != "" && o.KeyFile != "" {
+		return s.ListenAndServeTLS(o.CertFile, o.KeyFile)
+	}
+	return s.ListenAndServe()
 }
 
 func NewServerMux(o ServerOptions) http.Handler {
