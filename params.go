@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gopkg.in/h2non/bimg.v0"
 	"math"
 	"net/http"
 	"strconv"
@@ -26,10 +27,12 @@ var allowedParams = map[string]string{
 	"noprofile":   "bool",
 	"norotation":  "bool",
 	"noreplicate": "bool",
+	"force":       "bool",
 	"text":        "string",
 	"font":        "string",
 	"type":        "string",
 	"color":       "color",
+	"colorspace":  "colorspace",
 }
 
 func readParams(r *http.Request) ImageOptions {
@@ -56,6 +59,9 @@ func readParams(r *http.Request) ImageOptions {
 			break
 		case "color":
 			val = parseColor(param)
+			break
+		case "colorspace":
+			val = parseColorspace(param)
 			break
 		}
 
@@ -84,10 +90,12 @@ func mapImageParams(params map[string]interface{}) ImageOptions {
 		Font:        params["font"].(string),
 		Type:        params["type"].(string),
 		NoCrop:      params["nocrop"].(bool),
+		Force:       params["force"].(bool),
 		NoReplicate: params["noreplicate"].(bool),
 		NoRotation:  params["norotation"].(bool),
 		NoProfile:   params["noprofile"].(bool),
 		Opacity:     float32(params["opacity"].(float64)),
+		Colorspace:  params["colorspace"].(bimg.Interpretation),
 	}
 }
 
@@ -101,4 +109,11 @@ func parseColor(val string) []uint8 {
 		}
 	}
 	return buf
+}
+
+func parseColorspace(val string) bimg.Interpretation {
+	if val == "bw" {
+		return bimg.INTERPRETATION_B_W
+	}
+	return bimg.INTERPRETATION_sRGB
 }

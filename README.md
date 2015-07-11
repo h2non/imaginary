@@ -133,6 +133,7 @@ Assuming that you want to have a high availability to deal efficiently with up t
 - Thumbnail
 - Extract area
 - Watermark (customizable by text)
+- Custom grayscale
 - Format conversion (with additional quality/compression settings)
 - Info (image size, format, orientation, alpha...)
 
@@ -225,6 +226,10 @@ Or filter debug output by package
 DEBUG=imaginary imaginary -p 8080
 ```
 
+#### Playground
+
+`imaginary` exposes an ugly HTML form for playground purposes at: [`http://localhost:8088/form`](http://localhost:8088/form)
+
 ## HTTP API
 
 ### Authorization
@@ -260,6 +265,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - dpi         `int`   - DPI value for watermark. Example: `150`
 - textwidth   `int`   - Text area width for watermark. Example: `200`
 - opacity     `float` - Opacity level for watermark text. Default: `0.2`
+- force       `bool`  - Force image transformation size. Default: `false`
 - nocrop      `bool`  - Disable crop transformation enabled by default by some operations. Default: `false`
 - noreplicate `bool`  - Disable text replication in watermark. Default `false`
 - norotation  `bool`  - Disable auto rotation based on EXIF orientation. Default `false`
@@ -269,6 +275,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - color       `string` - Watermark text RGB decimal base color. Example: `255,200,150`
 - type        `string` - Specify the image format to output. Possible values are: `jpeg`, `png` and `webp`
 - file        `string` - Use image from server local file path. To use this you must pass the `-mount=<dir>` flag
+- colorspace  `string` - Use a custom color space for the output image. Allowed values are: `srgb` or `bw` (black&white)
 
 #### GET /form
 Content Type: `text/html`

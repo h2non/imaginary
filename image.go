@@ -19,6 +19,7 @@ type ImageOptions struct {
 	Factor      int
 	DPI         int
 	TextWidth   int
+	Force       bool
 	NoCrop      bool
 	NoReplicate bool
 	NoRotation  bool
@@ -28,6 +29,7 @@ type ImageOptions struct {
 	Font        string
 	Type        string
 	Color       []uint8
+	Colorspace  bimg.Interpretation
 }
 
 type Image struct {
@@ -43,13 +45,15 @@ func (o Operation) Run(buf []byte, opts ImageOptions) (Image, error) {
 
 func BimgOptions(o ImageOptions) bimg.Options {
 	return bimg.Options{
-		Width:        o.Width,
-		Height:       o.Height,
-		Quality:      o.Quality,
-		Compression:  o.Compression,
-		NoAutoRotate: o.NoRotation,
-		NoProfile:    o.NoProfile,
-		Type:         ImageType(o.Type),
+		Width:          o.Width,
+		Height:         o.Height,
+		Quality:        o.Quality,
+		Compression:    o.Compression,
+		NoAutoRotate:   o.NoRotation,
+		NoProfile:      o.NoProfile,
+		Force:          o.Force,
+		Interpretation: o.Colorspace,
+		Type:           ImageType(o.Type),
 	}
 }
 
