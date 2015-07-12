@@ -1,5 +1,7 @@
 # imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![GitHub release](https://img.shields.io/github/tag/h2non/imaginary.svg)](https://github.com/h2non/imaginary/releases) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://registry.hub.docker.com/u/h2non/imaginary/) 
 
+<img src="http://s14.postimg.org/8th71a201/imaginary_world.jpg" width="100%" />
+
 [Fast](#benchmarks) HTTP [microservice](http://microservices.io/patterns/microservices.html) written in Go for image processing backed by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). imaginary can be used as private or public HTTP service for massive image processing. It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package for better [performance](#performance).
 
 Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
