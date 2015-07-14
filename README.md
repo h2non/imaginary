@@ -311,12 +311,16 @@ Crop the image by a given width or height. Image ratio is maintained
 
 ##### Allowed params
 
-- width `int` `required`
+- width `int`
 - height `int`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
 - type `string`
-- file `string` - Only GET method and if the `-mount` flag is present
+- file `string`
+- force `bool`
+- norotation `bool`
+- noprofile `bool`
+- colorspace `string`
 
 #### GET | POST /resize
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -331,6 +335,10 @@ Resize an image by width or height. Image aspect ratio is maintained
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- force `bool`
+- norotation `bool`
+- noprofile `bool`
+- colorspace `string`
 
 #### GET | POST /enlarge
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -343,6 +351,10 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- force `bool`
+- norotation `bool`
+- noprofile `bool`
+- colorspace `string`
 
 #### GET | POST /extract
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -359,6 +371,10 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- force `bool`
+- norotation `bool`
+- noprofile `bool`
+- colorspace `string`
 
 #### GET | POST /zoom
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -372,6 +388,10 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string` 
 - file `string` - Only GET method and if the `-mount` flag is present
+- force `bool`
+- norotation `bool`
+- noprofile `bool`
+- colorspace `string`
 
 #### GET | POST /thumbnail
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -384,6 +404,10 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- force `bool`
+- norotation `bool`
+- noprofile `bool`
+- colorspace `string`
 
 #### GET | POST /rotate
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -397,6 +421,10 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- force `bool`
+- norotation `bool`
+- noprofile `bool`
+- colorspace `string`
 
 #### GET | POST /flip
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -409,6 +437,10 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- force `bool`
+- norotation `bool`
+- noprofile `bool`
+- colorspace `string`
 
 #### GET | POST /flop
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -421,6 +453,10 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- force `bool`
+- norotation `bool`
+- noprofile `bool`
+- colorspace `string`
 
 #### GET | POST /convert
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -431,6 +467,10 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
 - file `string` - Only GET method and if the `-mount` flag is present
+- force `bool`
+- norotation `bool`
+- noprofile `bool`
+- colorspace `string`
 
 #### GET | POST /watermark
 Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -449,6 +489,10 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- force `bool`
+- norotation `bool`
+- noprofile `bool`
+- colorspace `string`
 
 ## License
 
