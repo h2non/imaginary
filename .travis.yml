@@ -3,7 +3,7 @@ go:
   - 1.4
   - 1.3
   - release
-  - tip
+  #- tip 
 before_install:
   #- go get github.com/axw/gocov/gocov
   #- go get github.com/mattn/goveralls
