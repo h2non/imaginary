@@ -45,9 +45,10 @@ func listenAndServe(s *http.Server, o ServerOptions) error {
 func NewServerMux(o ServerOptions) http.Handler {
 	mux := http.NewServeMux()
 
-	image := ImageMiddleware(o)
 	mux.Handle("/", Middleware(indexController, o))
 	mux.Handle("/form", Middleware(formController, o))
+
+	image := ImageMiddleware(o)
 	mux.Handle("/resize", image(Resize))
 	mux.Handle("/enlarge", image(Enlarge))
 	mux.Handle("/extract", image(Extract))
