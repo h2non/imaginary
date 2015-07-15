@@ -34,7 +34,7 @@ func ImageMiddleware(o ServerOptions) func(Operation) http.Handler {
 			var buf []byte
 			var err error
 
-			if o.Mount != "" && r.Method == "GET" {
+			if r.Method == "GET" && o.Mount != "" {
 				buf, err = readLocalImage(w, r, o.Mount)
 			} else {
 				buf, err = readPayload(w, r)

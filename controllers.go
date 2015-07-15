@@ -29,9 +29,8 @@ func imageController(w http.ResponseWriter, r *http.Request, buf []byte, Operati
 	}
 
 	opts := readParams(r)
-
 	if opts.Type != "" && ImageType(opts.Type) == 0 {
-		ErrorReply(w, "Unsupported conversion image format: "+opts.Type, BAD_REQUEST)
+		ErrorReply(w, "Unsupported output image format: "+opts.Type, BAD_REQUEST)
 		return
 	}
 

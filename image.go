@@ -189,8 +189,9 @@ func Zoom(buf []byte, o ImageOptions) (Image, error) {
 
 	if o.Top > 0 || o.Left > 0 {
 		if o.AreaWidth == 0 && o.AreaHeight == 0 {
-			return Image{}, NewError("Missing required extract area params: areawidth, areaheight", BAD_REQUEST)
+			return Image{}, NewError("Missing required params: areawidth, areaheight", BAD_REQUEST)
 		}
+
 		opts.Top = o.Top
 		opts.Left = o.Left
 		opts.AreaWidth = o.AreaWidth
