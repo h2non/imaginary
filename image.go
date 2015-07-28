@@ -152,7 +152,7 @@ func Crop(buf []byte, o ImageOptions) (Image, error) {
 
 func Rotate(buf []byte, o ImageOptions) (Image, error) {
 	if o.Rotate == 0 {
-		return Image{}, NewError("Missing rotate param", BAD_REQUEST)
+		return Image{}, NewError("Missing required param: rotate", BAD_REQUEST)
 	}
 
 	opts := BimgOptions(o)
@@ -208,7 +208,7 @@ func Zoom(buf []byte, o ImageOptions) (Image, error) {
 
 func Convert(buf []byte, o ImageOptions) (Image, error) {
 	if o.Type == "" {
-		return Image{}, NewError("Missing required params: type", BAD_REQUEST)
+		return Image{}, NewError("Missing required param: type", BAD_REQUEST)
 	}
 	if ImageType(o.Type) == bimg.UNKNOWN {
 		return Image{}, NewError("Invalid image type: "+o.Type, BAD_REQUEST)
@@ -219,7 +219,7 @@ func Convert(buf []byte, o ImageOptions) (Image, error) {
 
 func Watermark(buf []byte, o ImageOptions) (Image, error) {
 	if o.Text == "" {
-		return Image{}, NewError("Missing required params: text", BAD_REQUEST)
+		return Image{}, NewError("Missing required param: text", BAD_REQUEST)
 	}
 
 	opts := BimgOptions(o)

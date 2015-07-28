@@ -40,7 +40,7 @@ func readFormPayload(r *http.Request) ([]byte, error) {
 		return nil, err
 	}
 	if len(buf) == 0 {
-		return nil, NewError("Empty payload", BAD_REQUEST)
+		return nil, ErrEmptyPayload
 	}
 
 	return buf, err
@@ -48,12 +48,12 @@ func readFormPayload(r *http.Request) ([]byte, error) {
 
 func readPayload(w http.ResponseWriter, r *http.Request) ([]byte, error) {
 	if r.Method != "POST" {
-		return nil, ErrorReply(w, "Method not allowed for this endpoint", NOT_ALLOWED)
+		return nil, ErrorReply(w, ErrMethodNotAllowed)
 	}
 
 	buf, err := readBody(r)
 	if err != nil {
-		return nil, ErrorReply(w, "Cannot read the payload: "+err.Error(), BAD_REQUEST)
+		return nil, ErrorReply(w, NewError("Cannot read payload: "+err.Error(), BAD_REQUEST))
 	}
 
 	return buf, nil
@@ -62,17 +62,17 @@ func readPayload(w http.ResponseWriter, r *http.Request) ([]byte, error) {
 func readLocalImage(w http.ResponseWriter, r *http.Request, mountPath string) ([]byte, error) {
 	file := r.URL.Query().Get("file")
 	if file == "" {
-		return nil, ErrorReply(w, "Missing required param: file", BAD_REQUEST)
+		return nil, ErrorReply(w, ErrMissingParamFile)
 	}
 
 	file = path.Clean(path.Join(mountPath, file))
 	if strings.HasPrefix(file, mountPath) == false {
-		return nil, ErrorReply(w, "Invalid file path", BAD_REQUEST)
+		return nil, ErrorReply(w, ErrInvalidFilePath)
 	}
 
 	buf, err := ioutil.ReadFile(file)
 	if err != nil {
-		return nil, ErrorReply(w, "Invalid file path", BAD_REQUEST)
+		return nil, ErrorReply(w, ErrInvalidFilePath)
 	}
 
 	return buf, nil

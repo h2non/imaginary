@@ -30,22 +30,7 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 
 func ImageMiddleware(o ServerOptions) func(Operation) http.Handler {
 	return func(fn Operation) http.Handler {
-		return Middleware(func(w http.ResponseWriter, r *http.Request) {
-			var buf []byte
-			var err error
-
-			if r.Method == "GET" && o.Mount != "" {
-				buf, err = readLocalImage(w, r, o.Mount)
-			} else {
-				buf, err = readPayload(w, r)
-			}
-
-			if err != nil {
-				return
-			}
-
-			imageController(w, r, buf, Operation(fn))
-		}, o)
+		return Middleware(imageControllerDispatcher(o, Operation(fn)), o)
 	}
 }
 
@@ -57,7 +42,7 @@ func throttle(next http.Handler, o ServerOptions) http.Handler {
 func validate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" && r.Method != "POST" {
-			ErrorReply(w, "Method not allowed: "+r.Method, NOT_ALLOWED)
+			ErrorReply(w, ErrMethodNotAllowed)
 			return
 		}
 		next.ServeHTTP(w, r)
@@ -72,7 +57,7 @@ func validateApiKey(next http.Handler, validKey string) http.Handler {
 		}
 
 		if key != validKey {
-			ErrorReply(w, "Invalid or missing API key", UNAUTHORIZED)
+			ErrorReply(w, ErrInvalidApiKey)
 			return
 		}
 
@@ -82,7 +67,7 @@ func validateApiKey(next http.Handler, validKey string) http.Handler {
 
 func defaultHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Server", fmt.Sprintf("imaginary %s (using bimg %s)", Version, bimg.Version))
+		w.Header().Set("Server", fmt.Sprintf("imaginary %s (bimg %s)", Version, bimg.Version))
 		next.ServeHTTP(w, r)
 	})
 }

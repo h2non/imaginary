@@ -4,7 +4,7 @@ import "net/http"
 
 func indexController(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		ErrorReply(w, "Not found", NOT_FOUND)
+		ErrorReply(w, ErrNotFound)
 		return
 	}
 	w.Header().Set("Content-Type", "text/plain")
@@ -16,27 +16,46 @@ func formController(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(htmlForm()))
 }
 
+func imageControllerDispatcher(o ServerOptions, operation Operation) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var buf []byte
+		var err error
+
+		if r.Method == "GET" && o.Mount != "" {
+			buf, err = readLocalImage(w, r, o.Mount)
+		} else {
+			buf, err = readPayload(w, r)
+		}
+
+		if err != nil {
+			return
+		}
+
+		imageController(w, r, buf, operation)
+	}
+}
+
 func imageController(w http.ResponseWriter, r *http.Request, buf []byte, Operation Operation) {
 	if len(buf) == 0 {
-		ErrorReply(w, "Empty payload", BAD_REQUEST)
+		ErrorReply(w, ErrEmptyPayload)
 		return
 	}
 
 	mimeType := http.DetectContentType(buf)
 	if IsImageMimeTypeSupported(mimeType) == false {
-		ErrorReply(w, "Unsupported media type: "+mimeType, UNSUPPORTED)
+		ErrorReply(w, ErrUnsupportedMedia)
 		return
 	}
 
 	opts := readParams(r)
 	if opts.Type != "" && ImageType(opts.Type) == 0 {
-		ErrorReply(w, "Unsupported output image format: "+opts.Type, BAD_REQUEST)
+		ErrorReply(w, ErrOutputFormat)
 		return
 	}
 
 	image, err := Operation.Run(buf, opts)
 	if err != nil {
-		ErrorReply(w, "Error while processing the image: "+err.Error(), BAD_REQUEST)
+		ErrorReply(w, NewError("Error while processing the image: "+err.Error(), BAD_REQUEST))
 		return
 	}
 
