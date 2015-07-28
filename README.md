@@ -2,7 +2,7 @@
 
 <img src="http://s14.postimg.org/8th71a201/imaginary_world.jpg" width="100%" />
 
-[Fast](#benchmarks) HTTP [microservice](http://microservices.io/patterns/microservices.html) written in Go for image processing backed by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). imaginary can be used as private or public HTTP service for massive image processing. It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package for better [performance](#performance).
+[Fast](#benchmarks) HTTP [microservice](http://microservices.io/patterns/microservices.html) written in Go for high-level image processing backed by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). imaginary can be used as private or public HTTP service for massive image processing. It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package for better [performance](#performance).
 
 Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
 with additional features such as API token-based authorization, built-in gzip compression, HTTP traffic throttle strategy and CORS support for web browser clients.
@@ -196,14 +196,14 @@ Options:
                        (default for current machine is 8 cores)
 ```
 
-Start the server on a custom port
+Start the server in a custom port
 ```bash
 imaginary -p 8080
 ```
 
 Also, you can pass the port as environment variable
 ```bash
-POST=8080 imaginary 
+PORT=8080 imaginary 
 ```
 
 Enable HTTP server throttle strategy (max 10 request/second)
