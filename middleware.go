@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/PuerkitoBio/throttled"
 	"github.com/daaku/go.httpgzip"
 	"github.com/rs/cors"
+	"github.com/throttled/throttled"
 	"gopkg.in/h2non/bimg.v0"
 	"net/http"
 )
