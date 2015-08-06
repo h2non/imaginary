@@ -3,7 +3,7 @@ package main
 import (
 	"gopkg.in/h2non/bimg.v0"
 	"math"
-	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -35,40 +35,35 @@ var allowedParams = map[string]string{
 	"colorspace":  "colorspace",
 }
 
-func readParams(r *http.Request) ImageOptions {
-	var val interface{}
-	query := r.URL.Query()
+func readParams(query url.Values) ImageOptions {
 	params := make(map[string]interface{})
 
 	for key, kind := range allowedParams {
-		key = strings.ToLower(key)
 		param := query.Get(key)
-
-		switch kind {
-		case "int":
-			val, _ = strconv.Atoi(param)
-			break
-		case "float":
-			val, _ = strconv.ParseFloat(param, 64)
-			break
-		case "string":
-			val = param
-			break
-		case "bool":
-			val, _ = strconv.ParseBool(param)
-			break
-		case "color":
-			val = parseColor(param)
-			break
-		case "colorspace":
-			val = parseColorspace(param)
-			break
-		}
-
-		params[key] = val
+		params[key] = parseParam(param, kind)
 	}
 
 	return mapImageParams(params)
+}
+
+func parseParam(param, kind string) interface{} {
+	if kind == "int" {
+		return parseInt(param)
+	}
+	if kind == "float" {
+		return parseFloat(param)
+	}
+	if kind == "color" {
+		return parseColor(param)
+	}
+	if kind == "colorspace" {
+		return parseColorspace(param)
+	}
+	if kind == "bool" {
+		val, _ := strconv.ParseBool(param)
+		return val
+	}
+	return param
 }
 
 func mapImageParams(params map[string]interface{}) ImageOptions {
@@ -109,6 +104,15 @@ func parseColor(val string) []uint8 {
 		}
 	}
 	return buf
+}
+
+func parseInt(param string) int {
+	return int(math.Floor(parseFloat(param) + 0.5))
+}
+
+func parseFloat(param string) float64 {
+	val, _ := strconv.ParseFloat(param, 64)
+	return math.Abs(val)
 }
 
 func parseColorspace(val string) bimg.Interpretation {

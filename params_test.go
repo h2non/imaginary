@@ -1,36 +1,89 @@
 package main
 
 import (
-	"net/http"
-	"net/http/httptest"
-	"os"
+	"net/url"
 	"testing"
 )
 
 const fixture = "fixtures/large.jpg"
 
 func TestReadParams(t *testing.T) {
-	var params ImageOptions
+	q := url.Values{}
+	q.Set("width", "100")
+	q.Add("height", "80")
+	q.Add("noreplicate", "1")
+	q.Add("opacity", "0.2")
+	q.Add("text", "hello")
 
-	fakeHandler := func(w http.ResponseWriter, r *http.Request) {
-		params = readParams(r)
-		w.Write([]byte{0})
-	}
-
-	url := "http://foo/?width=100&height=100&opacity=0.2&noreplicate=true&text=hello"
-	file, _ := os.Open(fixture)
-	r, _ := http.NewRequest("GET", url, file)
-	w := httptest.NewRecorder()
-	fakeHandler(w, r)
+	params := readParams(q)
 
 	assert := params.Width == 100 &&
-		params.Height == 100 &&
+		params.Height == 80 &&
 		params.NoReplicate == true &&
 		params.Opacity == 0.2 &&
 		params.Text == "hello"
 
 	if assert == false {
-		t.Error("Invalid param")
+		t.Error("Invalid params: %#v", params)
+	}
+}
+
+func TestParseParam(t *testing.T) {
+	intCases := []struct {
+		value    string
+		expected int
+	}{
+		{"1", 1},
+		{"0100", 100},
+		{"-100", 100},
+		{"99.02", 99},
+		{"99.9", 100},
+	}
+
+	for _, test := range intCases {
+		val := parseParam(test.value, "int")
+		if val != test.expected {
+			t.Errorf("Invalid param: %#v != %#v", test.value, test.expected)
+		}
+	}
+
+	floatCases := []struct {
+		value    string
+		expected float64
+	}{
+		{"1.1", 1.1},
+		{"01.1", 1.1},
+		{"-1.10", 1.10},
+		{"99.999999", 99.999999},
+	}
+
+	for _, test := range floatCases {
+		val := parseParam(test.value, "float")
+		if val != test.expected {
+			t.Errorf("Invalid param: %#v != %#v", val, test.expected)
+		}
+	}
+
+	boolCases := []struct {
+		value    string
+		expected bool
+	}{
+		{"true", true},
+		{"false", false},
+		{"1", true},
+		{"1.1", false},
+		{"-1", false},
+		{"0", false},
+		{"0.0", false},
+		{"no", false},
+		{"yes", false},
+	}
+
+	for _, test := range boolCases {
+		val := parseParam(test.value, "bool")
+		if val != test.expected {
+			t.Errorf("Invalid param: %#v != %#v", val, test.expected)
+		}
 	}
 }
 

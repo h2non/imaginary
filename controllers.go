@@ -47,7 +47,7 @@ func imageController(w http.ResponseWriter, r *http.Request, buf []byte, Operati
 		return
 	}
 
-	opts := readParams(r)
+	opts := readParams(r.URL.Query())
 	if opts.Type != "" && ImageType(opts.Type) == 0 {
 		ErrorReply(w, ErrOutputFormat)
 		return
