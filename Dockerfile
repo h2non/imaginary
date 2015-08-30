@@ -2,33 +2,31 @@
 # and a workspace (GOPATH) configured at /go.
 FROM marcbachmann/libvips
 
-# Go version to use
-ENV GOLANG_VERSION 1.5
-
 # Server port to listen
 ENV PORT 9000
 
-# Install dependencies
-RUN apt-get update -y && \
-  apt-get install -y curl git
+# Go version to use
+ENV GOLANG_VERSION 1.5
 
 # gcc for cgo
-RUN apt-get install -y \
-    gcc libc6-dev make \
+RUN apt-get update && apt-get install -y \
+    gcc curl git libc6-dev make \
     --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 
-RUN curl -sSL https://golang.org/dl/go$GOLANG_VERSION.src.tar.gz \
-    | tar -v -C /usr/src -xz
+ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
+ENV GOLANG_DOWNLOAD_SHA1 5817fa4b2252afdb02e11e8b9dc1d9173ef3bd5a
 
-RUN cd /usr/src/go/src && ./make.bash --no-clean 2>&1
+RUN curl -fsSL --insecure "$GOLANG_DOWNLOAD_URL" -o golang.tar.gz \
+  && echo "$GOLANG_DOWNLOAD_SHA1 golang.tar.gz" | sha1sum -c - \
+  && tar -C /usr/local -xzf golang.tar.gz \
+  && rm golang.tar.gz
 
-ENV PATH /usr/src/go/bin:$PATH
-
-RUN mkdir -p /go/src /go/bin && chmod -R 777 /go
 ENV GOPATH /go
-ENV PATH /go/bin:$PATH
-WORKDIR /go
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+
+RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
+WORKDIR $GOPATH
 
 # Fetch the latest version of the package
 RUN go get -u github.com/h2non/imaginary
