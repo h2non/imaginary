@@ -3,7 +3,7 @@
 FROM marcbachmann/libvips
 
 # Go version to use
-ENV GOLANG_VERSION 1.4.2
+ENV GOLANG_VERSION 1.5
 
 # Server port to listen
 ENV PORT 9000

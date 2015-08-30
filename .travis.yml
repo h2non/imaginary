@@ -1,14 +1,9 @@
 language: go
 go:
+  - 1.5
   - 1.4
   - 1.3
   - release
-  #- tip 
 before_install:
   - curl -s https://raw.githubusercontent.com/lovell/sharp/master/preinstall.sh | sudo bash -
-  # This shouldn't be required...
-  - go get github.com/daaku/go.httpgzip
-  - go get github.com/rs/cors
-  - go get github.com/tj/go-debug
-  - go get github.com/throttled/throttled
-  - go get gopkg.in/h2non/bimg.v0
+  - go get ./...
