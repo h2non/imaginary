@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"github.com/daaku/go.httpgzip"
 	"github.com/rs/cors"
-	"github.com/throttled/throttled"
 	"gopkg.in/h2non/bimg.v0"
+	"gopkg.in/throttled/throttled.v2"
+	"gopkg.in/throttled/throttled.v2/store/memstore"
 	"net/http"
 )
 
@@ -34,9 +35,30 @@ func ImageMiddleware(o ServerOptions) func(Operation) http.Handler {
 	}
 }
 
+func throttleError(err error) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "throttle error: "+err.Error(), http.StatusInternalServerError)
+	})
+}
+
 func throttle(next http.Handler, o ServerOptions) http.Handler {
-	th := throttled.Interval(throttled.PerSec(o.Concurrency), o.Burst, &throttled.VaryBy{Method: true}, o.Burst)
-	return th.Throttle(next)
+	store, err := memstore.New(65536)
+	if err != nil {
+		return throttleError(err)
+	}
+
+	quota := throttled.RateQuota{throttled.PerSec(o.Concurrency), o.Burst}
+	rateLimiter, err := throttled.NewGCRARateLimiter(store, quota)
+	if err != nil {
+		return throttleError(err)
+	}
+
+	httpRateLimiter := throttled.HTTPRateLimiter{
+		RateLimiter: rateLimiter,
+		VaryBy:      &throttled.VaryBy{Method: true},
+	}
+
+	return httpRateLimiter.RateLimit(next)
 }
 
 func validate(next http.Handler) http.Handler {

@@ -31,7 +31,7 @@ func TestIndex(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if strings.Contains(string(body), "imaginary server") == false {
+	if strings.Contains(string(body), "imaginary") == false {
 		t.Fatalf("Invalid body response: %s", body)
 	}
 }

@@ -7,8 +7,8 @@ func indexController(w http.ResponseWriter, r *http.Request) {
 		ErrorReply(w, ErrNotFound)
 		return
 	}
-	w.Header().Set("Content-Type", "text/plain")
-	w.Write([]byte("imaginary server " + Version))
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("{\"name\": \"imaginary\", \"version\": \""+ Version +"\"}"))
 }
 
 func formController(w http.ResponseWriter, r *http.Request) {

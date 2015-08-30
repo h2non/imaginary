@@ -44,7 +44,7 @@ func TestIsImageTypeSupported(t *testing.T) {
 
 	for _, file := range files {
 		if IsImageMimeTypeSupported(file.name) != file.expected {
-			t.Fatalf("Invalid type: %s != %s", file.name, file.expected)
+			t.Fatalf("Invalid type: %s != %t", file.name, file.expected)
 		}
 	}
 }

@@ -24,7 +24,7 @@ func TestReadParams(t *testing.T) {
 		params.Text == "hello"
 
 	if assert == false {
-		t.Error("Invalid params: %#v", params)
+		t.Error("Invalid params")
 	}
 }
 
@@ -43,7 +43,7 @@ func TestParseParam(t *testing.T) {
 	for _, test := range intCases {
 		val := parseParam(test.value, "int")
 		if val != test.expected {
-			t.Errorf("Invalid param: %#v != %#v", test.value, test.expected)
+			t.Errorf("Invalid param: %s != %d", test.value, test.expected)
 		}
 	}
 

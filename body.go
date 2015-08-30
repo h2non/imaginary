@@ -36,11 +36,8 @@ func readFormPayload(r *http.Request) ([]byte, error) {
 	defer file.Close()
 
 	buf, err := ioutil.ReadAll(file)
-	if err != nil {
-		return nil, err
-	}
 	if len(buf) == 0 {
-		return nil, ErrEmptyPayload
+		err = ErrEmptyPayload
 	}
 
 	return buf, err
