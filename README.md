@@ -47,7 +47,12 @@ docker pull h2non/imaginary
 
 Start the container with optional flags (default listening on port 9000)
 ```
-docker run -t h2non/imaginary -cors -gzip
+docker run h2non/imaginary -cors -gzip
+```
+
+Start the container in debug mode:
+```
+docker run -e "DEBUG=*" h2non/imaginary 
 ```
 
 Enter to the interactive shell in a running container
