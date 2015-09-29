@@ -1,6 +1,9 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+	"gopkg.in/h2non/bimg.v0"
+)
 
 func indexController(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
@@ -8,7 +11,7 @@ func indexController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("{\"name\": \"imaginary\", \"version\": \""+ Version +"\"}"))
+	w.Write([]byte("{\"imaginary\": \""+ Version +"\", \"bimg\": \"" + bimg.Version + "\", \"libvips\": \"" + bimg.VipsVersion + "\" }"))
 }
 
 func formController(w http.ResponseWriter, r *http.Request) {
