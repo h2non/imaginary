@@ -8,7 +8,7 @@ Supports multiple [image operations](#supported-image-operations) exposed as a s
 with additional features such as API token-based authorization, built-in gzip compression, HTTP traffic throttle strategy and CORS support for web browser clients.
 imaginary can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them.
 
-It uses internally libvips, a powerful and efficient library written in C for image processing 
+It use internally libvips, a powerful and efficient library written in C for image processing 
 which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) 
 and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick 
 settings or Go native `image` package, and in some cases it's even 8x faster processing JPEG images. 
@@ -16,6 +16,22 @@ settings or Go native `image` package, and in some cases it's even 8x faster pro
 To get started, take a look the [installation](#installation) process, [usage](#usage) cases and [API](#http-api) docs
 
 imaginary is currently used in production processing thousands of images per day.
+
+## Supported image operations
+
+- Resize
+- Enlarge
+- Crop
+- Rotate (with auto-rotate based on EXIF orientation)
+- Flip (with auto-flip based on EXIF metadata)
+- Flop
+- Zoom
+- Thumbnail
+- Extract area
+- Watermark (customizable by text)
+- Custom output color space (RGB, black/white...)
+- Format conversion (with additional quality/compression settings)
+- Info (image size, format, orientation, alpha...)
 
 ## Prerequisites
 
@@ -128,22 +144,6 @@ Assuming that you want to have a high availability to deal efficiently with up t
 
 - [node.js/io.js](https://github.com/h2non/node-imaginary)
 
-## Supported image operations
-
-- Resize
-- Enlarge
-- Crop
-- Rotate (with auto-rotate based on EXIF orientation)
-- Flip (with auto-flip based on EXIF metadata)
-- Flop
-- Zoom
-- Thumbnail
-- Extract area
-- Watermark (customizable by text)
-- Custom output color space (RGB, black/white...)
-- Format conversion (with additional quality/compression settings)
-- Info (image size, format, orientation, alpha...)
-
 ## Performance
 
 libvips is probably the faster open source solution for image processing. 
@@ -157,7 +157,7 @@ Here you can see some performance test comparisons for multiple scenarios:
 
 See [bench.sh](https://github.com/h2non/imaginary/blob/master/bench.sh) for more details
 
-Results using Go 1.4.2 and libvips-7.42.3 in OSX i7 2.7Ghz
+Environment: Go 1.4.2. libvips-7.42.3. OSX i7 2.7Ghz
 
 ```
 Requests  [total] 300
@@ -169,8 +169,8 @@ Success   [ratio]       100.00%
 Status Codes  [code:count]      200:300
 ```
 
-**Conclusion**: imaginary can deal properly up to 20 request/sec running in a multicore machine, 
-where it crops a JPEG image of 5MB and spending per each request around 100ms
+`imaginary` can deal efficiently with up to 20 request/sec running in a multicore machine, 
+where it crops a JPEG image of 5MB and spending per each request less than 100 ms
 
 ## Usage
 
