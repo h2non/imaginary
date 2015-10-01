@@ -2,20 +2,20 @@
 
 <img src="http://s14.postimg.org/8th71a201/imaginary_world.jpg" width="100%" />
 
-[Fast](#benchmarks) HTTP [microservice](http://microservices.io/patterns/microservices.html) written in Go for high-level image processing backed by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). imaginary can be used as private or public HTTP service for massive image processing. It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package for better [performance](#performance).
+**[Fast](#benchmarks) HTTP [microservice](http://microservices.io/patterns/microservices.html)** written in Go **for high-level image processing** backed by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). `imaginary` can be used as private or public HTTP service for massive image processing. It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package for better [performance](#performance).
 
 Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
-with additional features such as API token-based authorization, built-in gzip compression, HTTP traffic throttle strategy and CORS support for web browser clients.
-imaginary can read JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them.
+with additional features such as **API token-based authorization**, built-in **gzip compression**, **HTTP traffic throttle** strategy and **CORS support** for web browser clients. 
+It can process JPEG, PNG, WEBP and TIFF formats and output to JPEG, PNG and WEBP, including conversion between them.
 
-It use internally libvips, a powerful and efficient library written in C for image processing 
+It uses internally libvips, a powerful and efficient library written in C for image processing 
 which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) 
 and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick 
 settings or Go native `image` package, and in some cases it's even 8x faster processing JPEG images. 
 
 To get started, take a look the [installation](#installation) process, [usage](#usage) cases and [API](#http-api) docs
 
-imaginary is currently used in production processing thousands of images per day.
+`imaginary` is currently used in production processing thousands of images per day.
 
 ## Supported image operations
 
