@@ -287,13 +287,18 @@ Image measures are always in pixels, unless otherwise indicated.
 - file        `string` - Use image from server local file path. To use this you must pass the `-mount=<dir>` flag
 - colorspace  `string` - Use a custom color space for the output image. Allowed values are: `srgb` or `bw` (black&white)
 
+#### GET /
+Content-Type: `application/json`
+
+Serves as JSON the current imaginary, bimg and libvips versions.
+
 #### GET /form
 Content Type: `text/html`
 
 Serves an ugly HTML form, just for testing/playground purposes
 
 #### POST /info
-Accept: `image/*, multipart/form-data`. Content-Type: `application/json` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `application/json` 
 
 Returns the image metadata as JSON:
 ```json
@@ -310,7 +315,7 @@ Returns the image metadata as JSON:
 ```
 
 #### GET | POST /crop
-Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 Crop the image by a given width or height. Image ratio is maintained
 
@@ -328,7 +333,7 @@ Crop the image by a given width or height. Image ratio is maintained
 - colorspace `string`
 
 #### GET | POST /resize
-Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 Resize an image by width or height. Image aspect ratio is maintained
 
@@ -346,7 +351,7 @@ Resize an image by width or height. Image aspect ratio is maintained
 - colorspace `string`
 
 #### GET | POST /enlarge
-Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
 
@@ -362,7 +367,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - colorspace `string`
 
 #### GET | POST /extract
-Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
 
@@ -382,7 +387,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - colorspace `string`
 
 #### GET | POST /zoom
-Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
 
@@ -399,7 +404,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - colorspace `string`
 
 #### GET | POST /thumbnail
-Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
 
@@ -415,7 +420,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - colorspace `string`
 
 #### GET | POST /rotate
-Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
 
@@ -432,7 +437,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - colorspace `string`
 
 #### GET | POST /flip
-Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
 
@@ -448,7 +453,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - colorspace `string`
 
 #### GET | POST /flop
-Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
 
@@ -464,7 +469,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - colorspace `string`
 
 #### GET | POST /convert
-Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
 
@@ -478,7 +483,7 @@ Accept: `image/*, multipart/form-data`. Content-Type: `image/*`
 - colorspace `string`
 
 #### GET | POST /watermark
-Accept: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
 
 ##### Allowed params
 
