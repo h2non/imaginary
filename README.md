@@ -19,9 +19,6 @@ To get started, take a look the [installation](#installation) process, [usage](#
 
 `imaginary` is currently used in production processing thousands of images per day.
 
-**libvips compatibility**: `imaginary` was not fully tested yet in libvips `+8.x`, so minor things could be broken. 
-For production-focused environments I recommend you to use libvips `7.42.x`.
-
 ## Supported image operations
 
 - Resize
@@ -68,12 +65,12 @@ docker pull h2non/imaginary
 
 Start the container with optional flags (default listening on port 9000)
 ```
-docker run h2non/imaginary -cors -gzip
+docker run -p 9000:9000 h2non/imaginary -cors -gzip
 ```
 
 Start the container in debug mode:
 ```
-docker run -e "DEBUG=*" h2non/imaginary 
+docker run -p 9000:9000 -e "DEBUG=*" h2non/imaginary 
 ```
 
 Enter to the interactive shell in a running container
@@ -109,6 +106,8 @@ Deploy it!
 ```
 git push heroku master
 ```
+
+You can see all the Docker tags [here](https://hub.docker.com/r/h2non/imaginary/tags/).
 
 ### Recommended resources
 
