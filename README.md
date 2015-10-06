@@ -17,6 +17,9 @@ To get started, take a look the [installation](#installation) process, [usage](#
 
 `imaginary` is currently used in production processing thousands of images per day.
 
+**libvips compatibility**: `imaginary` was not fully tested yet in libvips `+8.x`, so minor things could be broken. 
+For production-focused environments I recommend you to use libvips `7.42.x`.
+
 ## Supported image operations
 
 - Resize
