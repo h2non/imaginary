@@ -7,6 +7,7 @@ It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net
 
 Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
 with additional features such as **API token-based authorization**, built-in **gzip compression**, **HTTP traffic throttle** strategy and **CORS support** for web browser clients. 
+
 It can read images from payloads or server local path, supporting JPEG, PNG, WEBP and TIFF formats and it's able to output to JPEG, PNG and WEBP, including conversion between them.
 
 It uses internally libvips, a powerful and efficient library written in C for image processing 
