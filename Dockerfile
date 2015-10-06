@@ -1,6 +1,7 @@
 # Start from a Debian image with the latest version of Go installed
 # and a workspace (GOPATH) configured at /go.
 FROM marcbachmann/libvips
+MAINTAINER tomas@aparicio.me
 
 # Server port to listen
 ENV PORT 9000
