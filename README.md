@@ -19,6 +19,23 @@ To get started, take a look the [installation](#installation) process, [usage](#
 
 `imaginary` is currently used in production processing thousands of images per day.
 
+## Contents
+
+- [Supported image operations](#supported-image-operations)
+- [Prerequisities](#prerequisites)
+- [Installation](#installation)
+  - [Docker](#docker)
+  - [Heroku](#heroku)
+- [Recommended resources](#recommended-resources)
+- [Scalability](#scalability)
+- [Clients](#clients)
+- [Performance](#performance)
+- [Benchmark](#benchmark)
+- [Usage](#usage)
+- [HTTP API](#http-api)
+  - [Authorization](#authorization)
+  - [Params](#params)
+
 ## Supported image operations
 
 - Resize
@@ -157,7 +174,7 @@ Here you can see some performance test comparisons for multiple scenarios:
 - [sharp performance tests](https://github.com/lovell/sharp#the-task) 
 - [bimg](https://github.com/h2non/bimg#Performance) (Go library with C bindings to libvips)
 
-## Benchmarks
+## Benchmark
 
 See [bench.sh](https://github.com/h2non/imaginary/blob/master/bench.sh) for more details
 
