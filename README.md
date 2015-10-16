@@ -35,6 +35,7 @@ To get started, take a look the [installation](#installation) process, [usage](#
 - [HTTP API](#http-api)
   - [Authorization](#authorization)
   - [Params](#params)
+  - [Endpoints](#get-)
 
 ## Supported image operations
 
