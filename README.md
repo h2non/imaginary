@@ -177,18 +177,18 @@ Here you can see some performance test comparisons for multiple scenarios:
 
 ## Benchmark
 
-See [bench.sh](https://github.com/h2non/imaginary/blob/master/bench.sh) for more details
+See [benchmark.sh](https://github.com/h2non/imaginary/blob/master/benchmark.sh) for more details
 
 Environment: Go 1.4.2. libvips-7.42.3. OSX i7 2.7Ghz
 
 ```
-Requests  [total] 300
-Duration  [total, attack, wait] 59.834621961s, 59.800317301s, 34.30466ms
-Latencies [mean, 50, 95, 99, max] 34.50446ms, 32.424309ms, 45.467123ms, 50.64353ms, 85.370933ms
-Bytes In  [total, mean]     2256600, 7522.00
-Bytes Out [total, mean]     263275500, 877585.00
+Requests  [total]       200
+Duration  [total, attack, wait]   10.030639787s, 9.949499515s, 81.140272ms
+Latencies [mean, 50, 95, 99, max]   83.124471ms, 82.899435ms, 88.948008ms, 95.547765ms, 104.384977ms
+Bytes In  [total, mean]     23443800, 117219.00
+Bytes Out [total, mean]     175517000, 877585.00
 Success   [ratio]       100.00%
-Status Codes  [code:count]      200:300
+Status Codes  [code:count]      200:200
 ```
 
 `imaginary` can deal efficiently with up to 20 request/sec running in a multicore machine, 
