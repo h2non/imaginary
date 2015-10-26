@@ -6,16 +6,16 @@
 It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package for better [performance](#performance).
 
 Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
-with additional features such as **API token-based authorization**, built-in **gzip compression**, **HTTP traffic throttle** strategy and **CORS support** for web browser clients. 
+with additional features such as **API token-based authorization**, **gzip compression**, **HTTP traffic throttle** strategy and **CORS support** for web clients.
 
-It can read images from payloads or server local path, supporting JPEG, PNG, WEBP and TIFF formats and it's able to output to JPEG, PNG and WEBP, including conversion between them.
+It can read images from HTTP payloads or server local path, supporting JPEG, PNG, WEBP and TIFF formats and it's able to output to JPEG, PNG and WEBP, including conversion between them.
 
 It uses internally libvips, a powerful and efficient library written in C for image processing 
 which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) 
 and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick 
 settings or Go native `image` package, and in some cases it's even 8x faster processing JPEG images. 
 
-To get started, take a look the [installation](#installation) process, [usage](#usage) cases and [API](#http-api) docs
+To get started, take a look the [installation](#installation) steps, [usage](#usage) cases and [API](#http-api) docs.
 
 `imaginary` is currently used in production processing thousands of images per day.
 
@@ -76,7 +76,7 @@ The [install script](https://github.com/lovell/sharp/blob/master/preinstall.sh) 
 
 ### Docker
 
-Fetch the image
+Fetch the image (comes with latest stable Go and libvips versions)
 ```
 docker pull h2non/imaginary
 ```
@@ -143,7 +143,7 @@ $ imaginary -concurrency 15
 
 If you're looking for a large scale solution based on imaginary, you should scale it horizontally and distribute the HTTP load over a pool of imaginary servers.
 
-Assuming that you want to have a high availability to deal efficiently with up to 100 concurrent request per second, this could be a reasonable scenario using a front balancer (HAProxy, for instance) and delegating the request control flow and quality of service in the balancer:
+Assuming that you want to provide a high availability to deal efficiently with about 100 concurrent req/sec, you should probably use a front balancer (e.g: HAProxy) to delegate the request control flow and quality of service distributing the HTTP load across a pool of server:
 
 ```
         |==============|

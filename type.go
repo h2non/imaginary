@@ -20,36 +20,31 @@ func IsImageMimeTypeSupported(mime string) bool {
 }
 
 func ImageType(name string) bimg.ImageType {
-	format := bimg.UNKNOWN
-	switch strings.ToLower(name) {
-	case "jpeg":
-		format = bimg.JPEG
-		break
-	case "png":
-		format = bimg.PNG
-		break
-	case "webp":
-		format = bimg.WEBP
-		break
-	case "tiff":
-		format = bimg.TIFF
-		break
+	ext := strings.ToLower(name)
+	if ext == "jpeg" {
+		return bimg.JPEG
 	}
-	return format
+	if ext == "png" {
+		return bimg.PNG
+	}
+	if ext == "webp" {
+		return bimg.WEBP
+	}
+	if ext == "tiff" {
+		return bimg.TIFF
+	}
+	return bimg.UNKNOWN
 }
 
 func GetImageMimeType(code bimg.ImageType) string {
-	mime := "image/jpeg"
-	switch code {
-	case bimg.PNG:
-		mime = "image/png"
-		break
-	case bimg.WEBP:
-		mime = "image/webp"
-		break
-	case bimg.TIFF:
-		mime = "image/tiff"
-		break
+	if code == bimg.PNG {
+		return "image/png"
 	}
-	return mime
+	if code == bimg.WEBP {
+		return "image/webp"
+	}
+	if code == bimg.TIFF {
+		return "image/tiff"
+	}
+	return "image/jpeg"
 }

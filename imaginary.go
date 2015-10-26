@@ -67,12 +67,11 @@ func main() {
 	if *aHelp || *aHelpl {
 		showUsage()
 	}
-
 	if *aVers || *aVersl {
-		fmt.Println(Version)
-		return
+		showVersion()
 	}
 
+	// Only required in Go < 1.5
 	runtime.GOMAXPROCS(*aCpus)
 
 	port := getPort(*aPort)
@@ -89,22 +88,14 @@ func main() {
 		KeyFile:     *aKeyFile,
 	}
 
+	// Create a memory release goroutine
 	if *aMRelease > 0 {
 		memoryRelease(*aMRelease)
 	}
 
-	// Check if the mount directory exists
-	mount := *aMount
-	if mount != "" {
-		src, err := os.Stat(mount)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "error while mounting directory: %s\n", err)
-			os.Exit(1)
-		}
-		if src.IsDir() == false {
-			fmt.Fprintf(os.Stderr, "mount path is not a directory: %s\n", err)
-			os.Exit(1)
-		}
+	// Check if the mount directory exists, if present
+	if *aMount != "" {
+		mountDirectory(*aMount)
 	}
 
 	debug("imaginary server listening on port %d", port)
@@ -129,6 +120,23 @@ func getPort(port int) int {
 func showUsage() {
 	flag.Usage()
 	os.Exit(1)
+}
+
+func showVersion() {
+	fmt.Println(Version)
+	os.Exit(1)
+}
+
+func mountDirectory(path string) {
+	src, err := os.Stat(path)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error while mounting directory: %s\n", err)
+		os.Exit(1)
+	}
+	if src.IsDir() == false {
+		fmt.Fprintf(os.Stderr, "mount path is not a directory: %s\n", err)
+		os.Exit(1)
+	}
 }
 
 func memoryRelease(interval int) {

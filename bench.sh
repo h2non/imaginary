@@ -11,7 +11,7 @@ host="http://localhost:8088"
 ./imaginary -p 8088 & > /dev/null
 pid=$!
 
-echo "Enlarge ------------------------------------"
+echo "Enlarge"
 echo "POST $host/enlarge?width=1200&height=800" | vegeta attack \
   -duration=10s \
   -rate=15 \

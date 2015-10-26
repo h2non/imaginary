@@ -42,28 +42,25 @@ func (e Error) Error() string {
 }
 
 func (e Error) HttpCode() int {
-	code := http.StatusServiceUnavailable
-	switch e.Code {
-	case BAD_REQUEST:
-		code = http.StatusBadRequest
-		break
-	case NOT_ALLOWED:
-		code = http.StatusMethodNotAllowed
-		break
-	case UNSUPPORTED:
-		code = http.StatusUnsupportedMediaType
-		break
-	case INTERNAL:
-		code = http.StatusInternalServerError
-		break
-	case UNAUTHORIZED:
-		code = http.StatusUnauthorized
-		break
-	case NOT_FOUND:
-		code = http.StatusNotFound
-		break
+	if e.Code == BAD_REQUEST {
+		return http.StatusBadRequest
 	}
-	return code
+	if e.Code == NOT_ALLOWED {
+		return http.StatusMethodNotAllowed
+	}
+	if e.Code == UNSUPPORTED {
+		return http.StatusUnsupportedMediaType
+	}
+	if e.Code == INTERNAL {
+		return http.StatusInternalServerError
+	}
+	if e.Code == UNAUTHORIZED {
+		return http.StatusUnauthorized
+	}
+	if e.Code == NOT_FOUND {
+		return http.StatusNotFound
+	}
+	return http.StatusServiceUnavailable
 }
 
 func NewError(err string, code uint8) Error {

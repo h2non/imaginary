@@ -2,6 +2,7 @@ package main
 
 import "fmt"
 
+// htmlForm generates a simple HTML form to be used in the /form controller
 func htmlForm() string {
 	operations := []struct {
 		name   string
