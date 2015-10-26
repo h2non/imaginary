@@ -95,7 +95,7 @@ func main() {
 
 	// Check if the mount directory exists, if present
 	if *aMount != "" {
-		mountDirectory(*aMount)
+		checkMountDirectory(*aMount)
 	}
 
 	debug("imaginary server listening on port %d", port)
@@ -127,7 +127,7 @@ func showVersion() {
 	os.Exit(1)
 }
 
-func mountDirectory(path string) {
+func checkMountDirectory(path string) {
 	src, err := os.Stat(path)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error while mounting directory: %s\n", err)
