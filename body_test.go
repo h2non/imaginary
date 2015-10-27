@@ -15,7 +15,7 @@ func TestReadBody(t *testing.T) {
 	var err error
 
 	fakeHandler := func(w http.ResponseWriter, r *http.Request) {
-		body, err = readBody(r)
+		body, err = readBodyType(r)
 		if err != nil {
 			t.Fatalf("Error while reading the body: %s", err)
 		}

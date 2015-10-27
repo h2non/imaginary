@@ -9,25 +9,6 @@ import (
 
 const maxMemory int64 = 1024 * 1024 * 64
 
-func readBody(r *http.Request) ([]byte, error) {
-	var err error
-	var buf []byte
-
-	contentType := r.Header.Get("Content-Type")
-	if strings.HasPrefix(contentType, "multipart/") {
-		err = r.ParseMultipartForm(maxMemory)
-		if err != nil {
-			return nil, err
-		}
-
-		buf, err = readFormPayload(r)
-	} else {
-		buf, err = ioutil.ReadAll(r.Body)
-	}
-
-	return buf, err
-}
-
 func readFormPayload(r *http.Request) ([]byte, error) {
 	file, _, err := r.FormFile("file")
 	if err != nil {
@@ -43,12 +24,26 @@ func readFormPayload(r *http.Request) ([]byte, error) {
 	return buf, err
 }
 
+func readBodyType(r *http.Request) ([]byte, error) {
+	contentType := r.Header.Get("Content-Type")
+
+	if strings.HasPrefix(contentType, "multipart/") {
+		err := r.ParseMultipartForm(maxMemory)
+		if err != nil {
+			return nil, err
+		}
+		return readFormPayload(r)
+	}
+
+	return ioutil.ReadAll(r.Body)
+}
+
 func readPayload(w http.ResponseWriter, r *http.Request) ([]byte, error) {
 	if r.Method != "POST" {
 		return nil, ErrorReply(w, ErrMethodNotAllowed)
 	}
 
-	buf, err := readBody(r)
+	buf, err := readBodyType(r)
 	if err != nil {
 		return nil, ErrorReply(w, NewError("Cannot read payload: "+err.Error(), BAD_REQUEST))
 	}
