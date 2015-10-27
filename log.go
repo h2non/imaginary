@@ -10,6 +10,7 @@ import (
 
 const formatPattern = "%s - - [%s] \"%s\" %d %d %.4f\n"
 
+// LogRecords implements a Apache-compatible HTTP logging
 type LogRecord struct {
 	http.ResponseWriter
 	status                int
@@ -42,6 +43,7 @@ type LogHandler struct {
 	io      io.Writer
 }
 
+// Creates a new logger
 func NewLog(handler http.Handler, io io.Writer) http.Handler {
 	return &LogHandler{handler, io}
 }
