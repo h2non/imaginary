@@ -102,6 +102,10 @@ func main() {
 		checkMountDirectory(*aMount)
 	}
 
+	if *aHttpCacheTtl != -1 {
+		checkHttpCacheTtl(*aHttpCacheTtl)
+	}
+
 	debug("imaginary server listening on port %d", port)
 
 	err := Server(opts)
@@ -140,6 +144,17 @@ func checkMountDirectory(path string) {
 	if src.IsDir() == false {
 		fmt.Fprintf(os.Stderr, "mount path is not a directory: %s\n", err)
 		os.Exit(1)
+	}
+}
+
+func checkHttpCacheTtl(ttl int) {
+	if ttl < -1 || ttl > 31556926 {
+		fmt.Fprintln(os.Stderr, "The -http-cache-ttl flag accepts a value from 0 to 31556926")
+		os.Exit(1)
+	}
+
+	if ttl == 0 {
+		debug("Adding HTTP cache control headers set to prevent caching.")
 	}
 }
 
