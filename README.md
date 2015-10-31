@@ -206,21 +206,22 @@ Usage:
   imaginary -v | -version
 
 Options:
-  -a <addr>            bind address [default: *]
-  -p <port>            bind port [default: 8088]
-  -h, -help            output help
-  -v, -version         output version
-  -cors                Enable CORS support [default: false]
-  -gzip                Enable gzip compression [default: false]
-  -key <key>           Define API key for authorization
-  -mount <path>        Mount server directory
-  -certfile <path>     TLS certificate file path
-  -keyfile <path>      TLS key file path
-  -concurreny <num>    Throttle concurrency limit per second [default: disabled]
-  -burst <num>         Throttle burst max cache size [default: 100]
-  -mrelease <num>      Force OS memory release inverval in seconds [default: 30]
-  -cpus <num>          Number of used cpu cores.
-                       (default for current machine is 8 cores)
+  -a <addr>             Bind address [default: *]
+  -p <port>             Bind port [default: 8088]
+  -h, -help             Output help
+  -v, -version          Output version
+  -cors                 Enable CORS support [default: false]
+  -gzip                 Enable gzip compression [default: false]
+  -key <key>            Define API key for authorization
+  -mount <path>         Mount server directory
+  -http-cache-ttl <num> The TTL in seconds. Adds caching headers to locally served files.
+  -certfile <path>      TLS certificate file path
+  -keyfile <path>       TLS key file path
+  -concurreny <num>     Throttle concurrency limit per second [default: disabled]
+  -burst <num>          Throttle burst max cache size [default: 100]
+  -mrelease <num>       Force OS memory release inverval in seconds [default: 30]
+  -cpus <num>           Number of used cpu cores.
+                        (default for current machine is 8 cores)
 ```
 
 Start the server in a custom port
@@ -241,6 +242,13 @@ imaginary -p 8080 -concurrency 10
 Mount local directory (then you can do GET request passing the `file=image.jpg` query param)
 ```
 imaginary -p 8080 -mount ~/images
+```
+
+Send caching headers (only possible with the -mount option). The headers can be set in either "cache nothing" or 
+"cache for N seconds". By specifying 0 Imaginary will send the "don't cache" headers, otherwise it sends headers with a 
+TTL. The following example informs the client to cache the result for 1 year.
+```
+imaginary -mount ~/images -http-cache-ttl 31556926
 ```
 
 Increase libvips threads concurrency (experimental)
