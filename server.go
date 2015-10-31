@@ -8,16 +8,17 @@ import (
 )
 
 type ServerOptions struct {
-	Port        int
-	CORS        bool
-	Gzip        bool
-	Address     string
-	ApiKey      string
-	Mount       string
-	CertFile    string
-	KeyFile     string
-	Burst       int
-	Concurrency int
+	Port         int
+	CORS         bool
+	Gzip         bool
+	Address      string
+	ApiKey       string
+	Mount        string
+	CertFile     string
+	KeyFile      string
+	Burst        int
+	Concurrency  int
+	HttpCacheTtl int
 }
 
 func Server(o ServerOptions) error {

@@ -1,8 +1,11 @@
 package main
 
 import (
-	"gopkg.in/h2non/bimg.v0"
+	"fmt"
 	"net/http"
+	"time"
+
+	"gopkg.in/h2non/bimg.v0"
 )
 
 func indexController(w http.ResponseWriter, r *http.Request) {
@@ -34,8 +37,32 @@ func imageControllerDispatcher(o ServerOptions, operation Operation) func(http.R
 			return
 		}
 
+		if r.Method == "GET" && o.HttpCacheTtl > -1 {
+			addCacheHeaders(w, o.HttpCacheTtl)
+		}
+
 		imageController(w, r, buf, operation)
 	}
+}
+
+func addCacheHeaders(w http.ResponseWriter, ttl int) {
+	if ttl < 0 {
+		return
+	}
+
+	var headerVal string
+
+	ttlDifference := time.Duration(ttl) * time.Second
+	expires := time.Now().Add(ttlDifference)
+
+	if ttl == 0 {
+		headerVal = "private, no-cache, no-store, must-revalidate"
+	} else {
+		headerVal = fmt.Sprintf("public, s-maxage: %d, max-age: %d, no-transform", ttl, ttl)
+	}
+
+	w.Header().Add("Expires", expires.Format(time.RFC1123))
+	w.Header().Add("Cache-Control", headerVal)
 }
 
 func imageController(w http.ResponseWriter, r *http.Request, buf []byte, Operation Operation) {
