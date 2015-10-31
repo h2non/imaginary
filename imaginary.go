@@ -15,23 +15,23 @@ import (
 var debug = Debug("imaginary")
 
 var (
-	aAddr         = flag.String("a", "", "bind address")
-	aPort         = flag.Int("p", 8088, "port to listen")
-	aVers         = flag.Bool("v", false, "")
-	aVersl        = flag.Bool("version", false, "")
-	aHelp         = flag.Bool("h", false, "")
-	aHelpl        = flag.Bool("help", false, "")
-	aCors         = flag.Bool("cors", false, "")
-	aGzip         = flag.Bool("gzip", false, "")
-	aKey          = flag.String("key", "", "")
-	aMount        = flag.String("mount", "", "")
-	aCertFile     = flag.String("certfile", "", "")
-	aKeyFile      = flag.String("keyfile", "", "")
-	aHttpCacheTtl = flag.Int("http-cache-ttl", -1, "The TTL in seconds")
-	aConcurrency  = flag.Int("concurrency", 0, "")
-	aBurst        = flag.Int("burst", 100, "")
-	aMRelease     = flag.Int("mrelease", 30, "")
-	aCpus         = flag.Int("cpus", runtime.GOMAXPROCS(-1), "")
+	aAddr					= flag.String("a", "", "bind address")
+	aPort					= flag.Int("p", 8088, "port to listen")
+	aVers					= flag.Bool("v", false, "")
+	aVersl				= flag.Bool("version", false, "")
+	aHelp					= flag.Bool("h", false, "")
+	aHelpl				= flag.Bool("help", false, "")
+	aCors					= flag.Bool("cors", false, "")
+	aGzip					= flag.Bool("gzip", false, "")
+	aKey					= flag.String("key", "", "")
+	aMount				= flag.String("mount", "", "")
+	aCertFile			= flag.String("certfile", "", "")
+	aKeyFile			= flag.String("keyfile", "", "")
+	aHttpCacheTtl	= flag.Int("http-cache-ttl", -1, "The TTL in seconds")
+	aConcurrency	= flag.Int("concurrency", 0, "")
+	aBurst				= flag.Int("burst", 100, "")
+	aMRelease			= flag.Int("mrelease", 30, "")
+	aCpus					= flag.Int("cpus", runtime.GOMAXPROCS(-1), "")
 )
 
 const usage = `imaginary server %s
@@ -79,17 +79,17 @@ func main() {
 
 	port := getPort(*aPort)
 	opts := ServerOptions{
-		Port:         port,
-		Address:      *aAddr,
-		Gzip:         *aGzip,
-		CORS:         *aCors,
-		ApiKey:       *aKey,
-		Concurrency:  *aConcurrency,
-		Burst:        *aBurst,
-		Mount:        *aMount,
-		CertFile:     *aCertFile,
-		KeyFile:      *aKeyFile,
-		HttpCacheTtl: *aHttpCacheTtl,
+		Port:					port,
+		Address:			*aAddr,
+		Gzip:					*aGzip,
+		CORS:					*aCors,
+		ApiKey:				*aKey,
+		Concurrency:	*aConcurrency,
+		Burst:				*aBurst,
+		Mount:				*aMount,
+		CertFile:			*aCertFile,
+		KeyFile:			*aKeyFile,
+		HttpCacheTtl:	*aHttpCacheTtl,
 	}
 
 	// Create a memory release goroutine
