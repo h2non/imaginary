@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/PuerkitoBio/throttled"
+	"net/http"
+
 	"github.com/daaku/go.httpgzip"
 	"github.com/rs/cors"
 	"gopkg.in/h2non/bimg.v0"
-	"net/http"
+	throttled "gopkg.in/throttled/throttled.v1"
 )
 
 func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) http.Handler {
