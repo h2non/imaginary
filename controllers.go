@@ -46,10 +46,6 @@ func imageControllerDispatcher(o ServerOptions, operation Operation) func(http.R
 }
 
 func addCacheHeaders(w http.ResponseWriter, ttl int) {
-	if ttl < 0 {
-		return
-	}
-
 	var headerVal string
 
 	ttlDifference := time.Duration(ttl) * time.Second
