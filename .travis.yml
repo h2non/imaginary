@@ -14,5 +14,5 @@ before_install:
   - go get github.com/daaku/go.httpgzip
   - go get github.com/rs/cors
   - go get github.com/tj/go-debug
-  - go get github.com/PuerkitoBio/throttled
+  - go get gopkg.in/throttled/throttled.v1
   - go get gopkg.in/h2non/bimg.v0
