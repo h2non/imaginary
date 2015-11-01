@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"gopkg.in/h2non/bimg.v0"
 )
 
@@ -238,8 +239,20 @@ func Watermark(buf []byte, o ImageOptions) (Image, error) {
 	return Process(buf, opts)
 }
 
-func Process(buf []byte, opts bimg.Options) (Image, error) {
-	buf, err := bimg.Resize(buf, opts)
+func Process(buf []byte, opts bimg.Options) (out Image, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			switch value := r.(type) {
+			case error:
+				err = value
+			case string:
+				err = errors.New(value)
+			}
+			out = Image{}
+		}
+	}()
+
+	buf, err = bimg.Resize(buf, opts)
 	if err != nil {
 		return Image{}, err
 	}

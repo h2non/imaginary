@@ -34,6 +34,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 - [Usage](#usage)
 - [HTTP API](#http-api)
   - [Authorization](#authorization)
+  - [Errors](#errors)
   - [Params](#params)
   - [Endpoints](#get-)
 
@@ -268,7 +269,7 @@ DEBUG=imaginary imaginary -p 8080
 
 #### Playground
 
-`imaginary` exposes an ugly HTML form for playground purposes at: [`http://localhost:8088/form`](http://localhost:8088/form)
+`imaginary` exposes an ugly HTML form for playground purposes in: [`http://localhost:8088/form`](http://localhost:8088/form)
 
 ## HTTP API
 
@@ -286,36 +287,50 @@ Host: localhost:8088
 API-Key: secret
 ```
 
+### Errors
+
+`imaginary` will always reply with the proper HTTP status code and JSON body with error details.
+
+Here an example response error when the payload is empty:
+```json
+{
+  "message": "Cannot read payload: no such file",
+  "code": 1
+}
+```
+
+See all the predefined supported errors [here](https://github.com/h2non/imaginary/blob/master/error.go#L19-L28).
+
 ### Params
 
 Complete list of available params. Take a look to each specific endpoint to see which params are supported. 
 Image measures are always in pixels, unless otherwise indicated.
 
-- width       `int`   - Width of image area to extract/resize
-- height      `int`   - Height of image area to extract/resize 
-- top         `int`   - Top edge of area to extract. Example: `100`
-- left        `int`   - Left edge of area to extract. Example: `100`
-- areawidth   `int`   - Height area to extract. Example: `300`
-- areaheight  `int`   - Width area to extract. Example: `300`
-- quality     `int`   - JPEG image quality between 1-100. Default `80`
-- compression `int`   - PNG compression level. Default: `6`
-- rotate      `int`   - Image rotation angle. Must be multiple of `90`. Example: `180`
-- factor      `int`   - Zoom factor level. Example: `2`
-- margin      `int`   - Text area margin for watermark. Example: `50`
-- dpi         `int`   - DPI value for watermark. Example: `150`
-- textwidth   `int`   - Text area width for watermark. Example: `200`
-- opacity     `float` - Opacity level for watermark text. Default: `0.2`
-- force       `bool`  - Force image transformation size. Default: `false`
-- nocrop      `bool`  - Disable crop transformation enabled by default by some operations. Default: `false`
-- noreplicate `bool`  - Disable text replication in watermark. Default `false`
-- norotation  `bool`  - Disable auto rotation based on EXIF orientation. Default `false`
-- noprofile   `bool`  - Disable adding ICC profile metadata. Default `false`
-- text        `string` - Watermark text content. Example: `copyright (c) 2189`
-- font        `string` - Watermark text font type and format. Example: `sans bold 12`
-- color       `string` - Watermark text RGB decimal base color. Example: `255,200,150`
-- type        `string` - Specify the image format to output. Possible values are: `jpeg`, `png` and `webp`
-- file        `string` - Use image from server local file path. To use this you must pass the `-mount=<dir>` flag
-- colorspace  `string` - Use a custom color space for the output image. Allowed values are: `srgb` or `bw` (black&white)
+- **width**       `int`   - Width of image area to extract/resize
+- **height**      `int`   - Height of image area to extract/resize 
+- **top**         `int`   - Top edge of area to extract. Example: `100`
+- **left**        `int`   - Left edge of area to extract. Example: `100`
+- **areawidth**   `int`   - Height area to extract. Example: `300`
+- **areaheight**  `int`   - Width area to extract. Example: `300`
+- **quality**     `int`   - JPEG image quality between 1-100. Default `80`
+- **compression** `int`   - PNG compression level. Default: `6`
+- **rotate**      `int`   - Image rotation angle. Must be multiple of `90`. Example: `180`
+- **factor**      `int`   - Zoom factor level. Example: `2`
+- **margin**      `int`   - Text area margin for watermark. Example: `50`
+- **dpi**         `int`   - DPI value for watermark. Example: `150`
+- **textwidth**   `int`   - Text area width for watermark. Example: `200`
+- **opacity**     `float` - Opacity level for watermark text. Default: `0.2`
+- **force**       `bool`  - Force image transformation size. Default: `false`
+- **nocrop**      `bool`  - Disable crop transformation enabled by default by some operations. Default: `false`
+- **noreplicate** `bool`  - Disable text replication in watermark. Default `false`
+- **norotation**  `bool`  - Disable auto rotation based on EXIF orientation. Default `false`
+- **noprofile**   `bool`  - Disable adding ICC profile metadata. Default `false`
+- **text**        `string` - Watermark text content. Example: `copyright (c) 2189`
+- **font**        `string` - Watermark text font type and format. Example: `sans bold 12`
+- **color**       `string` - Watermark text RGB decimal base color. Example: `255,200,150`
+- **type**        `string` - Specify the image format to output. Possible values are: `jpeg`, `png` and `webp`
+- **file**        `string` - Use image from server local file path. To use this you must pass the `-mount=<dir>` flag
+- **colorspace**  `string` - Use a custom color space for the output image. Allowed values are: `srgb` or `bw` (black&white)
 
 #### GET /
 Content-Type: `application/json`
