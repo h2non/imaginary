@@ -247,6 +247,8 @@ func Process(buf []byte, opts bimg.Options) (out Image, err error) {
 				err = value
 			case string:
 				err = errors.New(value)
+			default:
+				err = errors.New("libvips internal error")
 			}
 			out = Image{}
 		}
