@@ -1,11 +1,11 @@
 test:
 	go test
 
-bench:
+test-bench:
 	go test -bench=.
 
-test-load:
-	bash bench.sh
+benchmark:
+	bash benchmark.sh
 
 docker-build:
 	docker build --no-cache=true -t h2non/imaginary:$(VERSION) .
@@ -14,3 +14,5 @@ docker-push:
 	docker push h2non/imaginary:$(VERSION)
 
 docker: docker-build docker-push
+
+.PHONY: test test-bench benchmark docker-build docker-push docker

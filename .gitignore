@@ -40,3 +40,6 @@ ui/dist/
 
 *.swp
 /imaginary
+
+## ignore vendor packages
+vendor/
