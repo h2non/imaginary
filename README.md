@@ -78,6 +78,8 @@ The [install script](https://github.com/lovell/sharp/blob/master/preinstall.sh) 
 
 ### Docker
 
+See [Dockerfile](https://github.com/h2non/imaginary/blob/master/Dockerfile) for image details.
+
 Fetch the image (comes with latest stable Go and libvips versions)
 ```
 docker pull h2non/imaginary
@@ -103,7 +105,7 @@ Stop the container
 docker stop h2non/imaginary
 ```
 
-See [Dockerfile](https://github.com/h2non/imaginary/blob/master/Dockerfile) for more details.
+You can see all the Docker tags [here](https://hub.docker.com/r/h2non/imaginary/tags/).
 
 ### Heroku 
 
@@ -126,8 +128,6 @@ Deploy it!
 ```
 git push heroku master
 ```
-
-You can see all the Docker tags [here](https://hub.docker.com/r/h2non/imaginary/tags/).
 
 ### Recommended resources
 
