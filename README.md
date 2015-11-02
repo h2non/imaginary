@@ -6,9 +6,9 @@
 It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package for better [performance](#performance).
 
 Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
-with additional features such as **API token-based authorization**, **gzip compression**, **HTTP traffic throttle** strategy and **CORS support** for web clients.
+with additional optional features such as **API token authorization**, **gzip compression**, **HTTP traffic throttle** strategy and **CORS support** for web clients.
 
-It can read images from HTTP payloads or server local path, supporting JPEG, PNG, WEBP and TIFF formats and it's able to output to JPEG, PNG and WEBP, including conversion between them.
+`imaginary` can read images from HTTP payloads or server local path, supporting JPEG, PNG, WEBP and TIFF formats and it's able to output to JPEG, PNG and WEBP, including conversion between them.
 
 It uses internally libvips, a powerful and efficient library written in C for image processing 
 which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) 
@@ -27,6 +27,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
   - [Docker](#docker)
   - [Heroku](#heroku)
 - [Recommended resources](#recommended-resources)
+- [Production notes](#production-notes)
 - [Scalability](#scalability)
 - [Clients](#clients)
 - [Performance](#performance)
@@ -130,19 +131,27 @@ You can see all the Docker tags [here](https://hub.docker.com/r/h2non/imaginary/
 
 ### Recommended resources
 
-Given the multithreaded native nature of Go, in term of CPUs, most cores means more concurrency and therefore, a better performance can be achieved. From the other hand, in terms of memory, 512MB of RAM is usually enough for small services with low concurrency (<5 request/second). Up to 2GB for high-load HTTP service processing large images.
+Given the multithreaded native nature of Go, in term of CPUs, most cores means more concurrency and therefore, a better performance can be achieved. 
+From the other hand, in terms of memory, 512MB of RAM is usually enough for small services with low concurrency (<5 request/second). 
+Up to 2GB for high-load HTTP service processing potentially large images or exposed to an eventual high concurrency.
 
-If you need to expose `imaginary` as public HTTP server, it's highly recommended to protect the service against DDoS-like attacks. imaginary has built-in support for HTTP traffic throttle strategy to deal with this properly, limiting the number of concurrent request per second and caching the waiting requests if necessary.
-The recommended concurrency limit per server is up to `15` requests per second.
+If you need to expose `imaginary` as public HTTP server, it's highly recommended to protect the service against DDoS-like attacks. 
+`imaginary` has built-in support for HTTP concurrency throttle strategy to deal with this in a more convenient way and mitigate possible issues limiting the number of concurrent requests per second and caching the awaiting requests, if necessary.
 
-You can enable this passing a flag to the binary:
+### Production notes
+
+In production focused environments, it's highly recommended to enable the HTTP concurrency throttle strategy in your `imaginary` servers.
+
+The recommended concurrency limit per server to achieve a good performance is up to `20` requests per second.
+
+You can enable it simply passing a flag to the binary:
 ```
-$ imaginary -concurrency 15
+$ imaginary -concurrency 20
 ```
 
 ### Scalability
 
-If you're looking for a large scale solution based on imaginary, you should scale it horizontally and distribute the HTTP load over a pool of imaginary servers.
+If you're looking for a large scale solution based on `imaginary`, you should scale it horizontally and distribute the HTTP load over a pool of imaginary servers.
 
 Assuming that you want to provide a high availability to deal efficiently with about 100 concurrent req/sec, you should probably use a front balancer (e.g: HAProxy) to delegate the request control flow and quality of service distributing the HTTP load across a pool of server:
 
@@ -192,8 +201,12 @@ Success   [ratio]       100.00%
 Status Codes  [code:count]      200:200
 ```
 
-`imaginary` can deal efficiently with up to 20 request/sec running in a multicore machine, 
+### Conclusions
+
+`imaginary` can deal efficiently with up to 20 request per second running in a multicore machine, 
 where it crops a JPEG image of 5MB and spending per each request less than 100 ms
+
+The most expensive image transformation operation under high concurrency scenarios (> 20 req/sec) is the image enlargement, where the processing time usually grows over the time.
 
 ## Usage
 
