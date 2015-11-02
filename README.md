@@ -140,9 +140,9 @@ If you need to expose `imaginary` as public HTTP server, it's highly recommended
 
 ### Production notes
 
-In production focused environments, it's highly recommended to enable the HTTP concurrency throttle strategy in your `imaginary` servers.
+In production focused environments it's highly recommended to enable the HTTP concurrency throttle strategy in your `imaginary` servers.
 
-The recommended concurrency limit per server to achieve a good performance is up to `20` requests per second.
+The recommended concurrency limit per server to guarantee a good performance is up to `20` requests per second.
 
 You can enable it simply passing a flag to the binary:
 ```
