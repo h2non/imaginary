@@ -206,7 +206,7 @@ Status Codes  [code:count]      200:200
 `imaginary` can deal efficiently with up to 20 request per second running in a multicore machine, 
 where it crops a JPEG image of 5MB and spending per each request less than 100 ms
 
-The most expensive image transformation operation under high concurrency scenarios (> 20 req/sec) is the image enlargement, where the processing time usually grows over the time.
+The most expensive image operation under high concurrency scenarios (> 20 req/sec) is the image enlargement, which requires a considerable amount of math operations to scale the original image. In this kind of operation the required processing time usually grows over the time if you're stressing the server continuously. The advice here is as simple as taking care about the number of concurrent enlarge operations to avoid server performance bottle necks.
 
 ## Usage
 
