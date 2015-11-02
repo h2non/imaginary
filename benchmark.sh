@@ -30,4 +30,4 @@ suite "Enlarge" "enlarge?width=1600&height=1200"
 suite "Extract" "extract?top=50&left=50&areawidth=200&areaheight=200"
 
 # Kill the server
-#kill -9 $pid
+kill -9 $pid
