@@ -149,7 +149,10 @@ func checkMountDirectory(path string) {
 		exitWithError("error while mounting directory: %s\n", err)
 	}
 	if src.IsDir() == false {
-		exitWithError("mount path is not a directory: %s\n", err)
+		exitWithError("mount path is not a directory: %s\n", path)
+	}
+	if path == "/" {
+		exitWithError("cannot mount root directory for security reasons")
 	}
 }
 

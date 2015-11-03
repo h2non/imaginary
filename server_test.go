@@ -169,7 +169,10 @@ func TestExtract(t *testing.T) {
 }
 
 func TestMountDirectory(t *testing.T) {
-	fn := ImageMiddleware(ServerOptions{Mount: "fixtures"})(Crop)
+	opts := ServerOptions{Mount: "fixtures"}
+	fn := ImageMiddleware(opts)(Crop)
+	LoadSources(opts)
+
 	ts := httptest.NewServer(fn)
 	url := ts.URL + "?width=200&height=200&file=large.jpg"
 	defer ts.Close()
@@ -178,7 +181,6 @@ func TestMountDirectory(t *testing.T) {
 	if err != nil {
 		t.Fatal("Cannot perform the request")
 	}
-
 	if res.StatusCode != 200 {
 		t.Fatalf("Invalid response status: %d", res.StatusCode)
 	}

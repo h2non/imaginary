@@ -1,36 +1,41 @@
 package main
 
-import (
-	"fmt"
-	"net/http"
-	"os"
-)
+import "net/http"
 
 type ImageSourceType string
 type ImageSourceFactoryFunction func(*SourceConfig) ImageSource
 
 type SourceConfig struct {
 	Type      ImageSourceType
-	Directory string
+	MountPath string
 }
 
-var (
-	imageSourceTypeToFactoryFunctionMap = make(map[ImageSourceType]ImageSourceFactoryFunction)
-)
+var imageSourceMap = make(map[ImageSourceType]ImageSource)
+var imageSourceFactoryMap = make(map[ImageSourceType]ImageSourceFactoryFunction)
 
 type ImageSource interface {
+	Matches(*http.Request) bool
 	GetImage(*http.Request) ([]byte, error)
 }
 
 func RegisterSource(sourceType ImageSourceType, factory ImageSourceFactoryFunction) {
-	imageSourceTypeToFactoryFunctionMap[sourceType] = factory
+	imageSourceFactoryMap[sourceType] = factory
 }
 
-func NewImageSourceWithConfig(config *SourceConfig) ImageSource {
-	factory := imageSourceTypeToFactoryFunctionMap[config.Type]
-	if factory == nil {
-		fmt.Fprintf(os.Stderr, "Unknown image source type: %s\n", config.Type)
-		os.Exit(1)
+func LoadSources(o ServerOptions) {
+	for name, factory := range imageSourceFactoryMap {
+		imageSourceMap[name] = factory(&SourceConfig{
+			Type:      name,
+			MountPath: o.Mount,
+		})
 	}
-	return factory(config)
+}
+
+func MatchSource(req *http.Request) ImageSource {
+	for _, source := range imageSourceMap {
+		if source.Matches(req) {
+			return source
+		}
+	}
+	return nil
 }

@@ -1,5 +1,6 @@
 package main
 
+/*
 import (
 	"io/ioutil"
 	"net/http"
@@ -7,7 +8,7 @@ import (
 	"strings"
 )
 
-const maxMemory int64 = 1024 * 1024 * 64
+const maxFormMemory int64 = 1024 * 1024 * 64
 
 func readFormPayload(r *http.Request) ([]byte, error) {
 	file, _, err := r.FormFile("file")
@@ -28,7 +29,7 @@ func readBodyType(r *http.Request) ([]byte, error) {
 	contentType := r.Header.Get("Content-Type")
 
 	if strings.HasPrefix(contentType, "multipart/") {
-		err := r.ParseMultipartForm(maxMemory)
+		err := r.ParseMultipartForm(maxFormMemory)
 		if err != nil {
 			return nil, err
 		}
@@ -69,3 +70,4 @@ func readLocalImage(w http.ResponseWriter, r *http.Request, mountPath string) ([
 
 	return buf, nil
 }
+*/

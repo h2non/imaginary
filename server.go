@@ -9,6 +9,11 @@ import (
 
 type ServerOptions struct {
 	Port             int
+	Burst            int
+	Concurrency      int
+	HttpCacheTtl     int
+	HttpReadTimeout  int
+	HttpWriteTimeout int
 	CORS             bool
 	Gzip             bool
 	EnableURLSource  bool
@@ -17,23 +22,19 @@ type ServerOptions struct {
 	Mount            string
 	CertFile         string
 	KeyFile          string
-	Burst            int
-	Concurrency      int
-	HttpCacheTtl     int
-	HttpReadTimeout  int
-	HttpWriteTimeout int
 }
 
 func Server(o ServerOptions) error {
+	LoadSources(o)
 	addr := o.Address + ":" + strconv.Itoa(o.Port)
 	handler := NewLog(NewServerMux(o), os.Stdout)
 
 	server := &http.Server{
 		Addr:           addr,
 		Handler:        handler,
+		MaxHeaderBytes: 1 << 20,
 		ReadTimeout:    time.Duration(o.HttpReadTimeout) * time.Second,
 		WriteTimeout:   time.Duration(o.HttpWriteTimeout) * time.Second,
-		MaxHeaderBytes: 1 << 20,
 	}
 
 	return listenAndServe(server, o)
@@ -51,6 +52,7 @@ func NewServerMux(o ServerOptions) http.Handler {
 
 	mux.Handle("/", Middleware(indexController, o))
 	mux.Handle("/form", Middleware(formController, o))
+	mux.Handle("/health", Middleware(healthController, o))
 
 	image := ImageMiddleware(o)
 	mux.Handle("/resize", image(Resize))

@@ -17,14 +17,16 @@ const (
 )
 
 var (
-	ErrNotFound         = NewError("Not found", NOT_FOUND)
-	ErrInvalidApiKey    = NewError("Invalid or missing API key", UNAUTHORIZED)
-	ErrMethodNotAllowed = NewError("Method not allowed", NOT_ALLOWED)
-	ErrUnsupportedMedia = NewError("Unsupported media type", UNSUPPORTED)
-	ErrOutputFormat     = NewError("Unsupported output image format", BAD_REQUEST)
-	ErrEmptyPayload     = NewError("Empty payload", BAD_REQUEST)
-	ErrMissingParamFile = NewError("Missing required param: file", BAD_REQUEST)
-	ErrInvalidFilePath  = NewError("Invalid file path", BAD_REQUEST)
+	ErrNotFound           = NewError("Not found", NOT_FOUND)
+	ErrInvalidApiKey      = NewError("Invalid or missing API key", UNAUTHORIZED)
+	ErrMethodNotAllowed   = NewError("Method not allowed", NOT_ALLOWED)
+	ErrUnsupportedMedia   = NewError("Unsupported media type", UNSUPPORTED)
+	ErrOutputFormat       = NewError("Unsupported output image format", BAD_REQUEST)
+	ErrEmptyPayload       = NewError("Empty image", BAD_REQUEST)
+	ErrMissingParamFile   = NewError("Missing required param: file", BAD_REQUEST)
+	ErrInvalidFilePath    = NewError("Invalid file path", BAD_REQUEST)
+	ErrInvalidImageURL    = NewError("Invalid image URL", BAD_REQUEST)
+	ErrMissingImageSource = NewError("Cannot process the image source", BAD_REQUEST)
 )
 
 type Error struct {

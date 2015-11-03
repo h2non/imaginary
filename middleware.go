@@ -8,6 +8,7 @@ import (
 	"gopkg.in/throttled/throttled.v2"
 	"gopkg.in/throttled/throttled.v2/store/memstore"
 	"net/http"
+	"time"
 )
 
 func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) http.Handler {
@@ -24,6 +25,9 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 	}
 	if o.ApiKey != "" {
 		next = authorizeClient(next, o.ApiKey)
+	}
+	if o.HttpCacheTtl >= 0 {
+		next = defineCacheHeaders(next, o.HttpCacheTtl)
 	}
 
 	return validate(defaultHeaders(next))
@@ -91,5 +95,26 @@ func defaultHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Server", fmt.Sprintf("imaginary %s (bimg %s)", Version, bimg.Version))
 		next.ServeHTTP(w, r)
+	})
+}
+
+func defineCacheHeaders(next http.Handler, ttl int) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer next.ServeHTTP(w, r)
+		if r.Method != "GET" {
+			return
+		}
+
+		var cacheControl string
+		if ttl == 0 {
+			cacheControl = "private, no-cache, no-store, must-revalidate"
+		} else {
+			cacheControl = fmt.Sprintf("public, s-maxage: %d, max-age: %d, no-transform", ttl, ttl)
+		}
+
+		ttlDiff := time.Duration(ttl) * time.Second
+		expires := time.Now().Add(ttlDiff)
+		w.Header().Add("Expires", expires.Format(time.RFC1123))
+		w.Header().Add("Cache-Control", cacheControl)
 	})
 }

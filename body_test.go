@@ -1,5 +1,6 @@
 package main
 
+/*
 import (
 	"io/ioutil"
 	"net/http"
@@ -55,3 +56,4 @@ func TestReadPayload(t *testing.T) {
 		t.Error("Invalid response body")
 	}
 }
+*/
