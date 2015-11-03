@@ -8,17 +8,19 @@ import (
 )
 
 type ServerOptions struct {
-	Port					int
-	CORS					bool
-	Gzip					bool
-	Address				string
-	ApiKey				string
-	Mount					string
-	CertFile			string
-	KeyFile				string
-	Burst					int
-	Concurrency		int
-	HttpCacheTtl	int
+	Port             int
+	CORS             bool
+	Gzip             bool
+	Address          string
+	ApiKey           string
+	Mount            string
+	CertFile         string
+	KeyFile          string
+	Burst            int
+	Concurrency      int
+	HttpCacheTtl     int
+	HttpReadTimeout  int
+	HttpWriteTimeout int
 }
 
 func Server(o ServerOptions) error {
@@ -26,11 +28,11 @@ func Server(o ServerOptions) error {
 	handler := NewLog(NewServerMux(o), os.Stdout)
 
 	server := &http.Server{
-		Addr:						addr,
-		Handler:				handler,
-		ReadTimeout:		60 * time.Second,
-		WriteTimeout:		60 * time.Second,
-		MaxHeaderBytes:	1 << 20,
+		Addr:           addr,
+		Handler:        handler,
+		ReadTimeout:    time.Duration(o.HttpReadTimeout) * time.Second,
+		WriteTimeout:   time.Duration(o.HttpWriteTimeout) * time.Second,
+		MaxHeaderBytes: 1 << 20,
 	}
 
 	return listenAndServe(server, o)

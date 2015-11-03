@@ -1,3 +1,10 @@
+OK_COLOR=\033[32;01m
+NO_COLOR=\033[0m
+
+build:
+	@echo "$(OK_COLOR)==> Compiling binary$(NO_COLOR)"
+	go build -o bin/imaginary
+
 test:
 	go test
 

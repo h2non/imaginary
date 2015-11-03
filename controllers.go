@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
+	"gopkg.in/h2non/bimg.v0"
 	"net/http"
 	"time"
-
-	"gopkg.in/h2non/bimg.v0"
 )
 
 func indexController(w http.ResponseWriter, r *http.Request) {
@@ -20,6 +19,11 @@ func indexController(w http.ResponseWriter, r *http.Request) {
 func formController(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	w.Write([]byte(htmlForm()))
+}
+
+func healthController(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("{}"))
 }
 
 func imageControllerDispatcher(o ServerOptions, operation Operation) func(http.ResponseWriter, *http.Request) {
