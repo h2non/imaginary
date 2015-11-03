@@ -11,6 +11,7 @@ type ServerOptions struct {
 	Port             int
 	CORS             bool
 	Gzip             bool
+	EnableURLSource  bool
 	Address          string
 	ApiKey           string
 	Mount            string

@@ -14,28 +14,29 @@ import (
 var debug = Debug("imaginary")
 
 var (
-	aAddr         = flag.String("a", "", "bind address")
-	aPort         = flag.Int("p", 8088, "port to listen")
-	aVers         = flag.Bool("v", false, "")
-	aVersl        = flag.Bool("version", false, "")
-	aHelp         = flag.Bool("h", false, "")
-	aHelpl        = flag.Bool("help", false, "")
-	aCors         = flag.Bool("cors", false, "")
-	aGzip         = flag.Bool("gzip", false, "")
-	aKey          = flag.String("key", "", "")
-	aMount        = flag.String("mount", "", "")
-	aCertFile     = flag.String("certfile", "", "")
-	aKeyFile      = flag.String("keyfile", "", "")
-	aHttpCacheTtl = flag.Int("http-cache-ttl", -1, "The TTL in seconds")
-	aReadTimeout  = flag.Int("http-read-timeout", 30, "HTTP read timeout in seconds")
-	aWriteTimeout = flag.Int("http-write-timeout", 30, "HTTP write timeout in seconds")
-	aConcurrency  = flag.Int("concurrency", 0, "")
-	aBurst        = flag.Int("burst", 100, "")
-	aMRelease     = flag.Int("mrelease", 30, "")
-	aCpus         = flag.Int("cpus", runtime.GOMAXPROCS(-1), "")
+	aAddr            = flag.String("a", "", "bind address")
+	aPort            = flag.Int("p", 8088, "port to listen")
+	aVers            = flag.Bool("v", false, "Show version")
+	aVersl           = flag.Bool("version", false, "Show version")
+	aHelp            = flag.Bool("h", false, "Show help")
+	aHelpl           = flag.Bool("help", false, "Show help")
+	aCors            = flag.Bool("cors", false, "Enable CORS support")
+	aGzip            = flag.Bool("gzip", false, "Enable gzip compression")
+	aEnableURLSource = flag.Bool("enable-url-source", false, "Enable remote URL image source processing")
+	aKey             = flag.String("key", "", "Define API key for authorization")
+	aMount           = flag.String("mount", "", "Mount server local directory")
+	aCertFile        = flag.String("certfile", "", "TLS certificate file path")
+	aKeyFile         = flag.String("keyfile", "", "TLS private key file path")
+	aHttpCacheTtl    = flag.Int("http-cache-ttl", -1, "The TTL in seconds")
+	aReadTimeout     = flag.Int("http-read-timeout", 30, "HTTP read timeout in seconds")
+	aWriteTimeout    = flag.Int("http-write-timeout", 30, "HTTP write timeout in seconds")
+	aConcurrency     = flag.Int("concurrency", 0, "Throttle concurrency limit per second")
+	aBurst           = flag.Int("burst", 100, "Throttle burst max cache size")
+	aMRelease        = flag.Int("mrelease", 30, "OS memory release inverval in seconds")
+	aCpus            = flag.Int("cpus", runtime.GOMAXPROCS(-1), "Number of cpu cores to use")
 )
 
-const usage = `imaginary server %s
+const usage = `imaginary %s
 
 Usage:
   imaginary -p 80
@@ -52,15 +53,16 @@ Options:
   -cors                     Enable CORS support [default: false]
   -gzip                     Enable gzip compression [default: false]
   -key <key>                Define API key for authorization
-  -mount <path>             Mount server directory
+  -mount <path>             Mount server local directory
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP read timeout in seconds [default: 30]
+  -enable-url-source        Enable remote URL image source processing [default: false]
   -certfile <path>          TLS certificate file path
-  -keyfile <path>           TLS key file path
+  -keyfile <path>           TLS private key file path
   -concurreny <num>         Throttle concurrency limit per second [default: disabled]
   -burst <num>              Throttle burst max cache size [default: 100]
-  -mrelease <num>           Force OS memory release inverval in seconds [default: 30]
+  -mrelease <num>           OS memory release inverval in seconds [default: 30]
   -cpus <num>               Number of used cpu cores.
                             (default for current machine is %d cores)
 `
@@ -87,6 +89,7 @@ func main() {
 		Address:          *aAddr,
 		Gzip:             *aGzip,
 		CORS:             *aCors,
+		EnableURLSource:  *aEnableURLSource,
 		ApiKey:           *aKey,
 		Concurrency:      *aConcurrency,
 		Burst:            *aBurst,
@@ -116,8 +119,7 @@ func main() {
 
 	err := Server(opts)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "cannot start the server: %s\n", err)
-		os.Exit(1)
+		exitWithError("cannot start the server: %s\n", err)
 	}
 }
 
@@ -144,19 +146,16 @@ func showVersion() {
 func checkMountDirectory(path string) {
 	src, err := os.Stat(path)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error while mounting directory: %s\n", err)
-		os.Exit(1)
+		exitWithError("error while mounting directory: %s\n", err)
 	}
 	if src.IsDir() == false {
-		fmt.Fprintf(os.Stderr, "mount path is not a directory: %s\n", err)
-		os.Exit(1)
+		exitWithError("mount path is not a directory: %s\n", err)
 	}
 }
 
 func checkHttpCacheTtl(ttl int) {
 	if ttl < -1 || ttl > 31556926 {
-		fmt.Fprintln(os.Stderr, "The -http-cache-ttl flag accepts a value from 0 to 31556926")
-		os.Exit(1)
+		exitWithError("The -http-cache-ttl flag only accepts a value from 0 to 31556926")
 	}
 
 	if ttl == 0 {
@@ -172,4 +171,9 @@ func memoryRelease(interval int) {
 			d.FreeOSMemory()
 		}
 	}()
+}
+
+func exitWithError(format string, args ...interface{}) {
+	fmt.Fprintf(os.Stderr, format, args)
+	os.Exit(1)
 }
