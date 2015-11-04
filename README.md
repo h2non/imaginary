@@ -222,26 +222,31 @@ imaginary server
 Usage:
   imaginary -p 80
   imaginary -cors -gzip
+  imaginary -concurrency 10
+  imaginary -enable-url-source
   imaginary -h | -help
   imaginary -v | -version
 
 Options:
-  -a <addr>             Bind address [default: *]
-  -p <port>             Bind port [default: 8088]
-  -h, -help             Output help
-  -v, -version          Output version
-  -cors                 Enable CORS support [default: false]
-  -gzip                 Enable gzip compression [default: false]
-  -key <key>            Define API key for authorization
-  -mount <path>         Mount server directory
-  -http-cache-ttl <num> The TTL in seconds. Adds caching headers to locally served files.
-  -certfile <path>      TLS certificate file path
-  -keyfile <path>       TLS key file path
-  -concurreny <num>     Throttle concurrency limit per second [default: disabled]
-  -burst <num>          Throttle burst max cache size [default: 100]
-  -mrelease <num>       Force OS memory release inverval in seconds [default: 30]
-  -cpus <num>           Number of used cpu cores.
-                        (default for current machine is 8 cores)
+  -a <addr>                 bind address [default: *]
+  -p <port>                 bind port [default: 8088]
+  -h, -help                 output help
+  -v, -version              output version
+  -cors                     Enable CORS support [default: false]
+  -gzip                     Enable gzip compression [default: false]
+  -key <key>                Define API key for authorization
+  -mount <path>             Mount server local directory
+  -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
+  -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
+  -http-write-timeout <num> HTTP read timeout in seconds [default: 30]
+  -enable-url-source        Enable remote HTTP URL image source processing [default: false]
+  -certfile <path>          TLS certificate file path
+  -keyfile <path>           TLS private key file path
+  -concurreny <num>         Throttle concurrency limit per second [default: disabled]
+  -burst <num>              Throttle burst max cache size [default: 100]
+  -mrelease <num>           OS memory release inverval in seconds [default: 30]
+  -cpus <num>               Number of used cpu cores.
+                            (default for current machine is 8 cores)
 ```
 
 Start the server in a custom port

@@ -42,6 +42,7 @@ Usage:
   imaginary -p 80
   imaginary -cors -gzip
   imaginary -concurrency 10
+  imaginary -enable-url-source
   imaginary -h | -help
   imaginary -v | -version
 
