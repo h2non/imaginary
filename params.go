@@ -33,6 +33,7 @@ var allowedParams = map[string]string{
 	"type":        "string",
 	"color":       "color",
 	"colorspace":  "colorspace",
+	"gravity":     "gravity",
 }
 
 func readParams(query url.Values) ImageOptions {
@@ -59,9 +60,11 @@ func parseParam(param, kind string) interface{} {
 	if kind == "colorspace" {
 		return parseColorspace(param)
 	}
+	if kind == "gravity" {
+		return parseGravity(param)
+	}
 	if kind == "bool" {
-		val, _ := strconv.ParseBool(param)
-		return val
+		return parseBool(param)
 	}
 	return param
 }
@@ -90,20 +93,14 @@ func mapImageParams(params map[string]interface{}) ImageOptions {
 		NoRotation:  params["norotation"].(bool),
 		NoProfile:   params["noprofile"].(bool),
 		Opacity:     float32(params["opacity"].(float64)),
+		Gravity:     params["gravity"].(bimg.Gravity),
 		Colorspace:  params["colorspace"].(bimg.Interpretation),
 	}
 }
 
-func parseColor(val string) []uint8 {
-	const max float64 = 255
-	buf := []uint8{}
-	if val != "" {
-		for _, num := range strings.Split(val, ",") {
-			n, _ := strconv.ParseUint(strings.Trim(num, " "), 10, 8)
-			buf = append(buf, uint8(math.Min(float64(n), max)))
-		}
-	}
-	return buf
+func parseBool(val string) bool {
+	value, _ := strconv.ParseBool(val)
+	return value
 }
 
 func parseInt(param string) int {
@@ -120,4 +117,33 @@ func parseColorspace(val string) bimg.Interpretation {
 		return bimg.INTERPRETATION_B_W
 	}
 	return bimg.INTERPRETATION_sRGB
+}
+
+func parseColor(val string) []uint8 {
+	const max float64 = 255
+	buf := []uint8{}
+	if val != "" {
+		for _, num := range strings.Split(val, ",") {
+			n, _ := strconv.ParseUint(strings.Trim(num, " "), 10, 8)
+			buf = append(buf, uint8(math.Min(float64(n), max)))
+		}
+	}
+	return buf
+}
+
+func parseGravity(val string) bimg.Gravity {
+	val = strings.TrimSpace(strings.ToLower(val))
+	if val == "south" {
+		return bimg.SOUTH
+	}
+	if val == "north" {
+		return bimg.NORTH
+	}
+	if val == "east" {
+		return bimg.EAST
+	}
+	if val == "west" {
+		return bimg.WEST
+	}
+	return bimg.CENTRE
 }

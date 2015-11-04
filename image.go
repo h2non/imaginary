@@ -30,6 +30,7 @@ type ImageOptions struct {
 	Font        string
 	Type        string
 	Color       []uint8
+	Gravity     bimg.Gravity
 	Colorspace  bimg.Interpretation
 }
 

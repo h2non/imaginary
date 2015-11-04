@@ -8,10 +8,7 @@ build:
 test:
 	go test
 
-test-bench:
-	go test -bench=.
-
-benchmark:
+benchmark: build
 	bash benchmark.sh
 
 docker-build:

@@ -1,23 +1,36 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"gopkg.in/h2non/bimg.v0"
 	"net/http"
 )
+
+const MB float64 = 1.0 * 1024 * 1024
 
 func indexController(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		ErrorReply(w, ErrNotFound)
 		return
 	}
+
+	versions := struct {
+		ImaginaryVersion string `json:"imaginary"`
+		BimgVersion      string `json:"bimg"`
+		VipsVersion      string `json:"libvips"`
+	}{Version, bimg.Version, bimg.VipsVersion}
+
+	body, _ := json.Marshal(versions)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("{\"imaginary\": \"" + Version + "\", \"bimg\": \"" + bimg.Version + "\", \"libvips\": \"" + bimg.VipsVersion + "\" }"))
+	w.Write(body)
 }
 
 func healthController(w http.ResponseWriter, r *http.Request) {
+	health := GetHealthStats()
+	body, _ := json.Marshal(health)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("{}"))
+	w.Write(body)
 }
 
 func imageController(o ServerOptions, operation Operation) func(http.ResponseWriter, *http.Request) {

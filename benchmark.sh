@@ -10,7 +10,7 @@
 port=8088
 
 # Start the server
-./imaginary -p $port & > /dev/null
+./bin/imaginary -p $port & > /dev/null
 pid=$!
 
 suite() {

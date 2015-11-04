@@ -26,7 +26,7 @@ var (
 	ErrMissingParamFile   = NewError("Missing required param: file", BAD_REQUEST)
 	ErrInvalidFilePath    = NewError("Invalid file path", BAD_REQUEST)
 	ErrInvalidImageURL    = NewError("Invalid image URL", BAD_REQUEST)
-	ErrMissingImageSource = NewError("Cannot process the image source", BAD_REQUEST)
+	ErrMissingImageSource = NewError("Cannot process the image due to missing or invalid params", BAD_REQUEST)
 )
 
 type Error struct {

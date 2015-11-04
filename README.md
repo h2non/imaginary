@@ -342,13 +342,37 @@ Image measures are always in pixels, unless otherwise indicated.
 - **font**        `string` - Watermark text font type and format. Example: `sans bold 12`
 - **color**       `string` - Watermark text RGB decimal base color. Example: `255,200,150`
 - **type**        `string` - Specify the image format to output. Possible values are: `jpeg`, `png` and `webp`
-- **file**        `string` - Use image from server local file path. To use this you must pass the `-mount=<dir>` flag
+- **gravity**     `string` - Define the crop operation gravity. Supported values are: `north`, `south`, `centre`, `west` and `east`. Defaults to `centre`.
+- **file**        `string` - Use image from server local file path. In order to use this you must pass the `-mount=<dir>` flag.
+- **url**        `string` - Fetch the image from a remove HTTP server. In order to use this you must pass the `-enable-http-source` flag.
 - **colorspace**  `string` - Use a custom color space for the output image. Allowed values are: `srgb` or `bw` (black&white)
 
 #### GET /
 Content-Type: `application/json`
 
 Serves as JSON the current imaginary, bimg and libvips versions.
+
+#### GET /health
+Content-Type: `application/json`
+
+Provides some useful statistics about the server stats with the following structure:
+
+- **uptime** `number` - Server process uptime in seconds.
+- **allocatedMemory** `number` - Currently allocated memory in megabytes.
+- **totalAllocatedMemory** `number` - Total allocated memory over the time in megabytes.
+- **gorouting** `number` - Number of running gorouting.
+- **cpus** `number` - Number of used CPU cores.
+
+Example response:
+```json
+{
+  "uptime": 1293,
+  "allocatedMemory": 5.31,
+  "totalAllocatedMemory": 34.3,
+  "goroutines": 19,
+  "cpus": 8
+}
+```
 
 #### GET /form
 Content Type: `text/html`
@@ -384,11 +408,13 @@ Crop the image by a given width or height. Image ratio is maintained
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
 - type `string`
-- file `string`
+- file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-http-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
+- gravity `string`
 
 #### GET | POST /resize
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -403,6 +429,7 @@ Resize an image by width or height. Image aspect ratio is maintained
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-http-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -419,6 +446,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-http-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -439,6 +467,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-http-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -456,6 +485,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string` 
 - file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-http-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -472,6 +502,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-http-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -489,6 +520,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-http-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -505,6 +537,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-http-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -521,6 +554,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-http-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -535,6 +569,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
 - file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-http-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -557,6 +592,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-http-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
