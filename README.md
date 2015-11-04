@@ -296,6 +296,18 @@ Or filter debug output by package
 DEBUG=imaginary imaginary -p 8080
 ```
 
+#### Examples
+
+Reading a local image (you must pass the `-mount=<directory>` flag):
+```
+curl -O "http://localhost:8088/crop?width=500&height=400&file=foo/bar/image.jpg"
+```
+
+Fetching the image from a remote server (you must pass the `-enable-url-source` flag):
+```
+curl -O "http://localhost:8088/crop?width=500&height=400&url=https://raw.githubusercontent.com/h2non/imaginary/master/fixtures/large.jpg"
+```
+
 #### Playground
 
 `imaginary` exposes an ugly HTML form for playground purposes in: [`http://localhost:8088/form`](http://localhost:8088/form)
