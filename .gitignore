@@ -39,6 +39,7 @@ ui/static/application.min.js
 ui/dist/
 
 *.swp
+imaginary
 bin/imaginary
 
 ## ignore vendor packages
