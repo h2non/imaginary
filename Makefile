@@ -3,7 +3,7 @@ NO_COLOR=\033[0m
 
 build:
 	@echo "$(OK_COLOR)==> Compiling binary$(NO_COLOR)"
-	go build -o bin/imaginary
+	go test && go build -o bin/imaginary
 
 test:
 	go test
@@ -19,4 +19,4 @@ docker-push:
 
 docker: docker-build docker-push
 
-.PHONY: test test-bench benchmark docker-build docker-push docker
+.PHONY: test benchmark docker-build docker-push docker
