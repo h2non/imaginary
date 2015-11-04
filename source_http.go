@@ -32,10 +32,10 @@ func (s *HttpImageSource) GetImage(req *http.Request) ([]byte, error) {
 func (s *HttpImageSource) fetchImage(url *url.URL) ([]byte, error) {
 	req := s.newHttpRequest(url)
 	res, err := http.DefaultClient.Do(req)
-	defer res.Body.Close()
 	if err != nil {
 		return nil, fmt.Errorf("Error downloading image: %v", err)
 	}
+	defer res.Body.Close()
 	if res.StatusCode != 200 {
 		return nil, fmt.Errorf("Error downloading image: (status=%d) (url=%s)", res.StatusCode, req.URL.RequestURI())
 	}

@@ -16,7 +16,7 @@ type ServerOptions struct {
 	HttpWriteTimeout int
 	CORS             bool
 	Gzip             bool
-	EnableHTTPSource bool
+	EnableURLSource  bool
 	Address          string
 	ApiKey           string
 	Mount            string

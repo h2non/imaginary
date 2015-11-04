@@ -14,26 +14,26 @@ import (
 var debug = Debug("imaginary")
 
 var (
-	aAddr             = flag.String("a", "", "bind address")
-	aPort             = flag.Int("p", 8088, "port to listen")
-	aVers             = flag.Bool("v", false, "Show version")
-	aVersl            = flag.Bool("version", false, "Show version")
-	aHelp             = flag.Bool("h", false, "Show help")
-	aHelpl            = flag.Bool("help", false, "Show help")
-	aCors             = flag.Bool("cors", false, "Enable CORS support")
-	aGzip             = flag.Bool("gzip", false, "Enable gzip compression")
-	aEnableHTTPSource = flag.Bool("enable-http-source", false, "Enable remote HTTP URL image source processing")
-	aKey              = flag.String("key", "", "Define API key for authorization")
-	aMount            = flag.String("mount", "", "Mount server local directory")
-	aCertFile         = flag.String("certfile", "", "TLS certificate file path")
-	aKeyFile          = flag.String("keyfile", "", "TLS private key file path")
-	aHttpCacheTtl     = flag.Int("http-cache-ttl", -1, "The TTL in seconds")
-	aReadTimeout      = flag.Int("http-read-timeout", 30, "HTTP read timeout in seconds")
-	aWriteTimeout     = flag.Int("http-write-timeout", 30, "HTTP write timeout in seconds")
-	aConcurrency      = flag.Int("concurrency", 0, "Throttle concurrency limit per second")
-	aBurst            = flag.Int("burst", 100, "Throttle burst max cache size")
-	aMRelease         = flag.Int("mrelease", 30, "OS memory release inverval in seconds")
-	aCpus             = flag.Int("cpus", runtime.GOMAXPROCS(-1), "Number of cpu cores to use")
+	aAddr            = flag.String("a", "", "bind address")
+	aPort            = flag.Int("p", 8088, "port to listen")
+	aVers            = flag.Bool("v", false, "Show version")
+	aVersl           = flag.Bool("version", false, "Show version")
+	aHelp            = flag.Bool("h", false, "Show help")
+	aHelpl           = flag.Bool("help", false, "Show help")
+	aCors            = flag.Bool("cors", false, "Enable CORS support")
+	aGzip            = flag.Bool("gzip", false, "Enable gzip compression")
+	aEnableURLSource = flag.Bool("enable-url-source", false, "Enable remote HTTP URL image source processing")
+	aKey             = flag.String("key", "", "Define API key for authorization")
+	aMount           = flag.String("mount", "", "Mount server local directory")
+	aCertFile        = flag.String("certfile", "", "TLS certificate file path")
+	aKeyFile         = flag.String("keyfile", "", "TLS private key file path")
+	aHttpCacheTtl    = flag.Int("http-cache-ttl", -1, "The TTL in seconds")
+	aReadTimeout     = flag.Int("http-read-timeout", 30, "HTTP read timeout in seconds")
+	aWriteTimeout    = flag.Int("http-write-timeout", 30, "HTTP write timeout in seconds")
+	aConcurrency     = flag.Int("concurrency", 0, "Throttle concurrency limit per second")
+	aBurst           = flag.Int("burst", 100, "Throttle burst max cache size")
+	aMRelease        = flag.Int("mrelease", 30, "OS memory release inverval in seconds")
+	aCpus            = flag.Int("cpus", runtime.GOMAXPROCS(-1), "Number of cpu cores to use")
 )
 
 const usage = `imaginary %s
@@ -57,7 +57,7 @@ Options:
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP read timeout in seconds [default: 30]
-  -enable-http-source       Enable remote HTTP URL image source processing [default: false]
+  -enable-url-source        Enable remote HTTP URL image source processing [default: false]
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
   -concurreny <num>         Throttle concurrency limit per second [default: disabled]
@@ -89,7 +89,7 @@ func main() {
 		Address:          *aAddr,
 		Gzip:             *aGzip,
 		CORS:             *aCors,
-		EnableHTTPSource: *aEnableHTTPSource,
+		EnableURLSource:  *aEnableURLSource,
 		ApiKey:           *aKey,
 		Concurrency:      *aConcurrency,
 		Burst:            *aBurst,

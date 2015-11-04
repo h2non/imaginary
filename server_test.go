@@ -169,7 +169,7 @@ func TestExtract(t *testing.T) {
 }
 
 func TestRemoteHTTPSource(t *testing.T) {
-	opts := ServerOptions{EnableHTTPSource: true}
+	opts := ServerOptions{EnableURLSource: true}
 	fn := ImageMiddleware(opts)(Crop)
 	LoadSources(opts)
 
@@ -210,7 +210,7 @@ func TestRemoteHTTPSource(t *testing.T) {
 }
 
 func TestInvalidRemoteHTTPSource(t *testing.T) {
-	opts := ServerOptions{EnableHTTPSource: true}
+	opts := ServerOptions{EnableURLSource: true}
 	fn := ImageMiddleware(opts)(Crop)
 	LoadSources(opts)
 

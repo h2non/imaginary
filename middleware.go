@@ -72,12 +72,13 @@ func validate(next http.Handler, o ServerOptions) http.Handler {
 			return
 		}
 
-		if r.Method == "GET" && (r.URL.Path == "/" || r.URL.Path == "/health") {
+		path := r.URL.Path
+		if r.Method == "GET" && (path == "/" || path == "/health" || path == "/form") {
 			next.ServeHTTP(w, r)
 			return
 		}
 
-		if r.Method == "GET" && o.Mount == "" && o.EnableHTTPSource == false {
+		if r.Method == "GET" && o.Mount == "" && o.EnableURLSource == false {
 			ErrorReply(w, ErrMethodNotAllowed)
 			return
 		}
