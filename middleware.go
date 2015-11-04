@@ -30,12 +30,12 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 		next = defineCacheHeaders(next, o.HttpCacheTtl)
 	}
 
-	return validate(defaultHeaders(next), o)
+	return validate(defaultHeaders(next))
 }
 
 func ImageMiddleware(o ServerOptions) func(Operation) http.Handler {
 	return func(fn Operation) http.Handler {
-		return Middleware(imageController(o, Operation(fn)), o)
+		return validateImage(Middleware(imageController(o, Operation(fn)), o), o)
 	}
 }
 
@@ -65,13 +65,19 @@ func throttle(next http.Handler, o ServerOptions) http.Handler {
 	return httpRateLimiter.RateLimit(next)
 }
 
-func validate(next http.Handler, o ServerOptions) http.Handler {
+func validate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" && r.Method != "POST" {
 			ErrorReply(w, ErrMethodNotAllowed)
 			return
 		}
 
+		next.ServeHTTP(w, r)
+	})
+}
+
+func validateImage(next http.Handler, o ServerOptions) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := r.URL.Path
 		if r.Method == "GET" && (path == "/" || path == "/health" || path == "/form") {
 			next.ServeHTTP(w, r)

@@ -54,6 +54,7 @@ func BimgOptions(o ImageOptions) bimg.Options {
 		NoAutoRotate:   o.NoRotation,
 		NoProfile:      o.NoProfile,
 		Force:          o.Force,
+		Gravity:        o.Gravity,
 		Interpretation: o.Colorspace,
 		Type:           ImageType(o.Type),
 	}
