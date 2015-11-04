@@ -16,7 +16,7 @@ type ServerOptions struct {
 	HttpWriteTimeout int
 	CORS             bool
 	Gzip             bool
-	EnableURLSource  bool
+	EnableHTTPSource bool
 	Address          string
 	ApiKey           string
 	Mount            string
@@ -25,7 +25,6 @@ type ServerOptions struct {
 }
 
 func Server(o ServerOptions) error {
-	LoadSources(o)
 	addr := o.Address + ":" + strconv.Itoa(o.Port)
 	handler := NewLog(NewServerMux(o), os.Stdout)
 
