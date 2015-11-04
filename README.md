@@ -1,4 +1,4 @@
-# imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![GitHub release](https://img.shields.io/github/tag/h2non/imaginary.svg)](https://github.com/h2non/imaginary/releases) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://registry.hub.docker.com/u/h2non/imaginary/) 
+# imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![GitHub release](https://img.shields.io/github/tag/h2non/imaginary.svg)](https://github.com/h2non/imaginary/releases) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://registry.hub.docker.com/u/h2non/imaginary/) [![Heroku](https://www.herokucdn.com/deploy/button.png)](https://img.shields.io/badge/Heroku-deploy_now-blue.svg)
 
 <img src="http://s14.postimg.org/8th71a201/imaginary_world.jpg" width="100%" />
 
@@ -105,7 +105,13 @@ docker stop h2non/imaginary
 
 See [Dockerfile](https://github.com/h2non/imaginary/blob/master/Dockerfile) for more details.
 
-### Heroku 
+### Heroku
+
+Click on the Heroku button to easily deploy your app:
+
+[![Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy) 
+
+Or alternatively you can follow the manual steps:
 
 Clone this repository:
 ```
