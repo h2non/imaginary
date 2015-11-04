@@ -35,7 +35,7 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 
 func ImageMiddleware(o ServerOptions) func(Operation) http.Handler {
 	return func(fn Operation) http.Handler {
-		return Middleware(imageControllerDispatcher(o, Operation(fn)), o)
+		return Middleware(imageController(o, Operation(fn)), o)
 	}
 }
 

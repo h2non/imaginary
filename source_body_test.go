@@ -1,6 +1,5 @@
 package main
 
-/*
 import (
 	"io/ioutil"
 	"net/http"
@@ -11,12 +10,17 @@ import (
 
 const fixtureFile = "fixtures/large.jpg"
 
-func TestReadBody(t *testing.T) {
+func TestBodyImageSource(t *testing.T) {
 	var body []byte
 	var err error
 
+	source := NewBodyImageSource(&SourceConfig{})
 	fakeHandler := func(w http.ResponseWriter, r *http.Request) {
-		body, err = readBodyType(r)
+		if !source.Matches(r) {
+			t.Fatal("Cannot match the request")
+		}
+
+		body, err = source.GetImage(r)
 		if err != nil {
 			t.Fatalf("Error while reading the body: %s", err)
 		}
@@ -34,12 +38,17 @@ func TestReadBody(t *testing.T) {
 	}
 }
 
-func TestReadPayload(t *testing.T) {
+func testReadBody(t *testing.T) {
 	var body []byte
 	var err error
 
+	source := NewBodyImageSource(&SourceConfig{})
 	fakeHandler := func(w http.ResponseWriter, r *http.Request) {
-		body, err = readPayload(w, r)
+		if !source.Matches(r) {
+			t.Fatal("Cannot match the request")
+		}
+
+		body, err = source.GetImage(r)
 		if err != nil {
 			t.Fatalf("Error while reading the body: %s", err)
 		}
@@ -56,4 +65,3 @@ func TestReadPayload(t *testing.T) {
 		t.Error("Invalid response body")
 	}
 }
-*/

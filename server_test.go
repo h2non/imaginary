@@ -168,6 +168,70 @@ func TestExtract(t *testing.T) {
 	}
 }
 
+func TestRemoteHTTPSource(t *testing.T) {
+	opts := ServerOptions{EnableHTTPSource: true}
+	fn := ImageMiddleware(opts)(Crop)
+	LoadSources(opts)
+
+	tsImage := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		buf, _ := ioutil.ReadFile("fixtures/large.jpg")
+		w.Write(buf)
+	}))
+	defer tsImage.Close()
+
+	ts := httptest.NewServer(fn)
+	url := ts.URL + "?width=200&height=200&url=" + tsImage.URL
+	defer ts.Close()
+
+	res, err := http.Get(url)
+	if err != nil {
+		t.Fatal("Cannot perform the request")
+	}
+	if res.StatusCode != 200 {
+		t.Fatalf("Invalid response status: %d", res.StatusCode)
+	}
+
+	image, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(image) == 0 {
+		t.Fatalf("Empty response body")
+	}
+
+	err = assertSize(image, 200, 200)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if bimg.DetermineImageTypeName(image) != "jpeg" {
+		t.Fatalf("Invalid image type")
+	}
+}
+
+func TestInvalidRemoteHTTPSource(t *testing.T) {
+	opts := ServerOptions{EnableHTTPSource: true}
+	fn := ImageMiddleware(opts)(Crop)
+	LoadSources(opts)
+
+	tsImage := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		w.WriteHeader(400)
+	}))
+	defer tsImage.Close()
+
+	ts := httptest.NewServer(fn)
+	url := ts.URL + "?width=200&height=200&url=" + tsImage.URL
+	defer ts.Close()
+
+	res, err := http.Get(url)
+	if err != nil {
+		t.Fatal("Request failed")
+	}
+	if res.StatusCode != 400 {
+		t.Fatalf("Invalid response status: %d", res.StatusCode)
+	}
+}
+
 func TestMountDirectory(t *testing.T) {
 	opts := ServerOptions{Mount: "fixtures"}
 	fn := ImageMiddleware(opts)(Crop)
@@ -238,7 +302,7 @@ func TestMountInvalidPath(t *testing.T) {
 func controller(op Operation) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		buf, _ := ioutil.ReadAll(r.Body)
-		imageController(w, r, buf, op)
+		imageHandler(w, r, buf, op)
 	}
 }
 

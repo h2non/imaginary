@@ -22,7 +22,7 @@ var (
 	ErrMethodNotAllowed   = NewError("Method not allowed", NOT_ALLOWED)
 	ErrUnsupportedMedia   = NewError("Unsupported media type", UNSUPPORTED)
 	ErrOutputFormat       = NewError("Unsupported output image format", BAD_REQUEST)
-	ErrEmptyPayload       = NewError("Empty image", BAD_REQUEST)
+	ErrEmptyBody          = NewError("Empty image", BAD_REQUEST)
 	ErrMissingParamFile   = NewError("Missing required param: file", BAD_REQUEST)
 	ErrInvalidFilePath    = NewError("Invalid file path", BAD_REQUEST)
 	ErrInvalidImageURL    = NewError("Invalid image URL", BAD_REQUEST)

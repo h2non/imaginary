@@ -54,6 +54,7 @@ func (s *HttpImageSource) parseURL(request *http.Request) (*url.URL, error) {
 
 func (s *HttpImageSource) newHttpRequest(url *url.URL) *http.Request {
 	req, _ := http.NewRequest("GET", url.RequestURI(), nil)
+	req.Header.Set("User-Agent", "imaginary")
 	req.URL = url
 	return req
 }
