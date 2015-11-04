@@ -6,7 +6,10 @@ import (
 	"time"
 )
 
-var start = time.Now()
+const (
+	start         = time.Now()
+	MB    float64 = 1.0 * 1024 * 1024
+)
 
 type HealthStats struct {
 	Uptime               int64   `json:"uptime"`

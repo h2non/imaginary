@@ -7,8 +7,6 @@ import (
 	"net/http"
 )
 
-const MB float64 = 1.0 * 1024 * 1024
-
 func indexController(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		ErrorReply(w, ErrNotFound)
