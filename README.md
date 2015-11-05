@@ -407,7 +407,7 @@ Content Type: `text/html`
 
 Serves an ugly HTML form, just for testing/playground purposes
 
-#### POST /info
+#### GET | POST /info
 Accepts: `image/*, multipart/form-data`. Content-Type: `application/json` 
 
 Returns the image metadata as JSON:
