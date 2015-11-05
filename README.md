@@ -238,7 +238,7 @@ Options:
   -mount <path>             Mount server local directory
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
-  -http-write-timeout <num> HTTP read timeout in seconds [default: 30]
+  -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
   -enable-url-source        Enable remote HTTP URL image source processing [default: false]
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
