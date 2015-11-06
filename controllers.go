@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"gopkg.in/h2non/bimg.v0"
 	"net/http"
 )
 
@@ -13,13 +12,7 @@ func indexController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	versions := struct {
-		ImaginaryVersion string `json:"imaginary"`
-		BimgVersion      string `json:"bimg"`
-		VipsVersion      string `json:"libvips"`
-	}{Version, bimg.Version, bimg.VipsVersion}
-
-	body, _ := json.Marshal(versions)
+	body, _ := json.Marshal(CurrentVersions)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(body)
 }
