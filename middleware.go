@@ -27,7 +27,7 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 		next = authorizeClient(next, o.ApiKey)
 	}
 	if o.HttpCacheTtl >= 0 {
-		next = defineCacheHeaders(next, o.HttpCacheTtl)
+		next = setCacheHeaders(next, o.HttpCacheTtl)
 	}
 
 	return validate(defaultHeaders(next))
@@ -116,7 +116,7 @@ func defaultHeaders(next http.Handler) http.Handler {
 	})
 }
 
-func defineCacheHeaders(next http.Handler, ttl int) http.Handler {
+func setCacheHeaders(next http.Handler, ttl int) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer next.ServeHTTP(w, r)
 
