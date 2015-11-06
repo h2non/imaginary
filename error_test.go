@@ -12,7 +12,7 @@ func TestError(t *testing.T) {
 		t.Fatal("Invalid error code")
 	}
 
-	code := err.HttpCode()
+	code := err.HTTPCode()
 	if code != 400 {
 		t.Fatalf("Invalid HTTP error status: %d", code)
 	}

@@ -76,7 +76,7 @@ func Info(buf []byte, o ImageOptions) (Image, error) {
 
 	meta, err := bimg.Metadata(buf)
 	if err != nil {
-		return image, NewError("Cannot retrieve image medatata: %s"+err.Error(), BAD_REQUEST)
+		return image, NewError("Cannot retrieve image medatata: %s"+err.Error(), BadRequest)
 	}
 
 	info := ImageInfo{
@@ -98,7 +98,7 @@ func Info(buf []byte, o ImageOptions) (Image, error) {
 
 func Resize(buf []byte, o ImageOptions) (Image, error) {
 	if o.Width == 0 && o.Height == 0 {
-		return Image{}, NewError("Missing required param: height or width", BAD_REQUEST)
+		return Image{}, NewError("Missing required param: height or width", BadRequest)
 	}
 
 	opts := BimgOptions(o)
@@ -113,7 +113,7 @@ func Resize(buf []byte, o ImageOptions) (Image, error) {
 
 func Enlarge(buf []byte, o ImageOptions) (Image, error) {
 	if o.Width == 0 || o.Height == 0 {
-		return Image{}, NewError("Missing required params: height, width", BAD_REQUEST)
+		return Image{}, NewError("Missing required params: height, width", BadRequest)
 	}
 
 	opts := BimgOptions(o)
@@ -128,10 +128,10 @@ func Enlarge(buf []byte, o ImageOptions) (Image, error) {
 
 func Extract(buf []byte, o ImageOptions) (Image, error) {
 	if o.Top == 0 || o.Left == 0 {
-		return Image{}, NewError("Missing required params: top, left", BAD_REQUEST)
+		return Image{}, NewError("Missing required params: top, left", BadRequest)
 	}
 	if o.AreaWidth == 0 || o.AreaHeight == 0 {
-		return Image{}, NewError("Missing required params: areawidth, areaheight", BAD_REQUEST)
+		return Image{}, NewError("Missing required params: areawidth, areaheight", BadRequest)
 	}
 
 	opts := BimgOptions(o)
@@ -145,7 +145,7 @@ func Extract(buf []byte, o ImageOptions) (Image, error) {
 
 func Crop(buf []byte, o ImageOptions) (Image, error) {
 	if o.Width == 0 && o.Height == 0 {
-		return Image{}, NewError("Missing required param: height or width", BAD_REQUEST)
+		return Image{}, NewError("Missing required param: height or width", BadRequest)
 	}
 
 	opts := BimgOptions(o)
@@ -155,7 +155,7 @@ func Crop(buf []byte, o ImageOptions) (Image, error) {
 
 func Rotate(buf []byte, o ImageOptions) (Image, error) {
 	if o.Rotate == 0 {
-		return Image{}, NewError("Missing required param: rotate", BAD_REQUEST)
+		return Image{}, NewError("Missing required param: rotate", BadRequest)
 	}
 
 	opts := BimgOptions(o)
@@ -177,7 +177,7 @@ func Flop(buf []byte, o ImageOptions) (Image, error) {
 
 func Thumbnail(buf []byte, o ImageOptions) (Image, error) {
 	if o.Width == 0 && o.Height == 0 {
-		return Image{}, NewError("Missing required params: width or height", BAD_REQUEST)
+		return Image{}, NewError("Missing required params: width or height", BadRequest)
 	}
 
 	return Process(buf, BimgOptions(o))
@@ -185,14 +185,14 @@ func Thumbnail(buf []byte, o ImageOptions) (Image, error) {
 
 func Zoom(buf []byte, o ImageOptions) (Image, error) {
 	if o.Factor == 0 {
-		return Image{}, NewError("Missing required param: factor", BAD_REQUEST)
+		return Image{}, NewError("Missing required param: factor", BadRequest)
 	}
 
 	opts := BimgOptions(o)
 
 	if o.Top > 0 || o.Left > 0 {
 		if o.AreaWidth == 0 && o.AreaHeight == 0 {
-			return Image{}, NewError("Missing required params: areawidth, areaheight", BAD_REQUEST)
+			return Image{}, NewError("Missing required params: areawidth, areaheight", BadRequest)
 		}
 
 		opts.Top = o.Top
@@ -211,10 +211,10 @@ func Zoom(buf []byte, o ImageOptions) (Image, error) {
 
 func Convert(buf []byte, o ImageOptions) (Image, error) {
 	if o.Type == "" {
-		return Image{}, NewError("Missing required param: type", BAD_REQUEST)
+		return Image{}, NewError("Missing required param: type", BadRequest)
 	}
 	if ImageType(o.Type) == bimg.UNKNOWN {
-		return Image{}, NewError("Invalid image type: "+o.Type, BAD_REQUEST)
+		return Image{}, NewError("Invalid image type: "+o.Type, BadRequest)
 	}
 
 	return Process(buf, BimgOptions(o))
@@ -222,7 +222,7 @@ func Convert(buf []byte, o ImageOptions) (Image, error) {
 
 func Watermark(buf []byte, o ImageOptions) (Image, error) {
 	if o.Text == "" {
-		return Image{}, NewError("Missing required param: text", BAD_REQUEST)
+		return Image{}, NewError("Missing required param: text", BadRequest)
 	}
 
 	opts := BimgOptions(o)

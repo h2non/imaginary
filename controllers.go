@@ -41,7 +41,7 @@ func imageController(o ServerOptions, operation Operation) func(http.ResponseWri
 
 		buf, err := imageSource.GetImage(req)
 		if err != nil {
-			ErrorReply(w, NewError(err.Error(), BAD_REQUEST))
+			ErrorReply(w, NewError(err.Error(), BadRequest))
 			return
 		}
 
@@ -69,7 +69,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation 
 
 	image, err := Operation.Run(buf, opts)
 	if err != nil {
-		ErrorReply(w, NewError("Error while processing the image: "+err.Error(), BAD_REQUEST))
+		ErrorReply(w, NewError("Error while processing the image: "+err.Error(), BadRequest))
 		return
 	}
 

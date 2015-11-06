@@ -7,26 +7,26 @@ import (
 )
 
 const (
-	UNAVAILABLE uint8 = iota
-	BAD_REQUEST
-	NOT_ALLOWED
-	UNSUPPORTED
-	UNAUTHORIZED
-	INTERNAL
-	NOT_FOUND
+	Unavailable uint8 = iota
+	BadRequest
+	NotAllowed
+	Unsupported
+	Unauthorized
+	InternalError
+	NotFound
 )
 
 var (
-	ErrNotFound           = NewError("Not found", NOT_FOUND)
-	ErrInvalidApiKey      = NewError("Invalid or missing API key", UNAUTHORIZED)
-	ErrMethodNotAllowed   = NewError("Method not allowed", NOT_ALLOWED)
-	ErrUnsupportedMedia   = NewError("Unsupported media type", UNSUPPORTED)
-	ErrOutputFormat       = NewError("Unsupported output image format", BAD_REQUEST)
-	ErrEmptyBody          = NewError("Empty image", BAD_REQUEST)
-	ErrMissingParamFile   = NewError("Missing required param: file", BAD_REQUEST)
-	ErrInvalidFilePath    = NewError("Invalid file path", BAD_REQUEST)
-	ErrInvalidImageURL    = NewError("Invalid image URL", BAD_REQUEST)
-	ErrMissingImageSource = NewError("Cannot process the image due to missing or invalid params", BAD_REQUEST)
+	ErrNotFound           = NewError("Not found", NotFound)
+	ErrInvalidApiKey      = NewError("Invalid or missing API key", Unauthorized)
+	ErrMethodNotAllowed   = NewError("Method not allowed", NotAllowed)
+	ErrUnsupportedMedia   = NewError("Unsupported media type", Unsupported)
+	ErrOutputFormat       = NewError("Unsupported output image format", BadRequest)
+	ErrEmptyBody          = NewError("Empty image", BadRequest)
+	ErrMissingParamFile   = NewError("Missing required param: file", BadRequest)
+	ErrInvalidFilePath    = NewError("Invalid file path", BadRequest)
+	ErrInvalidImageURL    = NewError("Invalid image URL", BadRequest)
+	ErrMissingImageSource = NewError("Cannot process the image due to missing or invalid params", BadRequest)
 )
 
 type Error struct {
@@ -43,23 +43,23 @@ func (e Error) Error() string {
 	return e.Message
 }
 
-func (e Error) HttpCode() int {
-	if e.Code == BAD_REQUEST {
+func (e Error) HTTPCode() int {
+	if e.Code == BadRequest {
 		return http.StatusBadRequest
 	}
-	if e.Code == NOT_ALLOWED {
+	if e.Code == NotAllowed {
 		return http.StatusMethodNotAllowed
 	}
-	if e.Code == UNSUPPORTED {
+	if e.Code == Unsupported {
 		return http.StatusUnsupportedMediaType
 	}
-	if e.Code == INTERNAL {
+	if e.Code == InternalError {
 		return http.StatusInternalServerError
 	}
-	if e.Code == UNAUTHORIZED {
+	if e.Code == Unauthorized {
 		return http.StatusUnauthorized
 	}
-	if e.Code == NOT_FOUND {
+	if e.Code == NotFound {
 		return http.StatusNotFound
 	}
 	return http.StatusServiceUnavailable
@@ -72,7 +72,7 @@ func NewError(err string, code uint8) Error {
 
 func ErrorReply(w http.ResponseWriter, err Error) error {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(err.HttpCode())
+	w.WriteHeader(err.HTTPCode())
 	w.Write(err.JSON())
 	return err
 }
