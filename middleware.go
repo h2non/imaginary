@@ -79,7 +79,7 @@ func validate(next http.Handler) http.Handler {
 func validateImage(next http.Handler, o ServerOptions) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := r.URL.Path
-		if r.Method == "GET" && (path == "/" || path == "/health" || path == "/form") {
+		if r.Method == "GET" && isPrivatePath(path) {
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -119,7 +119,8 @@ func defaultHeaders(next http.Handler) http.Handler {
 func defineCacheHeaders(next http.Handler, ttl int) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer next.ServeHTTP(w, r)
-		if r.Method != "GET" {
+
+		if r.Method != "GET" || isPrivatePath(r.URL.Path) {
 			return
 		}
 
@@ -135,4 +136,8 @@ func defineCacheHeaders(next http.Handler, ttl int) http.Handler {
 		w.Header().Add("Expires", expires.Format(time.RFC1123))
 		w.Header().Add("Cache-Control", cacheControl)
 	})
+}
+
+func isPrivatePath(path string) bool {
+	return path == "/" || path == "/health" || path == "/form"
 }
