@@ -372,7 +372,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **type**        `string` - Specify the image format to output. Possible values are: `jpeg`, `png` and `webp`
 - **gravity**     `string` - Define the crop operation gravity. Supported values are: `north`, `south`, `centre`, `west` and `east`. Defaults to `centre`.
 - **file**        `string` - Use image from server local file path. In order to use this you must pass the `-mount=<dir>` flag.
-- **url**        `string` - Fetch the image from a remove HTTP server. In order to use this you must pass the `-enable-http-source` flag.
+- **url**        `string` - Fetch the image from a remove HTTP server. In order to use this you must pass the `-enable-url-source` flag.
 - **colorspace**  `string` - Use a custom color space for the output image. Allowed values are: `srgb` or `bw` (black&white)
 
 #### GET /
@@ -437,7 +437,7 @@ Crop the image by a given width or height. Image ratio is maintained
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
-- url `string` - Only GET method and if the `-enable-http-source` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -457,7 +457,7 @@ Resize an image by width or height. Image aspect ratio is maintained
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
-- url `string` - Only GET method and if the `-enable-http-source` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -474,7 +474,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
-- url `string` - Only GET method and if the `-enable-http-source` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -495,7 +495,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
-- url `string` - Only GET method and if the `-enable-http-source` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -513,7 +513,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string` 
 - file `string` - Only GET method and if the `-mount` flag is present
-- url `string` - Only GET method and if the `-enable-http-source` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -530,7 +530,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
-- url `string` - Only GET method and if the `-enable-http-source` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -548,7 +548,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
-- url `string` - Only GET method and if the `-enable-http-source` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -565,7 +565,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
-- url `string` - Only GET method and if the `-enable-http-source` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -582,7 +582,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
-- url `string` - Only GET method and if the `-enable-http-source` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -597,7 +597,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
 - file `string` - Only GET method and if the `-mount` flag is present
-- url `string` - Only GET method and if the `-enable-http-source` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
@@ -620,7 +620,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
-- url `string` - Only GET method and if the `-enable-http-source` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
