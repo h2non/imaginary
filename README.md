@@ -36,6 +36,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 - [HTTP API](#http-api)
   - [Authorization](#authorization)
   - [Errors](#errors)
+  - [Form data](#form-data)
   - [Params](#params)
   - [Endpoints](#get-)
 
@@ -341,6 +342,10 @@ Here an example response error when the payload is empty:
 ```
 
 See all the predefined supported errors [here](https://github.com/h2non/imaginary/blob/master/error.go#L19-L28).
+
+### Form data
+
+If you're pushing images to `imaginary` as `multipart/form-data` (you can do it as well as `image/*`), you must define at least one input field called `file` with the raw image data in order to be processed properly by imaginary.
 
 ### Params
 
