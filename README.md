@@ -158,9 +158,9 @@ $ imaginary -concurrency 20
 
 ### Scalability
 
-If you're looking for a large scale solution based on `imaginary`, you should scale it horizontally and distribute the HTTP load over a pool of imaginary servers.
+If you're looking for a large scale solution for massive image processing, you should scale `imaginary` horizontally, distributing the HTTP load across a pool of imaginary servers.
 
-Assuming that you want to provide a high availability to deal efficiently with about 100 concurrent req/sec, you should probably use a front balancer (e.g: HAProxy) to delegate the request control flow and quality of service distributing the HTTP load across a pool of server:
+Assuming that you want to provide a high availability to deal efficiently with, let's say, 100 concurrent req/sec, a good approeach would be using a front balancer (e.g: HAProxy) to delegate the request control flow and quality of service and load distribution HTTP:
 
 ```
         |==============|
@@ -175,13 +175,15 @@ Assuming that you want to provide a high availability to deal efficiently with a
          /           \
         /             \
  /-----------\   /-----------\
- | imaginary |   | imaginary | (*N)
+ | imaginary |   | imaginary | (*n)
  \-----------/   \-----------/
 ```
 
 ## Clients
 
 - [node.js/io.js](https://github.com/h2non/node-imaginary)
+
+Feel free to send a PR if you created a client for other language.
 
 ## Performance
 
