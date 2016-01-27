@@ -6,60 +6,21 @@ import (
 	"gopkg.in/h2non/bimg.v0"
 )
 
-type ImageOptions struct {
-	Width       int
-	Height      int
-	AreaWidth   int
-	AreaHeight  int
-	Quality     int
-	Compression int
-	Rotate      int
-	Top         int
-	Left        int
-	Margin      int
-	Factor      int
-	DPI         int
-	TextWidth   int
-	Force       bool
-	NoCrop      bool
-	NoReplicate bool
-	NoRotation  bool
-	NoProfile   bool
-	Opacity     float32
-	Text        string
-	Font        string
-	Type        string
-	Color       []uint8
-	Gravity     bimg.Gravity
-	Colorspace  bimg.Interpretation
-}
-
+// Image stores an image binary buffer and its MIME type
 type Image struct {
 	Body []byte
 	Mime string
 }
 
+// Operation implements an image transformation runnable interface
 type Operation func([]byte, ImageOptions) (Image, error)
 
+// Run performs the image transformation
 func (o Operation) Run(buf []byte, opts ImageOptions) (Image, error) {
 	return o(buf, opts)
 }
 
-func BimgOptions(o ImageOptions) bimg.Options {
-	return bimg.Options{
-		Width:          o.Width,
-		Height:         o.Height,
-		Quality:        o.Quality,
-		Compression:    o.Compression,
-		NoAutoRotate:   o.NoRotation,
-		NoProfile:      o.NoProfile,
-		Force:          o.Force,
-		Gravity:        o.Gravity,
-		Interpretation: o.Colorspace,
-		Type:           ImageType(o.Type),
-	}
-}
-
+// ImageInfo represents an image details and additional metadata
 type ImageInfo struct {
 	Width       int    `json:"width"`
 	Height      int    `json:"height"`
@@ -72,6 +33,8 @@ type ImageInfo struct {
 }
 
 func Info(buf []byte, o ImageOptions) (Image, error) {
+	// We're not handling an image here, but we reused the struct.
+	// An interface will be definitively better here.
 	image := Image{Mime: "application/json"}
 
 	meta, err := bimg.Metadata(buf)

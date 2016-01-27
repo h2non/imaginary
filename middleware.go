@@ -79,7 +79,7 @@ func validate(next http.Handler) http.Handler {
 func validateImage(next http.Handler, o ServerOptions) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := r.URL.Path
-		if r.Method == "GET" && isPrivatePath(path) {
+		if r.Method == "GET" && isPublicPath(path) {
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -120,24 +120,25 @@ func setCacheHeaders(next http.Handler, ttl int) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer next.ServeHTTP(w, r)
 
-		if r.Method != "GET" || isPrivatePath(r.URL.Path) {
+		if r.Method != "GET" || isPublicPath(r.URL.Path) {
 			return
-		}
-
-		var cacheControl string
-		if ttl == 0 {
-			cacheControl = "private, no-cache, no-store, must-revalidate"
-		} else {
-			cacheControl = fmt.Sprintf("public, s-maxage: %d, max-age: %d, no-transform", ttl, ttl)
 		}
 
 		ttlDiff := time.Duration(ttl) * time.Second
 		expires := time.Now().Add(ttlDiff)
+
 		w.Header().Add("Expires", expires.Format(time.RFC1123))
-		w.Header().Add("Cache-Control", cacheControl)
+		w.Header().Add("Cache-Control", getCacheControl(ttl))
 	})
 }
 
-func isPrivatePath(path string) bool {
+func getCacheControl(ttl int) string {
+	if ttl == 0 {
+		return "private, no-cache, no-store, must-revalidate"
+	}
+	return fmt.Sprintf("public, s-maxage: %d, max-age: %d, no-transform", ttl, ttl)
+}
+
+func isPublicPath(path string) bool {
 	return path == "/" || path == "/health" || path == "/form"
 }
