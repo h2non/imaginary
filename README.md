@@ -317,7 +317,7 @@ curl -O "http://localhost:8088/crop?width=500&height=400&url=https://raw.githubu
 ### Authorization
 
 imaginary supports a simple token-based API authorization. 
-To enable it, you should specific the flag `-key secret` when you call the binary.
+To enable it, you should pass the `-key` flag to the binary.
 
 API token can be defined as HTTP header (`API-Key`) or query param (`key`).
 
