@@ -21,23 +21,28 @@ type LogRecord struct {
 	elapsedTime           time.Duration
 }
 
+// Log writes a log entry in the passed io.Writer stream
 func (r *LogRecord) Log(out io.Writer) {
 	timeFormat := r.time.Format("02/Jan/2006 03:04:05")
 	request := fmt.Sprintf("%s %s %s", r.method, r.uri, r.protocol)
 	fmt.Fprintf(out, formatPattern, r.ip, timeFormat, request, r.status, r.responseBytes, r.elapsedTime.Seconds())
 }
 
+// Write acts like a proxy passing the given bytes buffer to the ResponseWritter
+// and additionally counting the passed amount of bytes for logging usage.
 func (r *LogRecord) Write(p []byte) (int, error) {
 	written, err := r.ResponseWriter.Write(p)
 	r.responseBytes += int64(written)
 	return written, err
 }
 
+// WriteHeader
 func (r *LogRecord) WriteHeader(status int) {
 	r.status = status
 	r.ResponseWriter.WriteHeader(status)
 }
 
+// LogHandler maps the HTTP handler with a custom io.Writer compatible stream
 type LogHandler struct {
 	handler http.Handler
 	io      io.Writer
@@ -48,6 +53,7 @@ func NewLog(handler http.Handler, io io.Writer) http.Handler {
 	return &LogHandler{handler, io}
 }
 
+// Implementes the required method as standard HTTP handler, serving the request.
 func (h *LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
 	if colon := strings.LastIndex(clientIP, ":"); colon != -1 {

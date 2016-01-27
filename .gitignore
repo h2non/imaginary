@@ -1,5 +1,4 @@
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
-imgine
 *.o
 *.a
 *.so
@@ -27,18 +26,11 @@ _testmain.go
 *.test
 bin/
 .vagrant/
-website/build/
-website/npm-debug.log
+
 *.old
 *.attr
-
-ui/.sass-cache
-ui/static/base.css
-
-ui/static/application.min.js
-ui/dist/
-
 *.swp
+
 imaginary
 bin/imaginary
 
