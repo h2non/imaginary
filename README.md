@@ -160,7 +160,7 @@ $ imaginary -concurrency 20
 
 If you're looking for a large scale solution for massive image processing, you should scale `imaginary` horizontally, distributing the HTTP load across a pool of imaginary servers.
 
-Assuming that you want to provide a high availability to deal efficiently with, let's say, 100 concurrent req/sec, a good approeach would be using a front balancer (e.g: HAProxy) to delegate the request control flow and quality of service and load distribution HTTP:
+Assuming that you want to provide a high availability to deal efficiently with, let's say, 100 concurrent req/sec, a good approach would be using a front end balancer (e.g: HAProxy) to delegate the traffic control flow, ensure the quality of service and distribution the HTTP across a pool of servers:
 
 ```
         |==============|
