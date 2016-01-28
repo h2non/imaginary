@@ -22,7 +22,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 ## Contents
 
 - [Supported image operations](#supported-image-operations)
-- [Prerequisities](#prerequisites)
+- [Prerequisites](#prerequisites)
 - [Installation](#installation)
   - [Docker](#docker)
   - [Heroku](#heroku)
@@ -139,7 +139,7 @@ git push heroku master
 ### Recommended resources
 
 Given the multithreaded native nature of Go, in term of CPUs, most cores means more concurrency and therefore, a better performance can be achieved. 
-From the other hand, in terms of memory, 512MB of RAM is usually enough for small services with low concurrency (<5 request/second). 
+From the other hand, in terms of memory, 512MB of RAM is usually enough for small services with low concurrency (<5 requests/second). 
 Up to 2GB for high-load HTTP service processing potentially large images or exposed to an eventual high concurrency.
 
 If you need to expose `imaginary` as public HTTP server, it's highly recommended to protect the service against DDoS-like attacks. 
@@ -215,7 +215,7 @@ Status Codes  [code:count]      200:200
 `imaginary` can deal efficiently with up to 20 request per second running in a multicore machine, 
 where it crops a JPEG image of 5MB and spending per each request less than 100 ms
 
-The most expensive image operation under high concurrency scenarios (> 20 req/sec) is the image enlargement, which requires a considerable amount of math operations to scale the original image. In this kind of operation the required processing time usually grows over the time if you're stressing the server continuously. The advice here is as simple as taking care about the number of concurrent enlarge operations to avoid server performance bottle necks.
+The most expensive image operation under high concurrency scenarios (> 20 req/sec) is the image enlargement, which requires a considerable amount of math operations to scale the original image. In this kind of operation the required processing time usually grows over the time if you're stressing the server continuously. The advice here is as simple as taking care about the number of concurrent enlarge operations to avoid server performance bottlenecks.
 
 ## Usage
 
@@ -262,7 +262,7 @@ Also, you can pass the port as environment variable
 PORT=8080 imaginary 
 ```
 
-Enable HTTP server throttle strategy (max 10 request/second)
+Enable HTTP server throttle strategy (max 10 requests/second)
 ```
 imaginary -p 8080 -concurrency 10
 ```
