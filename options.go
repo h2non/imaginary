@@ -33,6 +33,7 @@ type ImageOptions struct {
 
 // BimgOptions creates a new bimg compatible options struct mapping the fields properly
 func BimgOptions(o ImageOptions) bimg.Options {
+	debug("Options: %#v", o)
 	return bimg.Options{
 		Width:          o.Width,
 		Height:         o.Height,
@@ -44,5 +45,6 @@ func BimgOptions(o ImageOptions) bimg.Options {
 		Gravity:        o.Gravity,
 		Interpretation: o.Colorspace,
 		Type:           ImageType(o.Type),
+		Rotate:         bimg.Angle(o.Rotate),
 	}
 }
