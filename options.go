@@ -44,5 +44,6 @@ func BimgOptions(o ImageOptions) bimg.Options {
 		Gravity:        o.Gravity,
 		Interpretation: o.Colorspace,
 		Type:           ImageType(o.Type),
+		Rotate:         bimg.Angle(o.Rotate),
 	}
 }

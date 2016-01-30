@@ -122,7 +122,6 @@ func Rotate(buf []byte, o ImageOptions) (Image, error) {
 	}
 
 	opts := BimgOptions(o)
-	opts.Rotate = bimg.Angle(o.Rotate)
 	return Process(buf, opts)
 }
 
