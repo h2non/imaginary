@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
 ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
 ENV GOLANG_DOWNLOAD_SHA1 5817fa4b2252afdb02e11e8b9dc1d9173ef3bd5a
 
-RUN curl -fsSL "$GOLANG_DOWNLOAD_URL" -o golang.tar.gz \
+RUN curl -fsSL --insecure "$GOLANG_DOWNLOAD_URL" -o golang.tar.gz \
   && echo "$GOLANG_DOWNLOAD_SHA1 golang.tar.gz" | sha1sum -c - \
   && tar -C /usr/local -xzf golang.tar.gz \
   && rm golang.tar.gz
@@ -30,6 +30,7 @@ RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 WORKDIR $GOPATH
 
 # Fetch the latest version of the package
+RUN go get -u golang.org/x/net/context
 RUN go get -u github.com/h2non/imaginary
 
 # Run the outyet command by default when the container starts.
