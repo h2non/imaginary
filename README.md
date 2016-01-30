@@ -353,7 +353,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **left**        `int`   - Left edge of area to extract. Example: `100`
 - **areawidth**   `int`   - Height area to extract. Example: `300`
 - **areaheight**  `int`   - Width area to extract. Example: `300`
-- **quality**     `int`   - JPEG image quality between 1-100. Default `80`
+- **quality**     `int`   - JPEG image quality between 1-100. Defaults to `80`
 - **compression** `int`   - PNG compression level. Default: `6`
 - **rotate**      `int`   - Image rotation angle. Must be multiple of `90`. Example: `180`
 - **factor**      `int`   - Zoom factor level. Example: `2`
@@ -363,17 +363,18 @@ Image measures are always in pixels, unless otherwise indicated.
 - **opacity**     `float` - Opacity level for watermark text. Default: `0.2`
 - **force**       `bool`  - Force image transformation size. Default: `false`
 - **nocrop**      `bool`  - Disable crop transformation enabled by default by some operations. Default: `false`
-- **noreplicate** `bool`  - Disable text replication in watermark. Default `false`
-- **norotation**  `bool`  - Disable auto rotation based on EXIF orientation. Default `false`
-- **noprofile**   `bool`  - Disable adding ICC profile metadata. Default `false`
+- **noreplicate** `bool`  - Disable text replication in watermark. Defaults to `false`
+- **norotation**  `bool`  - Disable auto rotation based on EXIF orientation. Defaults to `false`
+- **noprofile**   `bool`  - Disable adding ICC profile metadata. Defaults to `false`
 - **text**        `string` - Watermark text content. Example: `copyright (c) 2189`
 - **font**        `string` - Watermark text font type and format. Example: `sans bold 12`
 - **color**       `string` - Watermark text RGB decimal base color. Example: `255,200,150`
 - **type**        `string` - Specify the image format to output. Possible values are: `jpeg`, `png` and `webp`
 - **gravity**     `string` - Define the crop operation gravity. Supported values are: `north`, `south`, `centre`, `west` and `east`. Defaults to `centre`.
 - **file**        `string` - Use image from server local file path. In order to use this you must pass the `-mount=<dir>` flag.
-- **url**        `string` - Fetch the image from a remove HTTP server. In order to use this you must pass the `-enable-url-source` flag.
+- **url**         `string` - Fetch the image from a remove HTTP server. In order to use this you must pass the `-enable-url-source` flag.
 - **colorspace**  `string` - Use a custom color space for the output image. Allowed values are: `srgb` or `bw` (black&white)
+- **field**       `string` - Custom image form field name if using `multipart/form`. Defaults to: `file`
 
 #### GET /
 Content-Type: `application/json`
@@ -443,6 +444,7 @@ Crop the image by a given width or height. Image ratio is maintained
 - noprofile `bool`
 - colorspace `string`
 - gravity `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /resize
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -462,6 +464,7 @@ Resize an image by width or height. Image aspect ratio is maintained
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /enlarge
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -479,6 +482,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /extract
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -500,6 +504,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /zoom
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -518,6 +523,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /thumbnail
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -535,6 +541,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /rotate
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -553,6 +560,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /flip
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -570,6 +578,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /flop
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -587,6 +596,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /convert
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -602,6 +612,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /watermark
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -625,6 +636,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 ## License
 
