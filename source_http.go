@@ -30,7 +30,7 @@ func (s *HttpImageSource) GetImage(req *http.Request) ([]byte, error) {
 }
 
 func (s *HttpImageSource) fetchImage(url *url.URL) ([]byte, error) {
-	req := s.newHttpRequest(url)
+	req := s.newHTTPRequest(url)
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("Error downloading image: %v", err)
@@ -52,7 +52,7 @@ func (s *HttpImageSource) parseURL(request *http.Request) (*url.URL, error) {
 	return url.Parse(queryUrl)
 }
 
-func (s *HttpImageSource) newHttpRequest(url *url.URL) *http.Request {
+func (s *HttpImageSource) newHTTPRequest(url *url.URL) *http.Request {
 	req, _ := http.NewRequest("GET", url.RequestURI(), nil)
 	req.Header.Set("User-Agent", "imaginary")
 	req.URL = url

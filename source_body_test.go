@@ -4,11 +4,22 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"testing"
 )
 
 const fixtureFile = "fixtures/large.jpg"
+
+func TestSourceBodyMatch(t *testing.T) {
+	u, _ := url.Parse("http://foo")
+	req := &http.Request{Method: "POST", URL: u}
+	source := NewBodyImageSource(&SourceConfig{})
+
+	if !source.Matches(req) {
+		t.Error("Cannot match the request")
+	}
+}
 
 func TestBodyImageSource(t *testing.T) {
 	var body []byte
