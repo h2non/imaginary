@@ -440,6 +440,7 @@ Crop the image by a given width or height. Image ratio is maintained
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
@@ -461,6 +462,7 @@ Resize an image by width or height. Image aspect ratio is maintained
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
@@ -479,6 +481,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
@@ -501,6 +504,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
@@ -520,6 +524,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
@@ -538,6 +543,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
@@ -609,6 +615,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
@@ -633,6 +640,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - colorspace `string`
