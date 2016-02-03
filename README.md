@@ -126,6 +126,11 @@ Set the buildpack for your application
 heroku config:add BUILDPACK_URL=https://github.com/h2non/heroku-buildpack-imaginary.git
 ```
 
+Optionally, define the PKGCONFIG path:
+```
+heroku config:add PKG_CONFIG_PATH=/app/vendor/vips/lib/pkgconfig
+```
+
 Add Heroku git remote:
 ```
 heroku git:remote -a your-application
