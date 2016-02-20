@@ -232,6 +232,7 @@ Usage:
   imaginary -cors -gzip
   imaginary -concurrency 10
   imaginary -enable-url-source
+  imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
   imaginary -h | -help
   imaginary -v | -version
 
@@ -247,7 +248,8 @@ Options:
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
-  -enable-url-source        Enable remote HTTP URL image source processing [default: false]
+  -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
+  -allowed-origins <urls>   TLS certificate file path
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
   -concurreny <num>         Throttle concurrency limit per second [default: disabled]

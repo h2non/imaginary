@@ -7,7 +7,7 @@ MAINTAINER tomas@aparicio.me
 ENV PORT 9000
 
 # Go version to use
-ENV GOLANG_VERSION 1.5
+ENV GOLANG_VERSION 1.6
 
 # gcc for cgo
 RUN apt-get update && apt-get install -y \
@@ -16,10 +16,10 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
-ENV GOLANG_DOWNLOAD_SHA1 5817fa4b2252afdb02e11e8b9dc1d9173ef3bd5a
+ENV GOLANG_DOWNLOAD_SHA256 5470eac05d273c74ff8bac7bef5bad0b5abbd1c4052efbdbc8db45332e836b0b
 
 RUN curl -fsSL --insecure "$GOLANG_DOWNLOAD_URL" -o golang.tar.gz \
-  && echo "$GOLANG_DOWNLOAD_SHA1 golang.tar.gz" | sha1sum -c - \
+  && echo "$GOLANG_DOWNLOAD_SHA256 golang.tar.gz" | sha256sum -c - \
   && tar -C /usr/local -xzf golang.tar.gz \
   && rm golang.tar.gz
 
