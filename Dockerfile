@@ -7,7 +7,7 @@ MAINTAINER tomas@aparicio.me
 ENV PORT 9000
 
 # Go version to use
-ENV GOLANG_VERSION 1.5
+ENV GOLANG_VERSION 1.6
 
 # gcc for cgo
 RUN apt-get update && apt-get install -y \
