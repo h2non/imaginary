@@ -8,7 +8,7 @@ It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net
 Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
 with additional optional features such as **API token authorization**, **gzip compression**, **HTTP traffic throttle** strategy and **CORS support** for web clients.
 
-`imaginary` **can read** images **from HTTP payloads**, **server local path** or **remote HTTP servers**, supporting **JPEG**, **PNG**, **WEBP** and **TIFF** formats and it's able to output to JPEG, PNG and WEBP, including conversion between them.
+`imaginary` **can read** images **from HTTP payloads**, **server local path** or **remote HTTP servers**, supporting **JPEG**, **PNG**, **WEBP** and **TIFF** formats and it's able to output to JPEG, PNG and WEBP, including transparent conversion between them.
 
 It uses internally libvips, a powerful and efficient library written in C for image processing 
 which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) 
@@ -143,7 +143,7 @@ git push heroku master
 
 ### Recommended resources
 
-Given the multithreaded native nature of Go, in term of CPUs, most cores means more concurrency and therefore, a better performance can be achieved. 
+Given the multithreaded native nature of Go, in terms of CPUs, most cores means more concurrency and therefore, a better performance can be achieved. 
 From the other hand, in terms of memory, 512MB of RAM is usually enough for small services with low concurrency (<5 requests/second). 
 Up to 2GB for high-load HTTP service processing potentially large images or exposed to an eventual high concurrency.
 
