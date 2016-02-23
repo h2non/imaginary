@@ -8,7 +8,7 @@ It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net
 Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
 with additional optional features such as **API token authorization**, **gzip compression**, **HTTP traffic throttle** strategy and **CORS support** for web clients.
 
-`imaginary` **can read** images **from HTTP payloads**, **server local path** or **remote HTTP servers**, supporting **JPEG**, **PNG**, **WEBP** and **TIFF** formats and it's able to output to JPEG, PNG and WEBP, including transparent conversion between them.
+`imaginary` **can read** images **from HTTP payloads**, **server local path** or **remote HTTP servers**, supporting **JPEG**, **PNG**, **WEBP** and **TIFF** formats and it's able to output to JPEG, PNG and WEBP, including transparent conversion across them.
 
 It uses internally libvips, a powerful and efficient library written in C for image processing 
 which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) 
