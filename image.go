@@ -70,6 +70,10 @@ func Resize(buf []byte, o ImageOptions) (Image, error) {
 	if o.NoCrop == false {
 		opts.Crop = true
 	}
+	meta, err := bimg.Metadata(buf)
+	if err == nil && meta.Alpha && len(o.Background)>2 {
+		opts.Background = bimg.Color{o.Background[0],o.Background[1],o.Background[2]}
+	}
 
 	return Process(buf, opts)
 }
@@ -178,8 +182,12 @@ func Convert(buf []byte, o ImageOptions) (Image, error) {
 	if ImageType(o.Type) == bimg.UNKNOWN {
 		return Image{}, NewError("Invalid image type: "+o.Type, BadRequest)
 	}
-
-	return Process(buf, BimgOptions(o))
+	opts := BimgOptions(o)
+	meta, err := bimg.Metadata(buf)
+	if err == nil && meta.Alpha && len(o.Background)>2 {
+		opts.Background = bimg.Color{o.Background[0],o.Background[1],o.Background[2]}
+	}
+	return Process(buf, opts)
 }
 
 func Watermark(buf []byte, o ImageOptions) (Image, error) {
