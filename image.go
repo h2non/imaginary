@@ -70,9 +70,11 @@ func Resize(buf []byte, o ImageOptions) (Image, error) {
 	if o.NoCrop == false {
 		opts.Crop = true
 	}
-	meta, err := bimg.Metadata(buf)
-	if err == nil && meta.Alpha && len(o.Background)>2 {
-		opts.Background = bimg.Color{o.Background[0],o.Background[1],o.Background[2]}
+	if len(o.Background)>2 {
+		meta, err := bimg.Metadata(buf)
+		if err == nil && meta.Alpha  {
+			opts.Background = bimg.Color{o.Background[0],o.Background[1],o.Background[2]}
+		}
 	}
 
 	return Process(buf, opts)
@@ -183,9 +185,11 @@ func Convert(buf []byte, o ImageOptions) (Image, error) {
 		return Image{}, NewError("Invalid image type: "+o.Type, BadRequest)
 	}
 	opts := BimgOptions(o)
-	meta, err := bimg.Metadata(buf)
-	if err == nil && meta.Alpha && len(o.Background)>2 {
-		opts.Background = bimg.Color{o.Background[0],o.Background[1],o.Background[2]}
+	if len(o.Background)>2 {
+		meta, err := bimg.Metadata(buf)
+		if err == nil && meta.Alpha  {
+			opts.Background = bimg.Color{o.Background[0],o.Background[1],o.Background[2]}
+		}
 	}
 	return Process(buf, opts)
 }
