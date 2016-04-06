@@ -17,6 +17,8 @@ type ImageOptions struct {
 	Factor      int
 	DPI         int
 	TextWidth   int
+	Flip        bool
+	Flop        bool
 	Force       bool
 	NoCrop      bool
 	NoReplicate bool
@@ -36,6 +38,8 @@ func BimgOptions(o ImageOptions) bimg.Options {
 	return bimg.Options{
 		Width:          o.Width,
 		Height:         o.Height,
+		Flip:           o.Flip,
+		Flop:           o.Flop,
 		Quality:        o.Quality,
 		Compression:    o.Compression,
 		NoAutoRotate:   o.NoRotation,
