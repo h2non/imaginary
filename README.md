@@ -375,6 +375,8 @@ Image measures are always in pixels, unless otherwise indicated.
 - **dpi**         `int`   - DPI value for watermark. Example: `150`
 - **textwidth**   `int`   - Text area width for watermark. Example: `200`
 - **opacity**     `float` - Opacity level for watermark text. Default: `0.2`
+- **flip**        `bool`  - Transform the resultant image with flip operation. Default: `false`
+- **flop**        `bool`  - Transform the resultant image with flop operation. Default: `false`
 - **force**       `bool`  - Force image transformation size. Default: `false`
 - **nocrop**      `bool`  - Disable crop transformation enabled by default by some operations. Default: `false`
 - **noreplicate** `bool`  - Disable text replication in watermark. Defaults to `false`
@@ -457,6 +459,8 @@ Crop the image by a given width or height. Image ratio is maintained
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
 - gravity `string`
 - field `string` - Only POST and `multipart/form` payloads
@@ -479,6 +483,8 @@ Resize an image by width or height. Image aspect ratio is maintained
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -498,6 +504,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -521,6 +529,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -541,6 +551,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -560,6 +572,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -579,6 +593,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -597,6 +613,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -615,6 +633,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -632,6 +652,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -657,6 +679,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
