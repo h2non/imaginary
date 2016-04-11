@@ -36,6 +36,7 @@ var allowedParams = map[string]string{
 	"color":       "color",
 	"colorspace":  "colorspace",
 	"gravity":     "gravity",
+	"background":  "color",
 }
 
 func readParams(query url.Values) ImageOptions {
@@ -99,6 +100,7 @@ func mapImageParams(params map[string]interface{}) ImageOptions {
 		Opacity:     float32(params["opacity"].(float64)),
 		Gravity:     params["gravity"].(bimg.Gravity),
 		Colorspace:  params["colorspace"].(bimg.Interpretation),
+		Background:  params["background"].([]uint8),
 	}
 }
 
