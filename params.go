@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gopkg.in/h2non/bimg.v0"
+	"gopkg.in/h2non/bimg.v1"
 	"math"
 	"net/url"
 	"strconv"
@@ -120,9 +120,9 @@ func parseFloat(param string) float64 {
 
 func parseColorspace(val string) bimg.Interpretation {
 	if val == "bw" {
-		return bimg.INTERPRETATION_B_W
+		return bimg.InterpretationBW
 	}
-	return bimg.INTERPRETATION_sRGB
+	return bimg.InterpretationSRGB
 }
 
 func parseColor(val string) []uint8 {
@@ -140,16 +140,16 @@ func parseColor(val string) []uint8 {
 func parseGravity(val string) bimg.Gravity {
 	val = strings.TrimSpace(strings.ToLower(val))
 	if val == "south" {
-		return bimg.SOUTH
+		return bimg.GravitySouth
 	}
 	if val == "north" {
-		return bimg.NORTH
+		return bimg.GravityNorth
 	}
 	if val == "east" {
-		return bimg.EAST
+		return bimg.GravityEast
 	}
 	if val == "west" {
-		return bimg.WEST
+		return bimg.GravityWest
 	}
-	return bimg.CENTRE
+	return bimg.GravityCentre
 }

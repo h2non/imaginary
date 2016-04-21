@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"gopkg.in/h2non/bimg.v0"
+	"gopkg.in/h2non/bimg.v1"
 )
 
 // Image stores an image binary buffer and its MIME type
@@ -70,10 +70,11 @@ func Resize(buf []byte, o ImageOptions) (Image, error) {
 	if o.NoCrop == false {
 		opts.Crop = true
 	}
-	if len(o.Background)>2 {
+
+	if len(o.Background) > 2 {
 		meta, err := bimg.Metadata(buf)
-		if err == nil && meta.Alpha  {
-			opts.Background = bimg.Color{o.Background[0],o.Background[1],o.Background[2]}
+		if err == nil && meta.Alpha {
+			opts.Background = bimg.Color{o.Background[0], o.Background[1], o.Background[2]}
 		}
 	}
 
@@ -185,12 +186,14 @@ func Convert(buf []byte, o ImageOptions) (Image, error) {
 		return Image{}, NewError("Invalid image type: "+o.Type, BadRequest)
 	}
 	opts := BimgOptions(o)
-	if len(o.Background)>2 {
+
+	if len(o.Background) > 2 {
 		meta, err := bimg.Metadata(buf)
-		if err == nil && meta.Alpha  {
-			opts.Background = bimg.Color{o.Background[0],o.Background[1],o.Background[2]}
+		if err == nil && meta.Alpha {
+			opts.Background = bimg.Color{o.Background[0], o.Background[1], o.Background[2]}
 		}
 	}
+
 	return Process(buf, opts)
 }
 

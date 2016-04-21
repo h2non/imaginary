@@ -1,8 +1,8 @@
 package main
 
-import "gopkg.in/h2non/bimg.v0"
+import "gopkg.in/h2non/bimg.v1"
 
-const Version = "0.1.23"
+const Version = "0.1.24"
 
 type Versions struct {
 	ImaginaryVersion string `json:"imaginary"`
