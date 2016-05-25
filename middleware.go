@@ -9,6 +9,7 @@ import (
 	"gopkg.in/throttled/throttled.v2/store/memstore"
 	"net/http"
 	"time"
+	"strings"
 )
 
 func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) http.Handler {
@@ -127,7 +128,7 @@ func setCacheHeaders(next http.Handler, ttl int) http.Handler {
 		ttlDiff := time.Duration(ttl) * time.Second
 		expires := time.Now().Add(ttlDiff)
 
-		w.Header().Add("Expires", expires.Format(time.RFC1123))
+		w.Header().Add("Expires", strings.Replace(expires.Format(time.RFC1123), "UTC", "GMT", -1))
 		w.Header().Add("Cache-Control", getCacheControl(ttl))
 	})
 }
@@ -136,7 +137,7 @@ func getCacheControl(ttl int) string {
 	if ttl == 0 {
 		return "private, no-cache, no-store, must-revalidate"
 	}
-	return fmt.Sprintf("public, s-maxage: %d, max-age: %d, no-transform", ttl, ttl)
+	return fmt.Sprintf("public, s-maxage=%d, max-age=%d, no-transform", ttl, ttl)
 }
 
 func isPublicPath(path string) bool {
