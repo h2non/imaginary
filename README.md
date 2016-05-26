@@ -1,4 +1,4 @@
-# imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://registry.hub.docker.com/u/h2non/imaginary/) [![Heroku](https://img.shields.io/badge/Heroku-Deploy_Now-blue.svg)](https://heroku.com/deploy)
+# imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://registry.hub.docker.com/u/h2non/imaginary/) [![Docker Registry](https://img.shields.io/docker/pulls/h2non/imaginary.svg)](https://registry.hub.docker.com/u/h2non/imaginary) [![Heroku](https://img.shields.io/badge/Heroku-Deploy_Now-blue.svg)](https://heroku.com/deploy) [![Go Report Card](http://goreportcard.com/badge/h2non/imaginary)](http://goreportcard.com/report/h2non/imaginary)
 
 <img src="http://s14.postimg.org/8th71a201/imaginary_world.jpg" width="100%" />
 
@@ -8,7 +8,7 @@ It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net
 Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
 with additional optional features such as **API token authorization**, **gzip compression**, **HTTP traffic throttle** strategy and **CORS support** for web clients.
 
-`imaginary` **can read** images **from HTTP payloads**, **server local path** or **remote HTTP servers**, supporting **JPEG**, **PNG**, **WEBP** and **TIFF** formats and it's able to output to JPEG, PNG and WEBP, including conversion between them.
+`imaginary` **can read** images **from HTTP payloads**, **server local path** or **remote HTTP servers**, supporting **JPEG**, **PNG**, **WEBP** and **TIFF** formats and it's able to output to JPEG, PNG and WEBP, including transparent conversion across them.
 
 It uses internally libvips, a powerful and efficient library written in C for image processing 
 which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) 
@@ -22,7 +22,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 ## Contents
 
 - [Supported image operations](#supported-image-operations)
-- [Prerequisities](#prerequisites)
+- [Prerequisites](#prerequisites)
 - [Installation](#installation)
   - [Docker](#docker)
   - [Heroku](#heroku)
@@ -36,6 +36,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 - [HTTP API](#http-api)
   - [Authorization](#authorization)
   - [Errors](#errors)
+  - [Form data](#form-data)
   - [Params](#params)
   - [Endpoints](#get-)
 
@@ -125,6 +126,11 @@ Set the buildpack for your application
 heroku config:add BUILDPACK_URL=https://github.com/h2non/heroku-buildpack-imaginary.git
 ```
 
+Optionally, define the PKGCONFIG path:
+```
+heroku config:add PKG_CONFIG_PATH=/app/vendor/vips/lib/pkgconfig
+```
+
 Add Heroku git remote:
 ```
 heroku git:remote -a your-application
@@ -137,8 +143,8 @@ git push heroku master
 
 ### Recommended resources
 
-Given the multithreaded native nature of Go, in term of CPUs, most cores means more concurrency and therefore, a better performance can be achieved. 
-From the other hand, in terms of memory, 512MB of RAM is usually enough for small services with low concurrency (<5 request/second). 
+Given the multithreaded native nature of Go, in terms of CPUs, most cores means more concurrency and therefore, a better performance can be achieved. 
+From the other hand, in terms of memory, 512MB of RAM is usually enough for small services with low concurrency (<5 requests/second). 
 Up to 2GB for high-load HTTP service processing potentially large images or exposed to an eventual high concurrency.
 
 If you need to expose `imaginary` as public HTTP server, it's highly recommended to protect the service against DDoS-like attacks. 
@@ -157,9 +163,9 @@ $ imaginary -concurrency 20
 
 ### Scalability
 
-If you're looking for a large scale solution based on `imaginary`, you should scale it horizontally and distribute the HTTP load over a pool of imaginary servers.
+If you're looking for a large scale solution for massive image processing, you should scale `imaginary` horizontally, distributing the HTTP load across a pool of imaginary servers.
 
-Assuming that you want to provide a high availability to deal efficiently with about 100 concurrent req/sec, you should probably use a front balancer (e.g: HAProxy) to delegate the request control flow and quality of service distributing the HTTP load across a pool of server:
+Assuming that you want to provide a high availability to deal efficiently with, let's say, 100 concurrent req/sec, a good approach would be using a front end balancer (e.g: HAProxy) to delegate the traffic control flow, ensure the quality of service and distribution the HTTP across a pool of servers:
 
 ```
         |==============|
@@ -174,13 +180,15 @@ Assuming that you want to provide a high availability to deal efficiently with a
          /           \
         /             \
  /-----------\   /-----------\
- | imaginary |   | imaginary | (*N)
+ | imaginary |   | imaginary | (*n)
  \-----------/   \-----------/
 ```
 
 ## Clients
 
 - [node.js/io.js](https://github.com/h2non/node-imaginary)
+
+Feel free to send a PR if you created a client for other language.
 
 ## Performance
 
@@ -212,7 +220,7 @@ Status Codes  [code:count]      200:200
 `imaginary` can deal efficiently with up to 20 request per second running in a multicore machine, 
 where it crops a JPEG image of 5MB and spending per each request less than 100 ms
 
-The most expensive image operation under high concurrency scenarios (> 20 req/sec) is the image enlargement, which requires a considerable amount of math operations to scale the original image. In this kind of operation the required processing time usually grows over the time if you're stressing the server continuously. The advice here is as simple as taking care about the number of concurrent enlarge operations to avoid server performance bottle necks.
+The most expensive image operation under high concurrency scenarios (> 20 req/sec) is the image enlargement, which requires a considerable amount of math operations to scale the original image. In this kind of operation the required processing time usually grows over the time if you're stressing the server continuously. The advice here is as simple as taking care about the number of concurrent enlarge operations to avoid server performance bottlenecks.
 
 ## Usage
 
@@ -224,6 +232,7 @@ Usage:
   imaginary -cors -gzip
   imaginary -concurrency 10
   imaginary -enable-url-source
+  imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
   imaginary -h | -help
   imaginary -v | -version
 
@@ -239,7 +248,8 @@ Options:
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
-  -enable-url-source        Enable remote HTTP URL image source processing [default: false]
+  -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
+  -allowed-origins <urls>   TLS certificate file path
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
   -concurreny <num>         Throttle concurrency limit per second [default: disabled]
@@ -259,7 +269,7 @@ Also, you can pass the port as environment variable
 PORT=8080 imaginary 
 ```
 
-Enable HTTP server throttle strategy (max 10 request/second)
+Enable HTTP server throttle strategy (max 10 requests/second)
 ```
 imaginary -p 8080 -concurrency 10
 ```
@@ -317,7 +327,7 @@ curl -O "http://localhost:8088/crop?width=500&height=400&url=https://raw.githubu
 ### Authorization
 
 imaginary supports a simple token-based API authorization. 
-To enable it, you should specific the flag `-key secret` when you call the binary.
+To enable it, you should pass the `-key` flag to the binary.
 
 API token can be defined as HTTP header (`API-Key`) or query param (`key`).
 
@@ -342,6 +352,10 @@ Here an example response error when the payload is empty:
 
 See all the predefined supported errors [here](https://github.com/h2non/imaginary/blob/master/error.go#L19-L28).
 
+### Form data
+
+If you're pushing images to `imaginary` as `multipart/form-data` (you can do it as well as `image/*`), you must define at least one input field called `file` with the raw image data in order to be processed properly by imaginary.
+
 ### Params
 
 Complete list of available params. Take a look to each specific endpoint to see which params are supported. 
@@ -353,7 +367,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **left**        `int`   - Left edge of area to extract. Example: `100`
 - **areawidth**   `int`   - Height area to extract. Example: `300`
 - **areaheight**  `int`   - Width area to extract. Example: `300`
-- **quality**     `int`   - JPEG image quality between 1-100. Default `80`
+- **quality**     `int`   - JPEG image quality between 1-100. Defaults to `80`
 - **compression** `int`   - PNG compression level. Default: `6`
 - **rotate**      `int`   - Image rotation angle. Must be multiple of `90`. Example: `180`
 - **factor**      `int`   - Zoom factor level. Example: `2`
@@ -361,19 +375,23 @@ Image measures are always in pixels, unless otherwise indicated.
 - **dpi**         `int`   - DPI value for watermark. Example: `150`
 - **textwidth**   `int`   - Text area width for watermark. Example: `200`
 - **opacity**     `float` - Opacity level for watermark text. Default: `0.2`
+- **flip**        `bool`  - Transform the resultant image with flip operation. Default: `false`
+- **flop**        `bool`  - Transform the resultant image with flop operation. Default: `false`
 - **force**       `bool`  - Force image transformation size. Default: `false`
 - **nocrop**      `bool`  - Disable crop transformation enabled by default by some operations. Default: `false`
-- **noreplicate** `bool`  - Disable text replication in watermark. Default `false`
-- **norotation**  `bool`  - Disable auto rotation based on EXIF orientation. Default `false`
-- **noprofile**   `bool`  - Disable adding ICC profile metadata. Default `false`
+- **noreplicate** `bool`  - Disable text replication in watermark. Defaults to `false`
+- **norotation**  `bool`  - Disable auto rotation based on EXIF orientation. Defaults to `false`
+- **noprofile**   `bool`  - Disable adding ICC profile metadata. Defaults to `false`
 - **text**        `string` - Watermark text content. Example: `copyright (c) 2189`
 - **font**        `string` - Watermark text font type and format. Example: `sans bold 12`
 - **color**       `string` - Watermark text RGB decimal base color. Example: `255,200,150`
 - **type**        `string` - Specify the image format to output. Possible values are: `jpeg`, `png` and `webp`
 - **gravity**     `string` - Define the crop operation gravity. Supported values are: `north`, `south`, `centre`, `west` and `east`. Defaults to `centre`.
 - **file**        `string` - Use image from server local file path. In order to use this you must pass the `-mount=<dir>` flag.
-- **url**        `string` - Fetch the image from a remove HTTP server. In order to use this you must pass the `-enable-url-source` flag.
+- **url**         `string` - Fetch the image from a remove HTTP server. In order to use this you must pass the `-enable-url-source` flag.
 - **colorspace**  `string` - Use a custom color space for the output image. Allowed values are: `srgb` or `bw` (black&white)
+- **field**       `string` - Custom image form field name if using `multipart/form`. Defaults to: `file`
+- **background**  `string` - Background RGB decimal base color to use when flattening transparent PNGs. Example: `255,200,150`
 
 #### GET /
 Content-Type: `application/json`
@@ -439,10 +457,14 @@ Crop the image by a given width or height. Image ratio is maintained
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
 - gravity `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /resize
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -459,9 +481,13 @@ Resize an image by width or height. Image aspect ratio is maintained
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /enlarge
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -476,9 +502,13 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /extract
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -497,9 +527,13 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /zoom
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -515,9 +549,13 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /thumbnail
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -532,9 +570,13 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /rotate
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -552,7 +594,10 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /flip
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -569,7 +614,10 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /flop
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -586,7 +634,10 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /convert
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -599,9 +650,13 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /watermark
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
@@ -622,9 +677,13 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
+- rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- flip `bool`
+- flop `bool`
 - colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 ## License
 

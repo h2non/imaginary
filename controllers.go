@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"gopkg.in/h2non/filetype.v0"
 )
 
 func indexController(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +50,18 @@ func imageController(o ServerOptions, operation Operation) func(http.ResponseWri
 }
 
 func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation Operation) {
+	// Infer the body MIME type via mimesniff algorithm
 	mimeType := http.DetectContentType(buf)
+
+	// If cannot infer the type, infer it via magic numbers
+	if mimeType == "application/octet-stream" {
+		kind, err := filetype.Get(buf)
+		if err != nil && kind.MIME.Value != "" {
+			mimeType = kind.MIME.Value
+		}
+	}
+
+	// Finally check if image MIME type is supported
 	if IsImageMimeTypeSupported(mimeType) == false {
 		ErrorReply(w, ErrUnsupportedMedia)
 		return
@@ -76,9 +89,9 @@ func formController(w http.ResponseWriter, r *http.Request) {
 		method string
 		args   string
 	}{
-		{"Resize", "resize", "width=300&height=200&type=png"},
+		{"Resize", "resize", "width=300&height=200&type=jpeg"},
 		{"Force resize", "resize", "width=300&height=200&force=true"},
-		{"Crop", "crop", "width=562&height=562&quality=95"},
+		{"Crop", "crop", "width=300&quality=95"},
 		{"Extract", "extract", "top=100&left=100&areawidth=300&areaheight=150"},
 		{"Enlarge", "enlarge", "width=1440&height=900&quality=95"},
 		{"Rotate", "rotate", "rotate=180"},

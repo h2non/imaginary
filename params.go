@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gopkg.in/h2non/bimg.v0"
+	"gopkg.in/h2non/bimg.v1"
 	"math"
 	"net/url"
 	"strconv"
@@ -23,6 +23,8 @@ var allowedParams = map[string]string{
 	"dpi":         "int",
 	"textwidth":   "int",
 	"opacity":     "float",
+	"flip":        "bool",
+	"flop":        "bool",
 	"nocrop":      "bool",
 	"noprofile":   "bool",
 	"norotation":  "bool",
@@ -34,6 +36,7 @@ var allowedParams = map[string]string{
 	"color":       "color",
 	"colorspace":  "colorspace",
 	"gravity":     "gravity",
+	"background":  "color",
 }
 
 func readParams(query url.Values) ImageOptions {
@@ -87,6 +90,8 @@ func mapImageParams(params map[string]interface{}) ImageOptions {
 		Text:        params["text"].(string),
 		Font:        params["font"].(string),
 		Type:        params["type"].(string),
+		Flip:        params["flip"].(bool),
+		Flop:        params["flop"].(bool),
 		NoCrop:      params["nocrop"].(bool),
 		Force:       params["force"].(bool),
 		NoReplicate: params["noreplicate"].(bool),
@@ -95,6 +100,7 @@ func mapImageParams(params map[string]interface{}) ImageOptions {
 		Opacity:     float32(params["opacity"].(float64)),
 		Gravity:     params["gravity"].(bimg.Gravity),
 		Colorspace:  params["colorspace"].(bimg.Interpretation),
+		Background:  params["background"].([]uint8),
 	}
 }
 
@@ -114,9 +120,9 @@ func parseFloat(param string) float64 {
 
 func parseColorspace(val string) bimg.Interpretation {
 	if val == "bw" {
-		return bimg.INTERPRETATION_B_W
+		return bimg.InterpretationBW
 	}
-	return bimg.INTERPRETATION_sRGB
+	return bimg.InterpretationSRGB
 }
 
 func parseColor(val string) []uint8 {
@@ -134,16 +140,16 @@ func parseColor(val string) []uint8 {
 func parseGravity(val string) bimg.Gravity {
 	val = strings.TrimSpace(strings.ToLower(val))
 	if val == "south" {
-		return bimg.SOUTH
+		return bimg.GravitySouth
 	}
 	if val == "north" {
-		return bimg.NORTH
+		return bimg.GravityNorth
 	}
 	if val == "east" {
-		return bimg.EAST
+		return bimg.GravityEast
 	}
 	if val == "west" {
-		return bimg.WEST
+		return bimg.GravityWest
 	}
-	return bimg.CENTRE
+	return bimg.GravityCentre
 }

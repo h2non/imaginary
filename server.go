@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"time"
@@ -22,6 +23,7 @@ type ServerOptions struct {
 	Mount            string
 	CertFile         string
 	KeyFile          string
+	AlloweOrigins    []*url.URL
 }
 
 func Server(o ServerOptions) error {

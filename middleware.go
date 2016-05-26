@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"github.com/daaku/go.httpgzip"
 	"github.com/rs/cors"
-	"gopkg.in/h2non/bimg.v0"
+	"gopkg.in/h2non/bimg.v1"
 	"gopkg.in/throttled/throttled.v2"
 	"gopkg.in/throttled/throttled.v2/store/memstore"
 	"net/http"
 	"time"
+	"strings"
 )
 
 func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) http.Handler {
@@ -79,7 +80,7 @@ func validate(next http.Handler) http.Handler {
 func validateImage(next http.Handler, o ServerOptions) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := r.URL.Path
-		if r.Method == "GET" && isPrivatePath(path) {
+		if r.Method == "GET" && isPublicPath(path) {
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -120,24 +121,25 @@ func setCacheHeaders(next http.Handler, ttl int) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer next.ServeHTTP(w, r)
 
-		if r.Method != "GET" || isPrivatePath(r.URL.Path) {
+		if r.Method != "GET" || isPublicPath(r.URL.Path) {
 			return
-		}
-
-		var cacheControl string
-		if ttl == 0 {
-			cacheControl = "private, no-cache, no-store, must-revalidate"
-		} else {
-			cacheControl = fmt.Sprintf("public, s-maxage: %d, max-age: %d, no-transform", ttl, ttl)
 		}
 
 		ttlDiff := time.Duration(ttl) * time.Second
 		expires := time.Now().Add(ttlDiff)
-		w.Header().Add("Expires", expires.Format(time.RFC1123))
-		w.Header().Add("Cache-Control", cacheControl)
+
+		w.Header().Add("Expires", strings.Replace(expires.Format(time.RFC1123), "UTC", "GMT", -1))
+		w.Header().Add("Cache-Control", getCacheControl(ttl))
 	})
 }
 
-func isPrivatePath(path string) bool {
+func getCacheControl(ttl int) string {
+	if ttl == 0 {
+		return "private, no-cache, no-store, must-revalidate"
+	}
+	return fmt.Sprintf("public, s-maxage=%d, max-age=%d, no-transform", ttl, ttl)
+}
+
+func isPublicPath(path string) bool {
 	return path == "/" || path == "/health" || path == "/form"
 }

@@ -1,13 +1,17 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+	"net/url"
+)
 
 type ImageSourceType string
 type ImageSourceFactoryFunction func(*SourceConfig) ImageSource
 
 type SourceConfig struct {
-	Type      ImageSourceType
-	MountPath string
+	MountPath       string
+	Type            ImageSourceType
+	AllowedOrigings []*url.URL
 }
 
 var imageSourceMap = make(map[ImageSourceType]ImageSource)
@@ -25,8 +29,9 @@ func RegisterSource(sourceType ImageSourceType, factory ImageSourceFactoryFuncti
 func LoadSources(o ServerOptions) {
 	for name, factory := range imageSourceFactoryMap {
 		imageSourceMap[name] = factory(&SourceConfig{
-			Type:      name,
-			MountPath: o.Mount,
+			Type:            name,
+			MountPath:       o.Mount,
+			AllowedOrigings: o.AlloweOrigins,
 		})
 	}
 }

@@ -6,7 +6,8 @@ import (
 	"strings"
 )
 
-const maxMemory int64 = 1024 * 1024 * 32
+const formFieldName = "file"
+const maxMemory int64 = 1024 * 1024 * 64
 
 const ImageSourceTypeBody ImageSourceType = "payload"
 
@@ -19,7 +20,7 @@ func NewBodyImageSource(config *SourceConfig) ImageSource {
 }
 
 func (s *BodyImageSource) Matches(r *http.Request) bool {
-	return r.Method == "POST"
+	return r.Method == "POST" || r.Method == "PUT"
 }
 
 func (s *BodyImageSource) GetImage(r *http.Request) ([]byte, error) {
@@ -51,6 +52,13 @@ func readFormBody(r *http.Request) ([]byte, error) {
 	}
 
 	return buf, err
+}
+
+func formField(r *http.Request) string {
+	if field := r.URL.Query().Get("field"); field != "" {
+		return field
+	}
+	return formFieldName
 }
 
 func readRawBody(r *http.Request) ([]byte, error) {

@@ -1,9 +1,11 @@
 package: github.com/h2non/imaginary
 import:
-- package: gopkg.in/h2non/bimg.v0
+- package: gopkg.in/h2non/bimg.v1
   version: ^0.1.21
 - package: gopkg.in/throttled/throttled.v2
   version: ^2
+- package: gopkg.in/h2non/filetype.v0
+  version: caab3653a0a5ff729cb3eea293d1d26a24781455
 - package: github.com/tj/go-debug
   version: ff4a55a20a86994118644bbddc6a216da193cc13
 - package: github.com/rs/xhandler

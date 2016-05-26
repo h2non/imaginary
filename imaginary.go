@@ -4,10 +4,12 @@ import (
 	"flag"
 	"fmt"
 	. "github.com/tj/go-debug"
+	"net/url"
 	"os"
 	"runtime"
 	d "runtime/debug"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -23,13 +25,14 @@ var (
 	aCors            = flag.Bool("cors", false, "Enable CORS support")
 	aGzip            = flag.Bool("gzip", false, "Enable gzip compression")
 	aEnableURLSource = flag.Bool("enable-url-source", false, "Enable remote HTTP URL image source processing")
+	aAlloweOrigins   = flag.String("allowed-origins", "", "Restrict remote image source processing to certain origins (separated by commas)")
 	aKey             = flag.String("key", "", "Define API key for authorization")
 	aMount           = flag.String("mount", "", "Mount server local directory")
 	aCertFile        = flag.String("certfile", "", "TLS certificate file path")
 	aKeyFile         = flag.String("keyfile", "", "TLS private key file path")
 	aHttpCacheTtl    = flag.Int("http-cache-ttl", -1, "The TTL in seconds")
-	aReadTimeout     = flag.Int("http-read-timeout", 30, "HTTP read timeout in seconds")
-	aWriteTimeout    = flag.Int("http-write-timeout", 30, "HTTP write timeout in seconds")
+	aReadTimeout     = flag.Int("http-read-timeout", 60, "HTTP read timeout in seconds")
+	aWriteTimeout    = flag.Int("http-write-timeout", 60, "HTTP write timeout in seconds")
 	aConcurrency     = flag.Int("concurrency", 0, "Throttle concurrency limit per second")
 	aBurst           = flag.Int("burst", 100, "Throttle burst max cache size")
 	aMRelease        = flag.Int("mrelease", 30, "OS memory release inverval in seconds")
@@ -43,6 +46,7 @@ Usage:
   imaginary -cors -gzip
   imaginary -concurrency 10
   imaginary -enable-url-source
+  imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
   imaginary -h | -help
   imaginary -v | -version
 
@@ -58,7 +62,8 @@ Options:
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
-  -enable-url-source        Enable remote HTTP URL image source processing [default: false]
+  -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
+  -allowed-origins <urls>   TLS certificate file path
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
   -concurreny <num>         Throttle concurrency limit per second [default: disabled]
@@ -100,6 +105,7 @@ func main() {
 		HttpCacheTtl:     *aHttpCacheTtl,
 		HttpReadTimeout:  *aReadTimeout,
 		HttpWriteTimeout: *aWriteTimeout,
+		AlloweOrigins:    parseOrigins(*aAlloweOrigins),
 	}
 
 	// Create a memory release goroutine
@@ -170,6 +176,21 @@ func checkHttpCacheTtl(ttl int) {
 	if ttl == 0 {
 		debug("Adding HTTP cache control headers set to prevent caching.")
 	}
+}
+
+func parseOrigins(origins string) []*url.URL {
+	urls := []*url.URL{}
+	if origins == "" {
+		return urls
+	}
+	for _, origin := range strings.Split(origins, ",") {
+		u, err := url.Parse(origin)
+		if err != nil {
+			continue
+		}
+		urls = append(urls, u)
+	}
+	return urls
 }
 
 func memoryRelease(interval int) {

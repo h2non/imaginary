@@ -8,6 +8,9 @@ build:
 test:
 	go test
 
+install:
+	go get -u .
+
 benchmark: build
 	bash benchmark.sh
 
