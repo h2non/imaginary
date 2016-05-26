@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"gopkg.in/h2non/filetype.v0"
 )
 
 func indexController(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +50,18 @@ func imageController(o ServerOptions, operation Operation) func(http.ResponseWri
 }
 
 func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation Operation) {
+	// Infer the body MIME type via mimesniff algorithm
 	mimeType := http.DetectContentType(buf)
+
+	// If cannot infer the type, infer it via magic numbers
+	if mimeType == "application/octet-stream" {
+		kind, err := filetype.Get(buf)
+		if err != nil && kind.MIME.Value != "" {
+			mimeType = kind.MIME.Value
+		}
+	}
+
+	// Finally check if image MIME type is supported
 	if IsImageMimeTypeSupported(mimeType) == false {
 		ErrorReply(w, ErrUnsupportedMedia)
 		return
