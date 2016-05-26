@@ -1,3 +1,8 @@
+## 0.1.25 / 26-05-2016
+
+- fix(#79): make payload MIME type inference more versatile checking the file magic numbers signature.
+- fix(#77): fix cache HTTP header expression. 
+
 ## 0.1.24 / 21-04-2016
 
 - feat(bimg): uses bimg `1.0.0`. No breaking changes introduced.
