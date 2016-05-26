@@ -391,6 +391,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **url**         `string` - Fetch the image from a remove HTTP server. In order to use this you must pass the `-enable-url-source` flag.
 - **colorspace**  `string` - Use a custom color space for the output image. Allowed values are: `srgb` or `bw` (black&white)
 - **field**       `string` - Custom image form field name if using `multipart/form`. Defaults to: `file`
+- **background**  `string` - Background RGB decimal base color to use when flattening transparent PNGs. Example: `255,200,150`
 
 #### GET /
 Content-Type: `application/json`
