@@ -37,4 +37,4 @@ RUN go get -u github.com/h2non/imaginary
 ENTRYPOINT ["/go/bin/imaginary"]
 
 # Expose the server TCP port
-EXPOSE 9000
+EXPOSE $PORT
