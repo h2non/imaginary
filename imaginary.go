@@ -61,13 +61,13 @@ Options:
   -v, -version              output version
   -cors                     Enable CORS support [default: false]
   -gzip                     Enable gzip compression [default: false]
-  -enable-auth-forwarding   Forwards Authorization or X-Forward-Authorization headers to the image source server. -enable-url-source flag must be defined
   -key <key>                Define API key for authorization
   -mount <path>             Mount server local directory
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
   -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
+  -enable-auth-forwarding   Forwards Authorization or X-Forward-Authorization headers to the image source server. -enable-url-source flag must be defined
   -allowed-origins <urls>   TLS certificate file path
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path

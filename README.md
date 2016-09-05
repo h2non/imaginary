@@ -222,17 +222,17 @@ where it crops a JPEG image of 5MB and spending per each request less than 100 m
 
 The most expensive image operation under high concurrency scenarios (> 20 req/sec) is the image enlargement, which requires a considerable amount of math operations to scale the original image. In this kind of operation the required processing time usually grows over the time if you're stressing the server continuously. The advice here is as simple as taking care about the number of concurrent enlarge operations to avoid server performance bottlenecks.
 
-## Usage
+## Command-line usage
 
 ```
-imaginary server
-
 Usage:
   imaginary -p 80
   imaginary -cors -gzip
   imaginary -concurrency 10
   imaginary -enable-url-source
   imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
+  imaginary -enable-url-source -enable-auth-forwarding
+  imaginary -enable-url-source -authorization "Basic AwDJdL2DbwrD=="
   imaginary -h | -help
   imaginary -v | -version
 
@@ -249,9 +249,11 @@ Options:
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
   -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
+  -enable-auth-forwarding   Forwards Authorization or X-Forward-Authorization headers to the image source server. -enable-url-source flag must be defined
   -allowed-origins <urls>   TLS certificate file path
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
+  -authorization <value>    Defines the Authorization header value passed to the image source server
   -concurreny <num>         Throttle concurrency limit per second [default: disabled]
   -burst <num>              Throttle burst max cache size [default: 100]
   -mrelease <num>           OS memory release inverval in seconds [default: 30]
@@ -259,49 +261,59 @@ Options:
                             (default for current machine is 8 cores)
 ```
 
-Start the server in a custom port
+Start the server in a custom port:
 ```bash
 imaginary -p 8080
 ```
 
-Also, you can pass the port as environment variable
+Also, you can pass the port as environment variable:
 ```bash
 PORT=8080 imaginary 
 ```
 
-Enable HTTP server throttle strategy (max 10 requests/second)
+Enable HTTP server throttle strategy (max 10 requests/second):
 ```
 imaginary -p 8080 -concurrency 10
 ```
 
-Enable remote URL image fetching (then you can do GET request passing the `url=http://server.com/image.jpg` query param)
+Enable remote URL image fetching (then you can do GET request passing the `url=http://server.com/image.jpg` query param):
 ```
 imaginary -p 8080 -enable-url-source
 ```
 
-Mount local directory (then you can do GET request passing the `file=image.jpg` query param)
+Mount local directory (then you can do GET request passing the `file=image.jpg` query param):
 ```
 imaginary -p 8080 -mount ~/images
 ```
 
+Enable authorization header forwarding to image origin server:
+```
+imaginary -p 8080 -enable-url-source -enable-auth-forwarding
+```
+
+Or alternatively you can manually define an authorization header value that will be always sent when fetching images from remote image origins:
+```
+imaginary -p 8080 -enable-url-source -authorization "Bearer s3cr3t"
+```
+
 Send caching headers (only possible with the -mount option). The headers can be set in either "cache nothing" or 
 "cache for N seconds". By specifying 0 Imaginary will send the "don't cache" headers, otherwise it sends headers with a 
-TTL. The following example informs the client to cache the result for 1 year.
+TTL. The following example informs the client to cache the result for 1 year:
 ```
 imaginary -mount ~/images -http-cache-ttl 31556926
 ```
 
-Increase libvips threads concurrency (experimental)
+Increase libvips threads concurrency (experimental):
 ```
 VIPS_CONCURRENCY=10 imaginary -p 8080 -concurrency 10
 ```
 
-Enable debug mode
+Enable debug mode:
 ```
 DEBUG=* imaginary -p 8080
 ```
 
-Or filter debug output by package
+Or filter debug output by package:
 ```
 DEBUG=imaginary imaginary -p 8080
 ```
