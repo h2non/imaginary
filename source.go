@@ -9,6 +9,8 @@ type ImageSourceType string
 type ImageSourceFactoryFunction func(*SourceConfig) ImageSource
 
 type SourceConfig struct {
+	AuthForwarding  bool
+	Authorization   string
 	MountPath       string
 	Type            ImageSourceType
 	AllowedOrigings []*url.URL
@@ -31,6 +33,8 @@ func LoadSources(o ServerOptions) {
 		imageSourceMap[name] = factory(&SourceConfig{
 			Type:            name,
 			MountPath:       o.Mount,
+			AuthForwarding:  o.AuthForwarding,
+			Authorization:   o.Authorization,
 			AllowedOrigings: o.AlloweOrigins,
 		})
 	}

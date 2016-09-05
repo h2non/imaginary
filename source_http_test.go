@@ -99,6 +99,30 @@ func TestHttpImageSourceNotAllowedOrigin(t *testing.T) {
 	fakeHandler(w, r)
 }
 
+func TestHttpImageSourceForwardAuthHeader(t *testing.T) {
+	cases := []string{
+		"X-Forward-Authorization",
+		"Authorization",
+	}
+
+	for _, header := range cases {
+		r, _ := http.NewRequest("GET", "http://foo/bar?url=http://bar.com", nil)
+		r.Header.Set(header, "foobar")
+
+		source := &HttpImageSource{&SourceConfig{AuthForwarding: true}}
+		if !source.Matches(r) {
+			t.Fatal("Cannot match the request")
+		}
+
+		oreq := &http.Request{Header: make(http.Header)}
+		source.setAuthorizationHeader(oreq, r)
+
+		if oreq.Header.Get("Authorization") != "foobar" {
+			t.Fatal("Missmatch Authorization header")
+		}
+	}
+}
+
 func TestHttpImageSourceError(t *testing.T) {
 	var body []byte
 	var err error
@@ -119,9 +143,6 @@ func TestHttpImageSourceError(t *testing.T) {
 		if err == nil {
 			t.Fatalf("Server response should not be valid: %s", err)
 		}
-
-		w.WriteHeader(404)
-		w.Write([]byte(err.Error()))
 	}
 
 	r, _ := http.NewRequest("GET", "http://foo/bar?url="+ts.URL, nil)
