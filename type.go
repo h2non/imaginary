@@ -1,8 +1,9 @@
 package main
 
 import (
-	"gopkg.in/h2non/bimg.v1"
 	"strings"
+
+	"gopkg.in/h2non/bimg.v1"
 )
 
 func ExtractImageTypeFromMime(mime string) string {

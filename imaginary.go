@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	. "github.com/tj/go-debug"
 	"net/url"
 	"os"
 	"runtime"
@@ -11,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	. "github.com/tj/go-debug"
 )
 
 var debug = Debug("imaginary")

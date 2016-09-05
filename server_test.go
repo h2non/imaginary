@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"gopkg.in/h2non/bimg.v1"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -11,6 +10,8 @@ import (
 	"path"
 	"strings"
 	"testing"
+
+	"gopkg.in/h2non/bimg.v1"
 )
 
 func TestIndex(t *testing.T) {

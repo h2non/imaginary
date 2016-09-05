@@ -1,3 +1,7 @@
+## 0.1.26 / 05-09-2016
+
+- feat: add support for authorization headers forwarding to remote image server origins.
+
 ## 0.1.25 / 26-05-2016
 
 - fix(#79): make payload MIME type inference more versatile checking the file magic numbers signature.

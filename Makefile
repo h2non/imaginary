@@ -15,9 +15,11 @@ benchmark: build
 	bash benchmark.sh
 
 docker-build:
+	@echo "$(OK_COLOR)==> Building Docker image$(NO_COLOR)"
 	docker build --no-cache=true -t h2non/imaginary:$(VERSION) .
 
 docker-push:
+	@echo "$(OK_COLOR)==> Pushing Docker image v$(VERSION) $(NO_COLOR)"
 	docker push h2non/imaginary:$(VERSION)
 
 docker: docker-build docker-push
