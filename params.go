@@ -1,11 +1,12 @@
 package main
 
 import (
-	"gopkg.in/h2non/bimg.v1"
 	"math"
 	"net/url"
 	"strconv"
 	"strings"
+
+	"gopkg.in/h2non/bimg.v1"
 )
 
 var allowedParams = map[string]string{

@@ -29,11 +29,18 @@ func (s *HttpImageSource) GetImage(req *http.Request) ([]byte, error) {
 	if shouldRestrictOrigin(url, s.Config.AllowedOrigings) {
 		return nil, fmt.Errorf("Not allowed remote URL origin: %s", url.Host)
 	}
-	return s.fetchImage(url)
+	return s.fetchImage(url, req)
 }
 
-func (s *HttpImageSource) fetchImage(url *url.URL) ([]byte, error) {
+func (s *HttpImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, error) {
 	req := newHTTPRequest(url)
+
+	// Forward auth header to the target server, if necessary
+	if s.Config.AuthForwarding || s.Config.Authorization != "" {
+		s.setAuthorizationHeader(req, ireq)
+	}
+
+	// Perform the request using the default client
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("Error downloading image: %v", err)
@@ -43,11 +50,25 @@ func (s *HttpImageSource) fetchImage(url *url.URL) ([]byte, error) {
 		return nil, fmt.Errorf("Error downloading image: (status=%d) (url=%s)", res.StatusCode, req.URL.String())
 	}
 
+	// Read the body
 	buf, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, fmt.Errorf("Unable to create image from response body: %s (url=%s)", req.URL.String(), err)
 	}
 	return buf, nil
+}
+
+func (s *HttpImageSource) setAuthorizationHeader(req *http.Request, ireq *http.Request) {
+	auth := s.Config.Authorization
+	if auth == "" {
+		auth = ireq.Header.Get("X-Forward-Authorization")
+	}
+	if auth == "" {
+		auth = ireq.Header.Get("Authorization")
+	}
+	if auth != "" {
+		req.Header.Set("Authorization", auth)
+	}
 }
 
 func parseURL(request *http.Request) (*url.URL, error) {

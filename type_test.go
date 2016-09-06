@@ -1,8 +1,9 @@
 package main
 
 import (
-	"gopkg.in/h2non/bimg.v1"
 	"testing"
+
+	"gopkg.in/h2non/bimg.v1"
 )
 
 func TestExtractImageTypeFromMime(t *testing.T) {
