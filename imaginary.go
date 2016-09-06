@@ -25,7 +25,7 @@ var (
 	aHelpl           = flag.Bool("help", false, "Show help")
 	aCors            = flag.Bool("cors", false, "Enable CORS support")
 	aGzip            = flag.Bool("gzip", false, "Enable gzip compression")
-	aAuthForwarding  = flag.Bool("enable-auth-forwarding", false, "Forwards Authorization or X-Forward-Authorization headers to the image source server. -enable-url-source flag must be defined")
+	aAuthForwarding  = flag.Bool("enable-auth-forwarding", false, "Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors")
 	aEnableURLSource = flag.Bool("enable-url-source", false, "Enable remote HTTP URL image source processing")
 	aAlloweOrigins   = flag.String("allowed-origins", "", "Restrict remote image source processing to certain origins (separated by commas)")
 	aKey             = flag.String("key", "", "Define API key for authorization")
@@ -68,7 +68,7 @@ Options:
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
   -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
-  -enable-auth-forwarding   Forwards Authorization or X-Forward-Authorization headers to the image source server. -enable-url-source flag must be defined
+  -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
   -allowed-origins <urls>   TLS certificate file path
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
