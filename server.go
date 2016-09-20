@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path"
 	"strconv"
 	"time"
 )
@@ -20,6 +21,7 @@ type ServerOptions struct {
 	EnableURLSource  bool
 	AuthForwarding   bool
 	Address          string
+	PathPrefix       string
 	ApiKey           string
 	Mount            string
 	CertFile         string
@@ -53,23 +55,23 @@ func listenAndServe(s *http.Server, o ServerOptions) error {
 func NewServerMux(o ServerOptions) http.Handler {
 	mux := http.NewServeMux()
 
-	mux.Handle("/", Middleware(indexController, o))
-	mux.Handle("/form", Middleware(formController, o))
-	mux.Handle("/health", Middleware(healthController, o))
+	mux.Handle(path.Join(o.PathPrefix, "/"), Middleware(indexController, o))
+	mux.Handle(path.Join(o.PathPrefix, "/form"), Middleware(formController, o))
+	mux.Handle(path.Join(o.PathPrefix, "/health"), Middleware(healthController, o))
 
 	image := ImageMiddleware(o)
-	mux.Handle("/resize", image(Resize))
-	mux.Handle("/enlarge", image(Enlarge))
-	mux.Handle("/extract", image(Extract))
-	mux.Handle("/crop", image(Crop))
-	mux.Handle("/rotate", image(Rotate))
-	mux.Handle("/flip", image(Flip))
-	mux.Handle("/flop", image(Flop))
-	mux.Handle("/thumbnail", image(Thumbnail))
-	mux.Handle("/zoom", image(Zoom))
-	mux.Handle("/convert", image(Convert))
-	mux.Handle("/watermark", image(Watermark))
-	mux.Handle("/info", image(Info))
+	mux.Handle(path.Join(o.PathPrefix, "/resize"), image(Resize))
+	mux.Handle(path.Join(o.PathPrefix, "/enlarge"), image(Enlarge))
+	mux.Handle(path.Join(o.PathPrefix, "/extract"), image(Extract))
+	mux.Handle(path.Join(o.PathPrefix, "/crop"), image(Crop))
+	mux.Handle(path.Join(o.PathPrefix, "/rotate"), image(Rotate))
+	mux.Handle(path.Join(o.PathPrefix, "/flip"), image(Flip))
+	mux.Handle(path.Join(o.PathPrefix, "/flop"), image(Flop))
+	mux.Handle(path.Join(o.PathPrefix, "/thumbnail"), image(Thumbnail))
+	mux.Handle(path.Join(o.PathPrefix, "/zoom"), image(Zoom))
+	mux.Handle(path.Join(o.PathPrefix, "/convert"), image(Convert))
+	mux.Handle(path.Join(o.PathPrefix, "/watermark"), image(Watermark))
+	mux.Handle(path.Join(o.PathPrefix, "/info"), image(Info))
 
 	return mux
 }

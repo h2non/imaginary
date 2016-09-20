@@ -23,6 +23,7 @@ var (
 	aVersl           = flag.Bool("version", false, "Show version")
 	aHelp            = flag.Bool("h", false, "Show help")
 	aHelpl           = flag.Bool("help", false, "Show help")
+	aPathPrefix      = flag.String("path-prefix", "/", "Url path prefix to listen to")
 	aCors            = flag.Bool("cors", false, "Enable CORS support")
 	aGzip            = flag.Bool("gzip", false, "Enable gzip compression")
 	aAuthForwarding  = flag.Bool("enable-auth-forwarding", false, "Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors")
@@ -48,6 +49,7 @@ Usage:
   imaginary -p 80
   imaginary -cors -gzip
   imaginary -concurrency 10
+  imaginary -path-prefix /api/v1
   imaginary -enable-url-source
   imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
   imaginary -enable-url-source -enable-auth-forwarding
@@ -60,6 +62,7 @@ Options:
   -p <port>                 bind port [default: 8088]
   -h, -help                 output help
   -v, -version              output version
+  -path-prefix <value>      Url path prefix to listen to [default: "/"]
   -cors                     Enable CORS support [default: false]
   -gzip                     Enable gzip compression [default: false]
   -key <key>                Define API key for authorization
@@ -104,6 +107,7 @@ func main() {
 		CORS:             *aCors,
 		AuthForwarding:   *aAuthForwarding,
 		EnableURLSource:  *aEnableURLSource,
+		PathPrefix:       *aPathPrefix,
 		ApiKey:           *aKey,
 		Concurrency:      *aConcurrency,
 		Burst:            *aBurst,
@@ -132,7 +136,7 @@ func main() {
 		checkHttpCacheTtl(*aHttpCacheTtl)
 	}
 
-	debug("imaginary server listening on port %d", port)
+	debug("imaginary server listening on port :%d/%s", opts.Port, strings.TrimPrefix(opts.PathPrefix, "/"))
 
 	// Load image source providers
 	LoadSources(opts)
