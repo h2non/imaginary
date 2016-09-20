@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	. "github.com/tj/go-debug"
 	"net/url"
 	"os"
 	"runtime"
@@ -11,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	. "github.com/tj/go-debug"
 )
 
 var debug = Debug("imaginary")
@@ -24,12 +25,14 @@ var (
 	aHelpl           = flag.Bool("help", false, "Show help")
 	aCors            = flag.Bool("cors", false, "Enable CORS support")
 	aGzip            = flag.Bool("gzip", false, "Enable gzip compression")
+	aAuthForwarding  = flag.Bool("enable-auth-forwarding", false, "Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors")
 	aEnableURLSource = flag.Bool("enable-url-source", false, "Enable remote HTTP URL image source processing")
 	aAlloweOrigins   = flag.String("allowed-origins", "", "Restrict remote image source processing to certain origins (separated by commas)")
 	aKey             = flag.String("key", "", "Define API key for authorization")
 	aMount           = flag.String("mount", "", "Mount server local directory")
 	aCertFile        = flag.String("certfile", "", "TLS certificate file path")
 	aKeyFile         = flag.String("keyfile", "", "TLS private key file path")
+	aAuthorization   = flag.String("authorization", "", "Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization")
 	aHttpCacheTtl    = flag.Int("http-cache-ttl", -1, "The TTL in seconds")
 	aReadTimeout     = flag.Int("http-read-timeout", 60, "HTTP read timeout in seconds")
 	aWriteTimeout    = flag.Int("http-write-timeout", 60, "HTTP write timeout in seconds")
@@ -47,6 +50,8 @@ Usage:
   imaginary -concurrency 10
   imaginary -enable-url-source
   imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
+  imaginary -enable-url-source -enable-auth-forwarding
+  imaginary -enable-url-source -authorization "Basic AwDJdL2DbwrD=="
   imaginary -h | -help
   imaginary -v | -version
 
@@ -62,10 +67,12 @@ Options:
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
-  -enable-url-source        Enable remote HTTP URL image source processing
-  -allowed-origins <urls>   Restrict remote image source processing to certain origins (separated by commas)
+  -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
+  -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
+  -allowed-origins <urls>   TLS certificate file path
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
+  -authorization <value>    Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization
   -concurreny <num>         Throttle concurrency limit per second [default: disabled]
   -burst <num>              Throttle burst max cache size [default: 100]
   -mrelease <num>           OS memory release inverval in seconds [default: 30]
@@ -95,6 +102,7 @@ func main() {
 		Address:          *aAddr,
 		Gzip:             *aGzip,
 		CORS:             *aCors,
+		AuthForwarding:   *aAuthForwarding,
 		EnableURLSource:  *aEnableURLSource,
 		ApiKey:           *aKey,
 		Concurrency:      *aConcurrency,
@@ -105,6 +113,7 @@ func main() {
 		HttpCacheTtl:     *aHttpCacheTtl,
 		HttpReadTimeout:  *aReadTimeout,
 		HttpWriteTimeout: *aWriteTimeout,
+		Authorization:    *aAuthorization,
 		AlloweOrigins:    parseOrigins(*aAlloweOrigins),
 	}
 

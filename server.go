@@ -18,11 +18,13 @@ type ServerOptions struct {
 	CORS             bool
 	Gzip             bool
 	EnableURLSource  bool
+	AuthForwarding   bool
 	Address          string
 	ApiKey           string
 	Mount            string
 	CertFile         string
 	KeyFile          string
+	Authorization    string
 	AlloweOrigins    []*url.URL
 }
 
