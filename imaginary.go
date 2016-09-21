@@ -134,6 +134,8 @@ func main() {
 
 	debug("imaginary server listening on port %d", port)
 
+	LoadEnvironment()
+
 	// Load image source providers
 	LoadSources(opts)
 

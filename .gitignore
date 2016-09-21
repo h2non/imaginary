@@ -38,3 +38,5 @@ bin/imaginary
 vendor/
 
 .idea/
+
+.env
