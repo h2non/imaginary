@@ -136,6 +136,8 @@ func main() {
 
 	LoadEnvironment()
 
+	fmt.Println("Testing pipeline features.")
+
 	// Load image source providers
 	LoadSources(opts)
 
