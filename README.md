@@ -1,7 +1,3 @@
-# imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://registry.hub.docker.com/u/h2non/imaginary/) [![Docker Registry](https://img.shields.io/docker/pulls/h2non/imaginary.svg)](https://registry.hub.docker.com/u/h2non/imaginary) [![Heroku](https://img.shields.io/badge/Heroku-Deploy_Now-blue.svg)](https://heroku.com/deploy) [![Go Report Card](http://goreportcard.com/badge/h2non/imaginary)](http://goreportcard.com/report/h2non/imaginary)
-
-<img src="http://s14.postimg.org/8th71a201/imaginary_world.jpg" width="100%" />
-
 **[Fast](#benchmarks) HTTP [microservice](http://microservices.io/patterns/microservices.html)** written in Go **for high-level image processing** backed by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). `imaginary` can be used as private or public HTTP service for massive image processing. 
 It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package for better [performance](#performance).
 
@@ -65,7 +61,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 ## Installation
 
 ```bash
-go get -u github.com/h2non/imaginary
+go get -u github.com/gospotcheck/gospotcheck-image-service
 ```
 
 ### libvips
@@ -79,21 +75,21 @@ The [install script](https://github.com/lovell/sharp/blob/master/preinstall.sh) 
 
 ### Docker
 
-See [Dockerfile](https://github.com/h2non/imaginary/blob/master/Dockerfile) for image details.
+See [Dockerfile](https://github.com/gospotcheck/gospotcheck-image-service/blob/master/Dockerfile) for image details.
 
 Fetch the image (comes with latest stable Go and libvips versions)
 ```
-docker pull h2non/imaginary
+docker pull gospotcheck/gospotcheck-image-service
 ```
 
 Start the container with optional flags (default listening on port 9000)
 ```
-docker run -p 9000:9000 h2non/imaginary -cors -gzip
+docker run -p 9000:9000 gospotcheck/gospotcheck-image-service -cors -gzip
 ```
 
 Start the container in debug mode:
 ```
-docker run -p 9000:9000 -e "DEBUG=*" h2non/imaginary 
+docker run -p 9000:9000 -e "DEBUG=*" gospotcheck/gospotcheck-image-service
 ```
 
 Enter to the interactive shell in a running container
@@ -103,10 +99,10 @@ sudo docker exec -it <containerIdOrName> bash
 
 Stop the container
 ```
-docker stop h2non/imaginary
+docker stop gospotcheck/gospotcheck-image-service
 ```
 
-You can see all the Docker tags [here](https://hub.docker.com/r/h2non/imaginary/tags/).
+You can see all the Docker tags [here](https://hub.docker.com/r/gospotcheck/gospotcheck-image-service/tags/).
 
 ### Heroku
 
@@ -118,7 +114,7 @@ Or alternatively you can follow the manual steps:
 
 Clone this repository:
 ```
-git clone https://github.com/h2non/imaginary.git
+git clone https://github.com/gospotcheck/gospotcheck-image-service.git
 ```
 
 Set the buildpack for your application
@@ -201,7 +197,7 @@ Here you can see some performance test comparisons for multiple scenarios:
 
 ## Benchmark
 
-See [benchmark.sh](https://github.com/h2non/imaginary/blob/master/benchmark.sh) for more details
+See [benchmark.sh](https://github.com/gospotcheck/gospotcheck-image-service/blob/master/benchmark.sh) for more details
 
 Environment: Go 1.4.2. libvips-7.42.3. OSX i7 2.7Ghz
 
@@ -329,7 +325,7 @@ curl -O "http://localhost:8088/crop?width=500&height=400&file=foo/bar/image.jpg"
 
 Fetching the image from a remote server (you must pass the `-enable-url-source` flag):
 ```
-curl -O "http://localhost:8088/crop?width=500&height=400&url=https://raw.githubusercontent.com/h2non/imaginary/master/fixtures/large.jpg"
+curl -O "http://localhost:8088/crop?width=500&height=400&url=https://raw.githubusercontent.com/gospotcheck/gospotcheck-image-service/master/fixtures/large.jpg"
 ```
 
 #### Playground
@@ -364,7 +360,7 @@ Here an example response error when the payload is empty:
 }
 ```
 
-See all the predefined supported errors [here](https://github.com/h2non/imaginary/blob/master/error.go#L19-L28).
+See all the predefined supported errors [here](https://github.com/gospotcheck/gospotcheck-image-service/blob/master/error.go#L19-L28).
 
 ### Form data
 
@@ -703,4 +699,4 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 MIT - Tomas Aparicio
 
-[![views](https://sourcegraph.com/api/repos/github.com/h2non/imaginary/.counters/views.svg)](https://sourcegraph.com/github.com/h2non/imaginary)
+[![views](https://sourcegraph.com/api/repos/github.com/gospotcheck/gospotcheck-image-service/.counters/views.svg)](https://sourcegraph.com/github.com/gospotcheck/gospotcheck-image-service)

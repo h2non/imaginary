@@ -1,1 +1,1 @@
-web: imaginary -cors -gzip
+web: imaginary $OPTIONS

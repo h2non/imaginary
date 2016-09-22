@@ -138,6 +138,10 @@ func main() {
 
 	debug("imaginary server listening on port :%d/%s", opts.Port, strings.TrimPrefix(opts.PathPrefix, "/"))
 
+	LoadEnvironment()
+
+	fmt.Println("Testing pipeline features.")
+
 	// Load image source providers
 	LoadSources(opts)
 
