@@ -39,7 +39,9 @@ func TestIsImageTypeSupported(t *testing.T) {
 		{"multipart/form-data; encoding=utf-8", false},
 		{"application/json", false},
 		{"image/gif", isModernVips},
+		{"image/svg+xml", isModernVips},
 		{"image/svg", isModernVips},
+		{"image/tiff", isModernVips},
 		{"application/pdf", isModernVips},
 		{"text/plain", false},
 		{"blablabla", false},
@@ -88,6 +90,9 @@ func TestGetImageMimeType(t *testing.T) {
 		{bimg.PNG, "image/png"},
 		{bimg.WEBP, "image/webp"},
 		{bimg.TIFF, "image/tiff"},
+		{bimg.GIF, "image/gif"},
+		{bimg.PDF, "application/pdf"},
+		{bimg.SVG, "image/svg+xml"},
 		{bimg.UNKNOWN, "image/jpeg"},
 	}
 

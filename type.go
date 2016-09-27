@@ -9,17 +9,24 @@ import (
 // ExtractImageTypeFromMime returns the MIME image type.
 func ExtractImageTypeFromMime(mime string) string {
 	mime = strings.Split(mime, ";")[0]
-	part := strings.Split(mime, "/")
-	if len(part) < 2 {
+	parts := strings.Split(mime, "/")
+	if len(parts) < 2 {
 		return ""
 	}
-	return strings.ToLower(part[1])
+	name := strings.Split(parts[1], "+")[0]
+	return strings.ToLower(name)
 }
 
 // IsImageMimeTypeSupported returns true if the image MIME
 // type is supported by bimg.
 func IsImageMimeTypeSupported(mime string) bool {
 	format := ExtractImageTypeFromMime(mime)
+
+	// Some payloads may expose the MIME type for SVG as text/xml
+	if format == "xml" {
+		format = "svg"
+	}
+
 	return bimg.IsTypeNameSupported(format)
 }
 
@@ -65,7 +72,7 @@ func GetImageMimeType(code bimg.ImageType) string {
 		return "image/gif"
 	}
 	if code == bimg.SVG {
-		return "image/svg"
+		return "image/svg+xml"
 	}
 	if code == bimg.PDF {
 		return "application/pdf"

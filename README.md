@@ -2,18 +2,18 @@
 
 <img src="http://s14.postimg.org/8th71a201/imaginary_world.jpg" width="100%" />
 
-**[Fast](#benchmarks) HTTP [microservice](http://microservices.io/patterns/microservices.html)** written in Go **for high-level image processing** backed by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). `imaginary` can be used as private or public HTTP service for massive image processing. 
+**[Fast](#benchmarks) HTTP [microservice](http://microservices.io/patterns/microservices.html)** written in Go **for high-level image processing** backed by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). `imaginary` can be used as private or public HTTP service for massive image processing.
 It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package for better [performance](#performance).
 
-Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api), 
+Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api),
 with additional optional features such as **API token authorization**, **gzip compression**, **HTTP traffic throttle** strategy and **CORS support** for web clients.
 
 `imaginary` **can read** images **from HTTP payloads**, **server local path** or **remote HTTP servers**, supporting **JPEG**, **PNG**, **WEBP** and **TIFF** formats and it's able to output to JPEG, PNG and WEBP, including transparent conversion across them.
 
-It uses internally libvips, a powerful and efficient library written in C for image processing 
-which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use) 
-and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick 
-settings or Go native `image` package, and in some cases it's even 8x faster processing JPEG images. 
+It uses internally libvips, a powerful and efficient library written in C for image processing
+which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use)
+and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick
+settings or Go native `image` package, and in some cases it's even 8x faster processing JPEG images.
 
 To get started, take a look the [installation](#installation) steps, [usage](#usage) cases and [API](#http-api) docs.
 
@@ -68,6 +68,11 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 go get -u github.com/h2non/imaginary
 ```
 
+Also, be sure you have the latest version of `bimg`:
+```bash
+go get -u gopkg.in/h2non/bimg.v1
+```
+
 ### libvips
 
 Run the following script as `sudo` (supports OSX, Debian/Ubuntu, Redhat, Fedora, Amazon Linux):
@@ -93,7 +98,7 @@ docker run -p 9000:9000 h2non/imaginary -cors -gzip
 
 Start the container in debug mode:
 ```
-docker run -p 9000:9000 -e "DEBUG=*" h2non/imaginary 
+docker run -p 9000:9000 -e "DEBUG=*" h2non/imaginary
 ```
 
 Enter to the interactive shell in a running container
@@ -112,7 +117,7 @@ You can see all the Docker tags [here](https://hub.docker.com/r/h2non/imaginary/
 
 Click on the Heroku button to easily deploy your app:
 
-[![Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy) 
+[![Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 Or alternatively you can follow the manual steps:
 
@@ -143,11 +148,11 @@ git push heroku master
 
 ### Recommended resources
 
-Given the multithreaded native nature of Go, in terms of CPUs, most cores means more concurrency and therefore, a better performance can be achieved. 
-From the other hand, in terms of memory, 512MB of RAM is usually enough for small services with low concurrency (<5 requests/second). 
+Given the multithreaded native nature of Go, in terms of CPUs, most cores means more concurrency and therefore, a better performance can be achieved.
+From the other hand, in terms of memory, 512MB of RAM is usually enough for small services with low concurrency (<5 requests/second).
 Up to 2GB for high-load HTTP service processing potentially large images or exposed to an eventual high concurrency.
 
-If you need to expose `imaginary` as public HTTP server, it's highly recommended to protect the service against DDoS-like attacks. 
+If you need to expose `imaginary` as public HTTP server, it's highly recommended to protect the service against DDoS-like attacks.
 `imaginary` has built-in support for HTTP concurrency throttle strategy to deal with this in a more convenient way and mitigate possible issues limiting the number of concurrent requests per second and caching the awaiting requests, if necessary.
 
 ### Production notes
@@ -192,11 +197,11 @@ Feel free to send a PR if you created a client for other language.
 
 ## Performance
 
-libvips is probably the faster open source solution for image processing. 
+libvips is probably the faster open source solution for image processing.
 Here you can see some performance test comparisons for multiple scenarios:
 
 - [libvips speed and memory usage](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use)
-- [sharp performance tests](https://github.com/lovell/sharp#the-task) 
+- [sharp performance tests](https://github.com/lovell/sharp#the-task)
 - [bimg](https://github.com/h2non/bimg#Performance) (Go library with C bindings to libvips)
 
 ## Benchmark
@@ -217,7 +222,7 @@ Status Codes  [code:count]      200:200
 
 ### Conclusions
 
-`imaginary` can deal efficiently with up to 20 request per second running in a multicore machine, 
+`imaginary` can deal efficiently with up to 20 request per second running in a multicore machine,
 where it crops a JPEG image of 5MB and spending per each request less than 100 ms
 
 The most expensive image operation under high concurrency scenarios (> 20 req/sec) is the image enlargement, which requires a considerable amount of math operations to scale the original image. In this kind of operation the required processing time usually grows over the time if you're stressing the server continuously. The advice here is as simple as taking care about the number of concurrent enlarge operations to avoid server performance bottlenecks.
@@ -268,7 +273,7 @@ imaginary -p 8080
 
 Also, you can pass the port as environment variable:
 ```bash
-PORT=8080 imaginary 
+PORT=8080 imaginary
 ```
 
 Enable HTTP server throttle strategy (max 10 requests/second):
@@ -296,8 +301,8 @@ Or alternatively you can manually define an authorization header value that will
 imaginary -p 8080 -enable-url-source -authorization "Bearer s3cr3t"
 ```
 
-Send caching headers (only possible with the -mount option). The headers can be set in either "cache nothing" or 
-"cache for N seconds". By specifying 0 Imaginary will send the "don't cache" headers, otherwise it sends headers with a 
+Send caching headers (only possible with the -mount option). The headers can be set in either "cache nothing" or
+"cache for N seconds". By specifying 0 Imaginary will send the "don't cache" headers, otherwise it sends headers with a
 TTL. The following example informs the client to cache the result for 1 year:
 ```
 imaginary -mount ~/images -http-cache-ttl 31556926
@@ -338,7 +343,7 @@ curl -O "http://localhost:8088/crop?width=500&height=400&url=https://raw.githubu
 
 ### Authorization
 
-imaginary supports a simple token-based API authorization. 
+imaginary supports a simple token-based API authorization.
 To enable it, you should pass the `-key` flag to the binary.
 
 API token can be defined as HTTP header (`API-Key`) or query param (`key`).
@@ -370,11 +375,11 @@ If you're pushing images to `imaginary` as `multipart/form-data` (you can do it 
 
 ### Params
 
-Complete list of available params. Take a look to each specific endpoint to see which params are supported. 
+Complete list of available params. Take a look to each specific endpoint to see which params are supported.
 Image measures are always in pixels, unless otherwise indicated.
 
 - **width**       `int`   - Width of image area to extract/resize
-- **height**      `int`   - Height of image area to extract/resize 
+- **height**      `int`   - Height of image area to extract/resize
 - **top**         `int`   - Top edge of area to extract. Example: `100`
 - **left**        `int`   - Left edge of area to extract. Example: `100`
 - **areawidth**   `int`   - Height area to extract. Example: `300`
@@ -438,7 +443,7 @@ Content Type: `text/html`
 Serves an ugly HTML form, just for testing/playground purposes
 
 #### GET | POST /info
-Accepts: `image/*, multipart/form-data`. Content-Type: `application/json` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `application/json`
 
 Returns the image metadata as JSON:
 ```json
@@ -455,7 +460,7 @@ Returns the image metadata as JSON:
 ```
 
 #### GET | POST /crop
-Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 Crop the image by a given width or height. Image ratio is maintained
 
@@ -479,7 +484,7 @@ Crop the image by a given width or height. Image ratio is maintained
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /resize
-Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 Resize an image by width or height. Image aspect ratio is maintained
 
@@ -502,7 +507,7 @@ Resize an image by width or height. Image aspect ratio is maintained
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /enlarge
-Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 ##### Allowed params
 
@@ -523,7 +528,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /extract
-Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 ##### Allowed params
 
@@ -532,7 +537,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - areawidth `int` `required`
 - areaheight `int`
 - width `int`
-- height `int` 
+- height `int`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
 - type `string`
@@ -548,16 +553,16 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /zoom
-Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 ##### Allowed params
 
 - factor `number` `required`
 - width `int`
-- height `int` 
+- height `int`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
-- type `string` 
+- type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
@@ -570,12 +575,12 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /thumbnail
-Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 ##### Allowed params
 
 - width `int`
-- height `int` 
+- height `int`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
 - type `string`
@@ -591,13 +596,13 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /rotate
-Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 ##### Allowed params
 
 - rotate `int` `required`
 - width `int`
-- height `int` 
+- height `int`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
 - type `string`
@@ -612,12 +617,12 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /flip
-Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 ##### Allowed params
 
 - width `int`
-- height `int` 
+- height `int`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
 - type `string`
@@ -632,12 +637,12 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /flop
-Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 ##### Allowed params
 
 - width `int`
-- height `int` 
+- height `int`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
 - type `string`
@@ -652,7 +657,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /convert
-Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 ##### Allowed params
 
@@ -671,7 +676,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /watermark
-Accepts: `image/*, multipart/form-data`. Content-Type: `image/*` 
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 ##### Allowed params
 
@@ -682,7 +687,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - opacity `float`
 - noreplicate `bool`
 - font `string`
-- color `string` 
+- color `string`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
 - type `string`

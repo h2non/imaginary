@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
+	"gopkg.in/h2non/bimg.v1"
 	"gopkg.in/h2non/filetype.v0"
 )
 
@@ -58,6 +60,13 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation 
 		kind, err := filetype.Get(buf)
 		if err != nil && kind.MIME.Value != "" {
 			mimeType = kind.MIME.Value
+		}
+	}
+
+	// Infer text/plain responses as potential SVG image
+	if strings.Contains(mimeType, "text/plain") && len(buf) > 256 {
+		if bimg.IsSVGImage(buf) {
+			mimeType = "image/svg+xml"
 		}
 	}
 

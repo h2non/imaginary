@@ -1,7 +1,7 @@
 package: github.com/h2non/imaginary
 import:
 - package: gopkg.in/h2non/bimg.v1
-  version: ^0.1.21
+  version: ^1
 - package: gopkg.in/throttled/throttled.v2
   version: ^2
 - package: gopkg.in/h2non/filetype.v0
