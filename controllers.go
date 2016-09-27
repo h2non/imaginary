@@ -64,7 +64,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation 
 	}
 
 	// Infer text/plain responses as potential SVG image
-	if strings.Contains(mimeType, "text/plain") && len(buf) > 256 {
+	if strings.Contains(mimeType, "text/plain") && len(buf) > 8 {
 		if bimg.IsSVGImage(buf) {
 			mimeType = "image/svg+xml"
 		}
