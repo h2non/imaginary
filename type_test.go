@@ -26,6 +26,7 @@ func TestExtractImageTypeFromMime(t *testing.T) {
 }
 
 func TestIsImageTypeSupported(t *testing.T) {
+	isModernVips := bimg.VipsMajorVersion >= 8 && bimg.VipsMinorVersion >= 3
 	files := []struct {
 		name     string
 		expected bool
@@ -37,7 +38,9 @@ func TestIsImageTypeSupported(t *testing.T) {
 		{"png", false},
 		{"multipart/form-data; encoding=utf-8", false},
 		{"application/json", false},
-		{"image/gif", false},
+		{"image/gif", isModernVips},
+		{"image/svg", isModernVips},
+		{"application/pdf", isModernVips},
 		{"text/plain", false},
 		{"blablabla", false},
 		{"", false},
@@ -59,8 +62,9 @@ func TestImageType(t *testing.T) {
 		{"png", bimg.PNG},
 		{"webp", bimg.WEBP},
 		{"tiff", bimg.TIFF},
-		{"gif", bimg.UNKNOWN},
-		{"svg", bimg.UNKNOWN},
+		{"gif", bimg.GIF},
+		{"svg", bimg.SVG},
+		{"pdf", bimg.PDF},
 		{"multipart/form-data; encoding=utf-8", bimg.UNKNOWN},
 		{"json", bimg.UNKNOWN},
 		{"text", bimg.UNKNOWN},
