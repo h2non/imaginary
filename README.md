@@ -8,7 +8,9 @@ It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net
 Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api),
 with additional optional features such as **API token authorization**, **gzip compression**, **HTTP traffic throttle** strategy and **CORS support** for web clients.
 
-`imaginary` **can read** images **from HTTP payloads**, **server local path** or **remote HTTP servers**, supporting **JPEG**, **PNG**, **WEBP** and **TIFF** formats and it's able to output to JPEG, PNG and WEBP, including transparent conversion across them.
+`imaginary` **can read** images **from HTTP payloads**, **server local path** or **remote HTTP servers**, supporting **JPEG**, **PNG**, **WEBP**, and optionally **TIFF**, **PDF**, **GIF** and **SVG** formats if `libvips@8.3+` is compiled with proper library bindings.
+
+`imaginary` is able to output images as JPEG, PNG and WEBP formats, including transparent conversion across them.
 
 It uses internally libvips, a powerful and efficient library written in C for image processing
 which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use)
@@ -58,7 +60,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 
 ## Prerequisites
 
-- [libvips](https://github.com/jcupitt/libvips) v7.40.0+ (7.42.0+ recommended)
+- [libvips](https://github.com/jcupitt/libvips) v7.40.0+ or 8+ (8.3+ recommended)
 - C compatible compiler such as gcc 4.6+ or clang 3.0+
 - Go 1.3+
 
@@ -298,7 +300,7 @@ imaginary -p 8080 -enable-url-source -enable-auth-forwarding
 ```
 
 Or alternatively you can manually define an constant Authorization header value that will be always sent when fetching images from remote image origins. If defined, `X-Forward-Authorization` or `Authorization` headers won't be forwarded, and therefore ignored, if present.
-**Note**: 
+**Note**:
 ```
 imaginary -p 8080 -enable-url-source -authorization "Bearer s3cr3t"
 ```
