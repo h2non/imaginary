@@ -254,11 +254,11 @@ Options:
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
   -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
-  -enable-auth-forwarding   Forwards Authorization or X-Forward-Authorization headers to the image source server. -enable-url-source flag must be defined
+  -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
   -allowed-origins <urls>   TLS certificate file path
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
-  -authorization <value>    Defines the Authorization header value passed to the image source server
+  -authorization <value>    Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization
   -concurreny <num>         Throttle concurrency limit per second [default: disabled]
   -burst <num>              Throttle burst max cache size [default: 100]
   -mrelease <num>           OS memory release inverval in seconds [default: 30]
@@ -291,12 +291,14 @@ Mount local directory (then you can do GET request passing the `file=image.jpg` 
 imaginary -p 8080 -mount ~/images
 ```
 
-Enable authorization header forwarding to image origin server:
+Enable authorization header forwarding to image origin server. `X-Forward-Authorization` or `Authorization` (by priority) header value will be forwarded as `Authorization` header to the target origin server, if one of those headers are present in the incoming HTTP request.
+Security tip: secure your server from public access to prevent attack vectors when enabling this option:
 ```
 imaginary -p 8080 -enable-url-source -enable-auth-forwarding
 ```
 
-Or alternatively you can manually define an authorization header value that will be always sent when fetching images from remote image origins:
+Or alternatively you can manually define an constant Authorization header value that will be always sent when fetching images from remote image origins. If defined, `X-Forward-Authorization` or `Authorization` headers won't be forwarded, and therefore ignored, if present.
+**Note**: 
 ```
 imaginary -p 8080 -enable-url-source -authorization "Bearer s3cr3t"
 ```
