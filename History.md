@@ -3,6 +3,7 @@
 - feat(#90): adds `path-prefix` flag to bind to an url path.
 - feat(core): adds support for `bimg@1.0.2` and `libvips@8.3+`.
 - feat(core): adds support for GIF, SVG, TIFF and PDF formats.
+- fix(controllers): fix application/octet-stream image processing issue.
 
 ## 0.1.26 / 05-09-2016
 
