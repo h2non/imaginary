@@ -53,7 +53,7 @@ func listenAndServe(s *http.Server, o ServerOptions) error {
 }
 
 func join(o ServerOptions, route string) string {
-	return path.Join(o.PathPrefix, "/")
+	return path.Join(o.PathPrefix, route)
 }
 
 // NewServerMux creates a new HTTP server route multiplexer.
