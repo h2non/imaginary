@@ -52,26 +52,31 @@ func listenAndServe(s *http.Server, o ServerOptions) error {
 	return s.ListenAndServe()
 }
 
+func join(o ServerOptions, route string) string {
+	return path.Join(o.PathPrefix, "/")
+}
+
+// NewServerMux creates a new HTTP server route multiplexer.
 func NewServerMux(o ServerOptions) http.Handler {
 	mux := http.NewServeMux()
 
-	mux.Handle(path.Join(o.PathPrefix, "/"), Middleware(indexController, o))
-	mux.Handle(path.Join(o.PathPrefix, "/form"), Middleware(formController, o))
-	mux.Handle(path.Join(o.PathPrefix, "/health"), Middleware(healthController, o))
+	mux.Handle(join(o, "/"), Middleware(indexController, o))
+	mux.Handle(join(o, "/form"), Middleware(formController, o))
+	mux.Handle(join(o, "/health"), Middleware(healthController, o))
 
 	image := ImageMiddleware(o)
-	mux.Handle(path.Join(o.PathPrefix, "/resize"), image(Resize))
-	mux.Handle(path.Join(o.PathPrefix, "/enlarge"), image(Enlarge))
-	mux.Handle(path.Join(o.PathPrefix, "/extract"), image(Extract))
-	mux.Handle(path.Join(o.PathPrefix, "/crop"), image(Crop))
-	mux.Handle(path.Join(o.PathPrefix, "/rotate"), image(Rotate))
-	mux.Handle(path.Join(o.PathPrefix, "/flip"), image(Flip))
-	mux.Handle(path.Join(o.PathPrefix, "/flop"), image(Flop))
-	mux.Handle(path.Join(o.PathPrefix, "/thumbnail"), image(Thumbnail))
-	mux.Handle(path.Join(o.PathPrefix, "/zoom"), image(Zoom))
-	mux.Handle(path.Join(o.PathPrefix, "/convert"), image(Convert))
-	mux.Handle(path.Join(o.PathPrefix, "/watermark"), image(Watermark))
-	mux.Handle(path.Join(o.PathPrefix, "/info"), image(Info))
+	mux.Handle(join(o, "/resize"), image(Resize))
+	mux.Handle(join(o, "/enlarge"), image(Enlarge))
+	mux.Handle(join(o, "/extract"), image(Extract))
+	mux.Handle(join(o, "/crop"), image(Crop))
+	mux.Handle(join(o, "/rotate"), image(Rotate))
+	mux.Handle(join(o, "/flip"), image(Flip))
+	mux.Handle(join(o, "/flop"), image(Flop))
+	mux.Handle(join(o, "/thumbnail"), image(Thumbnail))
+	mux.Handle(join(o, "/zoom"), image(Zoom))
+	mux.Handle(join(o, "/convert"), image(Convert))
+	mux.Handle(join(o, "/watermark"), image(Watermark))
+	mux.Handle(join(o, "/info"), image(Info))
 
 	return mux
 }
