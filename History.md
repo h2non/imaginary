@@ -4,6 +4,7 @@
 - feat(core): adds support for `bimg@1.0.3` and `libvips@8.3+`.
 - feat(core): adds support for GIF, SVG, TIFF and PDF formats.
 - fix(controllers): fix application/octet-stream image processing issue.
+- feat(docker): use Go 1.7.1 in Docker image.
 
 ## 0.1.26 / 05-09-2016
 
