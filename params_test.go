@@ -14,7 +14,7 @@ func TestReadParams(t *testing.T) {
 	q.Add("noreplicate", "1")
 	q.Add("opacity", "0.2")
 	q.Add("text", "hello")
-	q.Add("background", "255,255,255")
+	q.Add("background", "255,10,20")
 
 	params := readParams(q)
 
@@ -23,7 +23,9 @@ func TestReadParams(t *testing.T) {
 		params.NoReplicate == true &&
 		params.Opacity == 0.2 &&
 		params.Text == "hello" &&
-		params.Background[1] == 255
+		params.Background[0] == 255 &&
+		params.Background[1] == 10 &&
+		params.Background[2] == 20
 
 	if assert == false {
 		t.Error("Invalid params")
