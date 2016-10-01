@@ -1,3 +1,9 @@
+## 0.1.28 / 01-10-2016
+
+- feat(#95): use `libvips@8.4.1`.
+- fix(#75): use `bimg@1.0.5´, which provides extract area fix.
+- feat(api): supports `extend` and `embed` query params. See HTTP API params docs for more details.
+
 ## 0.1.27 / 27-09-2016
 
 - feat(#90): adds `path-prefix` flag to bind to an url path.

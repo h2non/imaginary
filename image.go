@@ -72,13 +72,6 @@ func Resize(buf []byte, o ImageOptions) (Image, error) {
 		opts.Crop = true
 	}
 
-	if len(o.Background) > 2 {
-		meta, err := bimg.Metadata(buf)
-		if err == nil && meta.Alpha {
-			opts.Background = bimg.Color{o.Background[0], o.Background[1], o.Background[2]}
-		}
-	}
-
 	return Process(buf, opts)
 }
 
@@ -98,11 +91,8 @@ func Enlarge(buf []byte, o ImageOptions) (Image, error) {
 }
 
 func Extract(buf []byte, o ImageOptions) (Image, error) {
-	if o.Top == 0 || o.Left == 0 {
-		return Image{}, NewError("Missing required params: top, left", BadRequest)
-	}
 	if o.AreaWidth == 0 || o.AreaHeight == 0 {
-		return Image{}, NewError("Missing required params: areawidth, areaheight", BadRequest)
+		return Image{}, NewError("Missing required params: areawidth or areaheight", BadRequest)
 	}
 
 	opts := BimgOptions(o)
@@ -187,13 +177,6 @@ func Convert(buf []byte, o ImageOptions) (Image, error) {
 		return Image{}, NewError("Invalid image type: "+o.Type, BadRequest)
 	}
 	opts := BimgOptions(o)
-
-	if len(o.Background) > 2 {
-		meta, err := bimg.Metadata(buf)
-		if err == nil && meta.Alpha {
-			opts.Background = bimg.Color{o.Background[0], o.Background[1], o.Background[2]}
-		}
-	}
 
 	return Process(buf, opts)
 }

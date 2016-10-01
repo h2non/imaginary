@@ -3,6 +3,8 @@ package main
 import (
 	"net/url"
 	"testing"
+
+	bimg "gopkg.in/h2non/bimg.v1"
 )
 
 const fixture = "fixtures/large.jpg"
@@ -120,6 +122,29 @@ func TestParseColor(t *testing.T) {
 
 		if assert == false {
 			t.Errorf("Invalid color schema: %#v <> %#v", color.expected, c)
+		}
+	}
+}
+
+func TestParseExtend(t *testing.T) {
+	cases := []struct {
+		value    string
+		expected bimg.Extend
+	}{
+		{"white", bimg.ExtendWhite},
+		{"black", bimg.ExtendBlack},
+		{"copy", bimg.ExtendCopy},
+		{"mirror", bimg.ExtendMirror},
+		{"background", bimg.ExtendBackground},
+		{" BACKGROUND  ", bimg.ExtendBackground},
+		{"invalid", bimg.ExtendBlack},
+		{"", bimg.ExtendBlack},
+	}
+
+	for _, extend := range cases {
+		c := parseExtendMode(extend.value)
+		if c != extend.expected {
+			t.Errorf("Invalid extend value : %d != %d", c, extend.expected)
 		}
 	}
 }

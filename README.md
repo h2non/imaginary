@@ -52,7 +52,8 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 - Flop
 - Zoom
 - Thumbnail
-- Extract area
+- Configurable image area extraction
+- Embed/Extend image, supporting multiple modes (white, black, mirror, copy or custom background color)
 - Watermark (customizable by text)
 - Custom output color space (RGB, black/white...)
 - Format conversion (with additional quality/compression settings)
