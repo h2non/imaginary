@@ -58,6 +58,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 - Custom output color space (RGB, black/white...)
 - Format conversion (with additional quality/compression settings)
 - Info (image size, format, orientation, alpha...)
+- Reply with default or custom placeholder image in case of error.
 
 ## Prerequisites
 
@@ -237,11 +238,14 @@ Usage:
   imaginary -p 80
   imaginary -cors -gzip
   imaginary -concurrency 10
+  imaginary -path-prefix /api/v1
   imaginary -enable-url-source
   imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
   imaginary -enable-url-source -enable-auth-forwarding
   imaginary -enable-url-source -authorization "Basic AwDJdL2DbwrD=="
-  imaginary -h | -help
+	imaginary -enable-placeholder
+	imaginery -enable-url-source -placeholder ./placeholder.jpg
+	imaginary -h | -help
   imaginary -v | -version
 
 Options:
@@ -249,6 +253,7 @@ Options:
   -p <port>                 bind port [default: 8088]
   -h, -help                 output help
   -v, -version              output version
+  -path-prefix <value>      Url path prefix to listen to [default: "/"]
   -cors                     Enable CORS support [default: false]
   -gzip                     Enable gzip compression [default: false]
   -key <key>                Define API key for authorization
@@ -257,14 +262,16 @@ Options:
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
   -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
+	-enable-placeholder       Enable image response placeholder to be used in case of error [default: false]
   -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
   -allowed-origins <urls>   TLS certificate file path
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
   -authorization <value>    Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization
-  -concurreny <num>         Throttle concurrency limit per second [default: disabled]
+  -placeholder <path>       Image path to image custom placeholder to be used in case of error. Recommended minimum image size is: 1200x1200
+	-concurreny <num>         Throttle concurrency limit per second [default: disabled]
   -burst <num>              Throttle burst max cache size [default: 100]
-  -mrelease <num>           OS memory release inverval in seconds [default: 30]
+  -mrelease <num>           OS memory release interval in seconds [default: 30]
   -cpus <num>               Number of used cpu cores.
                             (default for current machine is 8 cores)
 ```
@@ -373,6 +380,21 @@ Here an example response error when the payload is empty:
 ```
 
 See all the predefined supported errors [here](https://github.com/h2non/imaginary/blob/master/error.go#L19-L28).
+
+#### Placeholder
+
+If `-enable-placeholder` or `-placeholder <image path>` flags are passed to `imaginary`, a placeholder image will be used in case of error or invalid request input.
+
+If `-enable-placeholder` is passed, the default `imaginary` placeholder image will be used, however you can customized it via `-placeholder` flag, loading a custom compatible image from the file system.
+
+Since `imaginary` has been partially designed to be used as public HTTP service, including web pages, in certain scenarios the response MIME type must be respected,
+so the server will always reply with a placeholder image in case of error, such as image processing error, read error, payload error, request invalid request or any other.
+
+You can customize the placeholder image passing the `-placeholder <image path>` flag when starting `imaginary`.
+
+In this scenarios, the error message details will be exposed in the `Error` response header field as JSON for further inspection from API clients.
+
+In some edge cases the placeholder image resizing might fail, so a 400 Bad Request will be used as response status and the `Content-Type` will be `application/json` with the proper message info. Note that this scenario won't be common.
 
 ### Form data
 

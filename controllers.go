@@ -12,7 +12,7 @@ import (
 
 func indexController(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		ErrorReply(w, ErrNotFound)
+		ErrorReply(r, w, ErrNotFound, ServerOptions{})
 		return
 	}
 
@@ -32,26 +32,26 @@ func imageController(o ServerOptions, operation Operation) func(http.ResponseWri
 	return func(w http.ResponseWriter, req *http.Request) {
 		var imageSource = MatchSource(req)
 		if imageSource == nil {
-			ErrorReply(w, ErrMissingImageSource)
+			ErrorReply(req, w, ErrMissingImageSource, o)
 			return
 		}
 
 		buf, err := imageSource.GetImage(req)
 		if err != nil {
-			ErrorReply(w, NewError(err.Error(), BadRequest))
+			ErrorReply(req, w, NewError(err.Error(), BadRequest), o)
 			return
 		}
 
 		if len(buf) == 0 {
-			ErrorReply(w, ErrEmptyBody)
+			ErrorReply(req, w, ErrEmptyBody, o)
 			return
 		}
 
-		imageHandler(w, req, buf, operation)
+		imageHandler(w, req, buf, operation, o)
 	}
 }
 
-func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation Operation) {
+func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation Operation, o ServerOptions) {
 	// Infer the body MIME type via mimesniff algorithm
 	mimeType := http.DetectContentType(buf)
 
@@ -72,19 +72,19 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation 
 
 	// Finally check if image MIME type is supported
 	if IsImageMimeTypeSupported(mimeType) == false {
-		ErrorReply(w, ErrUnsupportedMedia)
+		ErrorReply(r, w, ErrUnsupportedMedia, o)
 		return
 	}
 
 	opts := readParams(r.URL.Query())
 	if opts.Type != "" && ImageType(opts.Type) == 0 {
-		ErrorReply(w, ErrOutputFormat)
+		ErrorReply(r, w, ErrOutputFormat, o)
 		return
 	}
 
 	image, err := Operation.Run(buf, opts)
 	if err != nil {
-		ErrorReply(w, NewError("Error while processing the image: "+err.Error(), BadRequest))
+		ErrorReply(r, w, NewError("Error while processing the image: "+err.Error(), BadRequest), o)
 		return
 	}
 

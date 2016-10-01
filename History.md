@@ -3,6 +3,7 @@
 - feat(#95): use `libvips@8.4.1`.
 - fix(#75): use `bimg@1.0.5´, which provides extract area fix.
 - feat(api): supports `extend` and `embed` query params. See HTTP API params docs for more details.
+- feat(#94): add placeholder image support in case of error.
 
 ## 0.1.27 / 27-09-2016
 

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"net/url"
 	"os"
 	"runtime"
@@ -11,36 +12,40 @@ import (
 	"strings"
 	"time"
 
+	bimg "gopkg.in/h2non/bimg.v1"
+
 	. "github.com/tj/go-debug"
 )
 
 var debug = Debug("imaginary")
 
 var (
-	aAddr            = flag.String("a", "", "bind address")
-	aPort            = flag.Int("p", 8088, "port to listen")
-	aVers            = flag.Bool("v", false, "Show version")
-	aVersl           = flag.Bool("version", false, "Show version")
-	aHelp            = flag.Bool("h", false, "Show help")
-	aHelpl           = flag.Bool("help", false, "Show help")
-	aPathPrefix      = flag.String("path-prefix", "/", "Url path prefix to listen to")
-	aCors            = flag.Bool("cors", false, "Enable CORS support")
-	aGzip            = flag.Bool("gzip", false, "Enable gzip compression")
-	aAuthForwarding  = flag.Bool("enable-auth-forwarding", false, "Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors")
-	aEnableURLSource = flag.Bool("enable-url-source", false, "Enable remote HTTP URL image source processing")
-	aAlloweOrigins   = flag.String("allowed-origins", "", "Restrict remote image source processing to certain origins (separated by commas)")
-	aKey             = flag.String("key", "", "Define API key for authorization")
-	aMount           = flag.String("mount", "", "Mount server local directory")
-	aCertFile        = flag.String("certfile", "", "TLS certificate file path")
-	aKeyFile         = flag.String("keyfile", "", "TLS private key file path")
-	aAuthorization   = flag.String("authorization", "", "Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization")
-	aHttpCacheTtl    = flag.Int("http-cache-ttl", -1, "The TTL in seconds")
-	aReadTimeout     = flag.Int("http-read-timeout", 60, "HTTP read timeout in seconds")
-	aWriteTimeout    = flag.Int("http-write-timeout", 60, "HTTP write timeout in seconds")
-	aConcurrency     = flag.Int("concurrency", 0, "Throttle concurrency limit per second")
-	aBurst           = flag.Int("burst", 100, "Throttle burst max cache size")
-	aMRelease        = flag.Int("mrelease", 30, "OS memory release inverval in seconds")
-	aCpus            = flag.Int("cpus", runtime.GOMAXPROCS(-1), "Number of cpu cores to use")
+	aAddr              = flag.String("a", "", "bind address")
+	aPort              = flag.Int("p", 8088, "port to listen")
+	aVers              = flag.Bool("v", false, "Show version")
+	aVersl             = flag.Bool("version", false, "Show version")
+	aHelp              = flag.Bool("h", false, "Show help")
+	aHelpl             = flag.Bool("help", false, "Show help")
+	aPathPrefix        = flag.String("path-prefix", "/", "Url path prefix to listen to")
+	aCors              = flag.Bool("cors", false, "Enable CORS support")
+	aGzip              = flag.Bool("gzip", false, "Enable gzip compression")
+	aAuthForwarding    = flag.Bool("enable-auth-forwarding", false, "Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors")
+	aEnableURLSource   = flag.Bool("enable-url-source", false, "Enable remote HTTP URL image source processing")
+	aEnablePlaceholder = flag.Bool("enable-placeholder", false, "Enable image response placeholder to be used in case of error")
+	aAlloweOrigins     = flag.String("allowed-origins", "", "Restrict remote image source processing to certain origins (separated by commas)")
+	aKey               = flag.String("key", "", "Define API key for authorization")
+	aMount             = flag.String("mount", "", "Mount server local directory")
+	aCertFile          = flag.String("certfile", "", "TLS certificate file path")
+	aKeyFile           = flag.String("keyfile", "", "TLS private key file path")
+	aAuthorization     = flag.String("authorization", "", "Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization")
+	aPlaceholder       = flag.String("placeholder", "", "Image path to image custom placeholder to be used in case of error. Recommended minimum image size is: 1200x1200")
+	aHttpCacheTtl      = flag.Int("http-cache-ttl", -1, "The TTL in seconds")
+	aReadTimeout       = flag.Int("http-read-timeout", 60, "HTTP read timeout in seconds")
+	aWriteTimeout      = flag.Int("http-write-timeout", 60, "HTTP write timeout in seconds")
+	aConcurrency       = flag.Int("concurrency", 0, "Throttle concurrency limit per second")
+	aBurst             = flag.Int("burst", 100, "Throttle burst max cache size")
+	aMRelease          = flag.Int("mrelease", 30, "OS memory release interval in seconds")
+	aCpus              = flag.Int("cpus", runtime.GOMAXPROCS(-1), "Number of cpu cores to use")
 )
 
 const usage = `imaginary %s
@@ -54,7 +59,9 @@ Usage:
   imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
   imaginary -enable-url-source -enable-auth-forwarding
   imaginary -enable-url-source -authorization "Basic AwDJdL2DbwrD=="
-  imaginary -h | -help
+	imaginary -enable-placeholder
+	imaginery -enable-url-source -placeholder ./placeholder.jpg
+	imaginary -h | -help
   imaginary -v | -version
 
 Options:
@@ -71,14 +78,16 @@ Options:
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
   -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
+	-enable-placeholder       Enable image response placeholder to be used in case of error [default: false]
   -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
   -allowed-origins <urls>   TLS certificate file path
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
   -authorization <value>    Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization
-  -concurreny <num>         Throttle concurrency limit per second [default: disabled]
+  -placeholder <path>       Image path to image custom placeholder to be used in case of error. Recommended minimum image size is: 1200x1200
+	-concurreny <num>         Throttle concurrency limit per second [default: disabled]
   -burst <num>              Throttle burst max cache size [default: 100]
-  -mrelease <num>           OS memory release inverval in seconds [default: 30]
+  -mrelease <num>           OS memory release interval in seconds [default: 30]
   -cpus <num>               Number of used cpu cores.
                             (default for current machine is %d cores)
 `
@@ -101,24 +110,26 @@ func main() {
 
 	port := getPort(*aPort)
 	opts := ServerOptions{
-		Port:             port,
-		Address:          *aAddr,
-		Gzip:             *aGzip,
-		CORS:             *aCors,
-		AuthForwarding:   *aAuthForwarding,
-		EnableURLSource:  *aEnableURLSource,
-		PathPrefix:       *aPathPrefix,
-		ApiKey:           *aKey,
-		Concurrency:      *aConcurrency,
-		Burst:            *aBurst,
-		Mount:            *aMount,
-		CertFile:         *aCertFile,
-		KeyFile:          *aKeyFile,
-		HttpCacheTtl:     *aHttpCacheTtl,
-		HttpReadTimeout:  *aReadTimeout,
-		HttpWriteTimeout: *aWriteTimeout,
-		Authorization:    *aAuthorization,
-		AlloweOrigins:    parseOrigins(*aAlloweOrigins),
+		Port:              port,
+		Address:           *aAddr,
+		Gzip:              *aGzip,
+		CORS:              *aCors,
+		AuthForwarding:    *aAuthForwarding,
+		EnableURLSource:   *aEnableURLSource,
+		EnablePlaceholder: *aEnablePlaceholder,
+		PathPrefix:        *aPathPrefix,
+		ApiKey:            *aKey,
+		Concurrency:       *aConcurrency,
+		Burst:             *aBurst,
+		Mount:             *aMount,
+		CertFile:          *aCertFile,
+		KeyFile:           *aKeyFile,
+		Placeholder:       *aPlaceholder,
+		HttpCacheTtl:      *aHttpCacheTtl,
+		HttpReadTimeout:   *aReadTimeout,
+		HttpWriteTimeout:  *aWriteTimeout,
+		Authorization:     *aAuthorization,
+		AlloweOrigins:     parseOrigins(*aAlloweOrigins),
 	}
 
 	// Create a memory release goroutine
@@ -136,6 +147,24 @@ func main() {
 		checkHttpCacheTtl(*aHttpCacheTtl)
 	}
 
+	// Read placeholder image, if required
+	if *aPlaceholder != "" {
+		buf, err := ioutil.ReadFile(*aPlaceholder)
+		if err != nil {
+			exitWithError("cannot start the server: %s", err)
+		}
+
+		imageType := bimg.DetermineImageType(buf)
+		if !bimg.IsImageTypeSupportedByVips(imageType) {
+			exitWithError("Placeholder image type is not supported. Only JPEG, PNG or WEBP are supported")
+		}
+
+		opts.PlaceholderImage = buf
+	} else if *aEnablePlaceholder {
+		// Expose default placeholder
+		opts.PlaceholderImage = placeholder
+	}
+
 	debug("imaginary server listening on port :%d/%s", opts.Port, strings.TrimPrefix(opts.PathPrefix, "/"))
 
 	// Load image source providers
@@ -144,7 +173,7 @@ func main() {
 	// Start the server
 	err := Server(opts)
 	if err != nil {
-		exitWithError("cannot start the server: %s\n", err)
+		exitWithError("cannot start the server: %s", err)
 	}
 }
 
@@ -171,10 +200,10 @@ func showVersion() {
 func checkMountDirectory(path string) {
 	src, err := os.Stat(path)
 	if err != nil {
-		exitWithError("error while mounting directory: %s\n", err)
+		exitWithError("error while mounting directory: %s", err)
 	}
 	if src.IsDir() == false {
-		exitWithError("mount path is not a directory: %s\n", path)
+		exitWithError("mount path is not a directory: %s", path)
 	}
 	if path == "/" {
 		exitWithError("cannot mount root directory for security reasons")
@@ -217,6 +246,6 @@ func memoryRelease(interval int) {
 }
 
 func exitWithError(format string, args ...interface{}) {
-	fmt.Fprintf(os.Stderr, format, args)
+	fmt.Fprintf(os.Stderr, format+"\n", args)
 	os.Exit(1)
 }

@@ -303,7 +303,7 @@ func TestMountInvalidPath(t *testing.T) {
 func controller(op Operation) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		buf, _ := ioutil.ReadAll(r.Body)
-		imageHandler(w, r, buf, op)
+		imageHandler(w, r, buf, op, ServerOptions{})
 	}
 }
 

@@ -10,24 +10,27 @@ import (
 )
 
 type ServerOptions struct {
-	Port             int
-	Burst            int
-	Concurrency      int
-	HttpCacheTtl     int
-	HttpReadTimeout  int
-	HttpWriteTimeout int
-	CORS             bool
-	Gzip             bool
-	EnableURLSource  bool
-	AuthForwarding   bool
-	Address          string
-	PathPrefix       string
-	ApiKey           string
-	Mount            string
-	CertFile         string
-	KeyFile          string
-	Authorization    string
-	AlloweOrigins    []*url.URL
+	Port              int
+	Burst             int
+	Concurrency       int
+	HttpCacheTtl      int
+	HttpReadTimeout   int
+	HttpWriteTimeout  int
+	CORS              bool
+	Gzip              bool
+	AuthForwarding    bool
+	EnableURLSource   bool
+	EnablePlaceholder bool
+	Address           string
+	PathPrefix        string
+	ApiKey            string
+	Mount             string
+	CertFile          string
+	KeyFile           string
+	Authorization     string
+	Placeholder       string
+	PlaceholderImage  []byte
+	AlloweOrigins     []*url.URL
 }
 
 func Server(o ServerOptions) error {
