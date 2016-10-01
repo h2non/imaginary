@@ -31,6 +31,7 @@ var allowedParams = map[string]string{
 	"norotation":  "bool",
 	"noreplicate": "bool",
 	"force":       "bool",
+	"embed":       "bool",
 	"text":        "string",
 	"font":        "string",
 	"type":        "string",
@@ -38,6 +39,7 @@ var allowedParams = map[string]string{
 	"colorspace":  "colorspace",
 	"gravity":     "gravity",
 	"background":  "color",
+	"extend":      "extend",
 }
 
 func readParams(query url.Values) ImageOptions {
@@ -70,6 +72,9 @@ func parseParam(param, kind string) interface{} {
 	if kind == "bool" {
 		return parseBool(param)
 	}
+	if kind == "extend" {
+		return parseExtendMode(param)
+	}
 	return param
 }
 
@@ -93,12 +98,14 @@ func mapImageParams(params map[string]interface{}) ImageOptions {
 		Type:        params["type"].(string),
 		Flip:        params["flip"].(bool),
 		Flop:        params["flop"].(bool),
+		Embed:       params["flop"].(bool),
 		NoCrop:      params["nocrop"].(bool),
 		Force:       params["force"].(bool),
 		NoReplicate: params["noreplicate"].(bool),
 		NoRotation:  params["norotation"].(bool),
 		NoProfile:   params["noprofile"].(bool),
 		Opacity:     float32(params["opacity"].(float64)),
+		Extend:      params["extend"].(bimg.Extend),
 		Gravity:     params["gravity"].(bimg.Gravity),
 		Colorspace:  params["colorspace"].(bimg.Interpretation),
 		Background:  params["background"].([]uint8),
@@ -136,6 +143,23 @@ func parseColor(val string) []uint8 {
 		}
 	}
 	return buf
+}
+
+func parseExtendMode(val string) bimg.Extend {
+	val = strings.TrimSpace(strings.ToLower(val))
+	if val == "white" {
+		return bimg.ExtendWhite
+	}
+	if val == "copy" {
+		return bimg.ExtendCopy
+	}
+	if val == "mirror" {
+		return bimg.ExtendMirror
+	}
+	if val == "background" {
+		return bimg.ExtendBackground
+	}
+	return bimg.ExtendBlack
 }
 
 func parseGravity(val string) bimg.Gravity {

@@ -412,12 +412,22 @@ Image measures are always in pixels, unless otherwise indicated.
 - **url**         `string` - Fetch the image from a remove HTTP server. In order to use this you must pass the `-enable-url-source` flag.
 - **colorspace**  `string` - Use a custom color space for the output image. Allowed values are: `srgb` or `bw` (black&white)
 - **field**       `string` - Custom image form field name if using `multipart/form`. Defaults to: `file`
+- **extend**      `string` - Extend represents the image extend mode used when the edges of an image are extended. Allowed values are: `black`, `copy`, `mirror`, `white` and `background`. If `background` value is specified, you can define the desired extend RGB color via `background` param, such as `?extend=background&background=250,20,10`. For more info, see [libvips docs](http://www.vips.ecs.soton.ac.uk/supported/8.4/doc/html/libvips/libvips-conversion.html#VIPS-EXTEND-BACKGROUND:CAPS).
 - **background**  `string` - Background RGB decimal base color to use when flattening transparent PNGs. Example: `255,200,150`
 
 #### GET /
 Content-Type: `application/json`
 
-Serves as JSON the current imaginary, bimg and libvips versions.
+Serves as JSON the current `imaginary`, `bimg` and `libvips` versions.
+
+Example response:
+```json
+{
+  "imaginary": "0.1.28",
+  "bimg": "1.0.5",
+  "libvips": "8.4.1"
+}
+```
 
 #### GET /health
 Content-Type: `application/json`
@@ -479,10 +489,13 @@ Crop the image by a given width or height. Image ratio is maintained
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
 - rotate `int`
+- embed `bool`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - gravity `string`
 - field `string` - Only POST and `multipart/form` payloads
@@ -501,12 +514,15 @@ Resize an image by width or height. Image aspect ratio is maintained
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -522,12 +538,15 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -547,12 +566,15 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -569,12 +591,15 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -590,12 +615,15 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -612,11 +640,14 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -632,11 +663,14 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -652,11 +686,14 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -670,12 +707,15 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -697,12 +737,15 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 

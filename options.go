@@ -20,6 +20,7 @@ type ImageOptions struct {
 	Flip        bool
 	Flop        bool
 	Force       bool
+	Embed       bool
 	NoCrop      bool
 	NoReplicate bool
 	NoRotation  bool
@@ -29,6 +30,7 @@ type ImageOptions struct {
 	Font        string
 	Type        string
 	Color       []uint8
+	Extend      bimg.Extend
 	Gravity     bimg.Gravity
 	Colorspace  bimg.Interpretation
 	Background  []uint8
@@ -36,7 +38,7 @@ type ImageOptions struct {
 
 // BimgOptions creates a new bimg compatible options struct mapping the fields properly
 func BimgOptions(o ImageOptions) bimg.Options {
-	return bimg.Options{
+	opts := bimg.Options{
 		Width:          o.Width,
 		Height:         o.Height,
 		Flip:           o.Flip,
@@ -47,8 +49,16 @@ func BimgOptions(o ImageOptions) bimg.Options {
 		NoProfile:      o.NoProfile,
 		Force:          o.Force,
 		Gravity:        o.Gravity,
+		Embed:          o.Embed,
+		Extend:         o.Extend,
 		Interpretation: o.Colorspace,
 		Type:           ImageType(o.Type),
 		Rotate:         bimg.Angle(o.Rotate),
 	}
+
+	if len(o.Background) != 0 {
+		opts.Background = bimg.Color{o.Background[0], o.Background[1], o.Background[2]}
+	}
+
+	return opts
 }
