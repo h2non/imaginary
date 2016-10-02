@@ -13,8 +13,6 @@ with additional optional features such as **API token authorization**, **gzip co
 `imaginary` is able to output images as JPEG, PNG and WEBP formats, including transparent conversion across them.
 
 `imaginary` also optionally **supports image placeholder fallback mechanism** in case of image processing error or server error of any nature, therefore an image will be always returned by the server in terms of HTTP response body and content MIME type, even in case of error, matching the expected image size and format transparently.
-This is particularly useful when using `imaginary` as public HTTP service consumed by Web clients.
-In case of error, the appropriate HTTP status code will be used to reflect the error, and the error details will be exposed serialized as JSON in the `Error` response HTTP header, for further inspection and convenience for API clients.
 
 It uses internally `libvips`, a powerful and efficient library written in C for image processing
 which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use)
@@ -327,6 +325,9 @@ imaginary -mount ~/images -http-cache-ttl 31556926
 Enable placeholder image HTTP responses in case of server error/bad request.
 The placeholder image will be dynamically and transparently resized matching the expected image `width`x`height` define in the HTTP request params.
 Also, the placeholder image will be also transparently converted to the desired image type defined in the HTTP request params, so the API contract should be maintained as much better as possible.
+
+This feature is particularly useful when using `imaginary` as public HTTP service consumed by Web clients.
+In case of error, the appropriate HTTP status code will be used to reflect the error, and the error details will be exposed serialized as JSON in the `Error` response HTTP header, for further inspection and convenience for API clients.
 ```
 imaginary -p 8080 -enable-placeholder -enable-url-source
 ```
