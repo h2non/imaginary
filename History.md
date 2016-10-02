@@ -1,9 +1,18 @@
+## 0.1.28 / 01-10-2016
+
+- feat(#95): use `libvips@8.4.1`.
+- fix(#75): use `bimg@1.0.5´, which provides extract area fix.
+- feat(api): supports `extend` and `embed` query params. See HTTP API params docs for more details.
+- feat(#94): add placeholder image support in case of error.
+- refactor(heroku): remove defaults flags in `Procfile` (user most specify them via Heroku app init settings).
+
 ## 0.1.27 / 27-09-2016
 
 - feat(#90): adds `path-prefix` flag to bind to an url path.
 - feat(core): adds support for `bimg@1.0.3` and `libvips@8.3+`.
 - feat(core): adds support for GIF, SVG, TIFF and PDF formats.
 - fix(controllers): fix application/octet-stream image processing issue.
+- feat(docker): use Go 1.7.1 in Docker image.
 
 ## 0.1.26 / 05-09-2016
 

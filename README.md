@@ -12,7 +12,9 @@ with additional optional features such as **API token authorization**, **gzip co
 
 `imaginary` is able to output images as JPEG, PNG and WEBP formats, including transparent conversion across them.
 
-It uses internally libvips, a powerful and efficient library written in C for image processing
+`imaginary` also optionally **supports image placeholder fallback mechanism** in case of image processing error or server error of any nature, therefore an image will be always returned by the server in terms of HTTP response body and content MIME type, even in case of error, matching the expected image size and format transparently.
+
+It uses internally `libvips`, a powerful and efficient library written in C for image processing
 which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use)
 and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick
 settings or Go native `image` package, and in some cases it's even 8x faster processing JPEG images.
@@ -52,11 +54,13 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 - Flop
 - Zoom
 - Thumbnail
-- Extract area
+- Configurable image area extraction
+- Embed/Extend image, supporting multiple modes (white, black, mirror, copy or custom background color)
 - Watermark (customizable by text)
 - Custom output color space (RGB, black/white...)
 - Format conversion (with additional quality/compression settings)
 - Info (image size, format, orientation, alpha...)
+- Reply with default or custom placeholder image in case of error.
 
 ## Prerequisites
 
@@ -236,11 +240,14 @@ Usage:
   imaginary -p 80
   imaginary -cors -gzip
   imaginary -concurrency 10
+  imaginary -path-prefix /api/v1
   imaginary -enable-url-source
   imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
   imaginary -enable-url-source -enable-auth-forwarding
   imaginary -enable-url-source -authorization "Basic AwDJdL2DbwrD=="
-  imaginary -h | -help
+	imaginary -enable-placeholder
+	imaginery -enable-url-source -placeholder ./placeholder.jpg
+	imaginary -h | -help
   imaginary -v | -version
 
 Options:
@@ -248,6 +255,7 @@ Options:
   -p <port>                 bind port [default: 8088]
   -h, -help                 output help
   -v, -version              output version
+  -path-prefix <value>      Url path prefix to listen to [default: "/"]
   -cors                     Enable CORS support [default: false]
   -gzip                     Enable gzip compression [default: false]
   -key <key>                Define API key for authorization
@@ -256,14 +264,16 @@ Options:
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
   -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
+	-enable-placeholder       Enable image response placeholder to be used in case of error [default: false]
   -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
   -allowed-origins <urls>   TLS certificate file path
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
   -authorization <value>    Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization
-  -concurreny <num>         Throttle concurrency limit per second [default: disabled]
+  -placeholder <path>       Image path to image custom placeholder to be used in case of error. Recommended minimum image size is: 1200x1200
+	-concurreny <num>         Throttle concurrency limit per second [default: disabled]
   -burst <num>              Throttle burst max cache size [default: 100]
-  -mrelease <num>           OS memory release inverval in seconds [default: 30]
+  -mrelease <num>           OS memory release interval in seconds [default: 30]
   -cpus <num>               Number of used cpu cores.
                             (default for current machine is 8 cores)
 ```
@@ -306,10 +316,27 @@ imaginary -p 8080 -enable-url-source -authorization "Bearer s3cr3t"
 ```
 
 Send caching headers (only possible with the -mount option). The headers can be set in either "cache nothing" or
-"cache for N seconds". By specifying 0 Imaginary will send the "don't cache" headers, otherwise it sends headers with a
+"cache for N seconds". By specifying `0` imaginary will send the "don't cache" headers, otherwise it sends headers with a
 TTL. The following example informs the client to cache the result for 1 year:
 ```
 imaginary -mount ~/images -http-cache-ttl 31556926
+```
+
+Enable placeholder image HTTP responses in case of server error/bad request.
+The placeholder image will be dynamically and transparently resized matching the expected image `width`x`height` define in the HTTP request params.
+Also, the placeholder image will be also transparently converted to the desired image type defined in the HTTP request params, so the API contract should be maintained as much better as possible.
+
+This feature is particularly useful when using `imaginary` as public HTTP service consumed by Web clients.
+In case of error, the appropriate HTTP status code will be used to reflect the error, and the error details will be exposed serialized as JSON in the `Error` response HTTP header, for further inspection and convenience for API clients.
+```
+imaginary -p 8080 -enable-placeholder -enable-url-source
+```
+
+You can optionally use a custom placeholder image.
+Since the placeholder image should fit a variety of different sizes, it's recommended to use a large image, such as `1200`x`1200`.
+Supported custom placeholder image types are: `JPEG`, `PNG` and `WEBP`.
+```
+imaginary -p 8080 -placeholder=placeholder.jpg -enable-url-source
 ```
 
 Increase libvips threads concurrency (experimental):
@@ -373,6 +400,21 @@ Here an example response error when the payload is empty:
 
 See all the predefined supported errors [here](https://github.com/h2non/imaginary/blob/master/error.go#L19-L28).
 
+#### Placeholder
+
+If `-enable-placeholder` or `-placeholder <image path>` flags are passed to `imaginary`, a placeholder image will be used in case of error or invalid request input.
+
+If `-enable-placeholder` is passed, the default `imaginary` placeholder image will be used, however you can customized it via `-placeholder` flag, loading a custom compatible image from the file system.
+
+Since `imaginary` has been partially designed to be used as public HTTP service, including web pages, in certain scenarios the response MIME type must be respected,
+so the server will always reply with a placeholder image in case of error, such as image processing error, read error, payload error, request invalid request or any other.
+
+You can customize the placeholder image passing the `-placeholder <image path>` flag when starting `imaginary`.
+
+In this scenarios, the error message details will be exposed in the `Error` response header field as JSON for further inspection from API clients.
+
+In some edge cases the placeholder image resizing might fail, so a 400 Bad Request will be used as response status and the `Content-Type` will be `application/json` with the proper message info. Note that this scenario won't be common.
+
 ### Form data
 
 If you're pushing images to `imaginary` as `multipart/form-data` (you can do it as well as `image/*`), you must define at least one input field called `file` with the raw image data in order to be processed properly by imaginary.
@@ -412,12 +454,22 @@ Image measures are always in pixels, unless otherwise indicated.
 - **url**         `string` - Fetch the image from a remove HTTP server. In order to use this you must pass the `-enable-url-source` flag.
 - **colorspace**  `string` - Use a custom color space for the output image. Allowed values are: `srgb` or `bw` (black&white)
 - **field**       `string` - Custom image form field name if using `multipart/form`. Defaults to: `file`
+- **extend**      `string` - Extend represents the image extend mode used when the edges of an image are extended. Allowed values are: `black`, `copy`, `mirror`, `white` and `background`. If `background` value is specified, you can define the desired extend RGB color via `background` param, such as `?extend=background&background=250,20,10`. For more info, see [libvips docs](http://www.vips.ecs.soton.ac.uk/supported/8.4/doc/html/libvips/libvips-conversion.html#VIPS-EXTEND-BACKGROUND:CAPS).
 - **background**  `string` - Background RGB decimal base color to use when flattening transparent PNGs. Example: `255,200,150`
 
 #### GET /
 Content-Type: `application/json`
 
-Serves as JSON the current imaginary, bimg and libvips versions.
+Serves as JSON the current `imaginary`, `bimg` and `libvips` versions.
+
+Example response:
+```json
+{
+  "imaginary": "0.1.28",
+  "bimg": "1.0.5",
+  "libvips": "8.4.1"
+}
+```
 
 #### GET /health
 Content-Type: `application/json`
@@ -479,10 +531,13 @@ Crop the image by a given width or height. Image ratio is maintained
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
 - force `bool`
 - rotate `int`
+- embed `bool`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - gravity `string`
 - field `string` - Only POST and `multipart/form` payloads
@@ -501,12 +556,15 @@ Resize an image by width or height. Image aspect ratio is maintained
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -522,12 +580,15 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -547,12 +608,15 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -569,12 +633,15 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -590,12 +657,15 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -612,11 +682,14 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -632,11 +705,14 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -652,11 +728,14 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -670,12 +749,15 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - compression `int` (PNG-only)
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -697,12 +779,15 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - type `string`
 - file `string` - Only GET method and if the `-mount` flag is present
 - url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
 - force `bool`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 

@@ -4,28 +4,33 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path"
 	"strconv"
 	"time"
 )
 
 type ServerOptions struct {
-	Port             int
-	Burst            int
-	Concurrency      int
-	HttpCacheTtl     int
-	HttpReadTimeout  int
-	HttpWriteTimeout int
-	CORS             bool
-	Gzip             bool
-	EnableURLSource  bool
-	AuthForwarding   bool
-	Address          string
-	ApiKey           string
-	Mount            string
-	CertFile         string
-	KeyFile          string
-	Authorization    string
-	AlloweOrigins    []*url.URL
+	Port              int
+	Burst             int
+	Concurrency       int
+	HttpCacheTtl      int
+	HttpReadTimeout   int
+	HttpWriteTimeout  int
+	CORS              bool
+	Gzip              bool
+	AuthForwarding    bool
+	EnableURLSource   bool
+	EnablePlaceholder bool
+	Address           string
+	PathPrefix        string
+	ApiKey            string
+	Mount             string
+	CertFile          string
+	KeyFile           string
+	Authorization     string
+	Placeholder       string
+	PlaceholderImage  []byte
+	AlloweOrigins     []*url.URL
 }
 
 func Server(o ServerOptions) error {
@@ -50,26 +55,31 @@ func listenAndServe(s *http.Server, o ServerOptions) error {
 	return s.ListenAndServe()
 }
 
+func join(o ServerOptions, route string) string {
+	return path.Join(o.PathPrefix, route)
+}
+
+// NewServerMux creates a new HTTP server route multiplexer.
 func NewServerMux(o ServerOptions) http.Handler {
 	mux := http.NewServeMux()
 
-	mux.Handle("/", Middleware(indexController, o))
-	mux.Handle("/form", Middleware(formController, o))
-	mux.Handle("/health", Middleware(healthController, o))
+	mux.Handle(join(o, "/"), Middleware(indexController, o))
+	mux.Handle(join(o, "/form"), Middleware(formController, o))
+	mux.Handle(join(o, "/health"), Middleware(healthController, o))
 
 	image := ImageMiddleware(o)
-	mux.Handle("/resize", image(Resize))
-	mux.Handle("/enlarge", image(Enlarge))
-	mux.Handle("/extract", image(Extract))
-	mux.Handle("/crop", image(Crop))
-	mux.Handle("/rotate", image(Rotate))
-	mux.Handle("/flip", image(Flip))
-	mux.Handle("/flop", image(Flop))
-	mux.Handle("/thumbnail", image(Thumbnail))
-	mux.Handle("/zoom", image(Zoom))
-	mux.Handle("/convert", image(Convert))
-	mux.Handle("/watermark", image(Watermark))
-	mux.Handle("/info", image(Info))
+	mux.Handle(join(o, "/resize"), image(Resize))
+	mux.Handle(join(o, "/enlarge"), image(Enlarge))
+	mux.Handle(join(o, "/extract"), image(Extract))
+	mux.Handle(join(o, "/crop"), image(Crop))
+	mux.Handle(join(o, "/rotate"), image(Rotate))
+	mux.Handle(join(o, "/flip"), image(Flip))
+	mux.Handle(join(o, "/flop"), image(Flop))
+	mux.Handle(join(o, "/thumbnail"), image(Thumbnail))
+	mux.Handle(join(o, "/zoom"), image(Zoom))
+	mux.Handle(join(o, "/convert"), image(Convert))
+	mux.Handle(join(o, "/watermark"), image(Watermark))
+	mux.Handle(join(o, "/info"), image(Info))
 
 	return mux
 }

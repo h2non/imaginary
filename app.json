@@ -6,7 +6,9 @@
     "processing",
     "go",
     "microservice",
-    "api"
+    "api",
+    "libvips",
+    "vips"
   ],
   "repository": "https://github.com/h2non/imaginary",
   "logo": "https://camo.githubusercontent.com/bcb3b2bd343c3c85aaf6094e51c6178bbe239a32/687474703a2f2f7331342e706f7374696d672e6f72672f3874683731613230312f696d6167696e6172795f776f726c642e6a7067",

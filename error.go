@@ -2,8 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
+
+	bimg "gopkg.in/h2non/bimg.v1"
 )
 
 const (
@@ -70,7 +73,43 @@ func NewError(err string, code uint8) Error {
 	return Error{err, code}
 }
 
-func ErrorReply(w http.ResponseWriter, err Error) error {
+func replyWithPlaceholder(req *http.Request, w http.ResponseWriter, err Error, o ServerOptions) error {
+	image := o.PlaceholderImage
+
+	// Resize placeholder to expected output
+	buf, _err := bimg.Resize(o.PlaceholderImage, bimg.Options{
+		Force:   true,
+		Crop:    true,
+		Enlarge: true,
+		Width:   parseInt(req.URL.Query().Get("width")),
+		Height:  parseInt(req.URL.Query().Get("height")),
+		Type:    ImageType(req.URL.Query().Get("type")),
+	})
+
+	if _err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(fmt.Sprintf("{\"error\":\"%s\", \"code\": %d}", _err.Error(), BadRequest)))
+		return _err
+	}
+
+	// Use final response body image
+	image = buf
+
+	// Placeholder image response
+	w.Header().Set("Content-Type", GetImageMimeType(bimg.DetermineImageType(image)))
+	w.Header().Set("Error", string(err.JSON()))
+	w.WriteHeader(err.HTTPCode())
+	w.Write(image)
+	return err
+}
+
+func ErrorReply(req *http.Request, w http.ResponseWriter, err Error, o ServerOptions) error {
+	// Reply with placeholder if required
+	if o.EnablePlaceholder || o.Placeholder != "" {
+		return replyWithPlaceholder(req, w, err, o)
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(err.HTTPCode())
 	w.Write(err.JSON())

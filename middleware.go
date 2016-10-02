@@ -26,13 +26,13 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 		next = cors.Default().Handler(next)
 	}
 	if o.ApiKey != "" {
-		next = authorizeClient(next, o.ApiKey)
+		next = authorizeClient(next, o)
 	}
 	if o.HttpCacheTtl >= 0 {
 		next = setCacheHeaders(next, o.HttpCacheTtl)
 	}
 
-	return validate(defaultHeaders(next))
+	return validate(defaultHeaders(next), o)
 }
 
 func ImageMiddleware(o ServerOptions) func(Operation) http.Handler {
@@ -67,10 +67,10 @@ func throttle(next http.Handler, o ServerOptions) http.Handler {
 	return httpRateLimiter.RateLimit(next)
 }
 
-func validate(next http.Handler) http.Handler {
+func validate(next http.Handler, o ServerOptions) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" && r.Method != "POST" {
-			ErrorReply(w, ErrMethodNotAllowed)
+			ErrorReply(r, w, ErrMethodNotAllowed, o)
 			return
 		}
 
@@ -87,7 +87,7 @@ func validateImage(next http.Handler, o ServerOptions) http.Handler {
 		}
 
 		if r.Method == "GET" && o.Mount == "" && o.EnableURLSource == false {
-			ErrorReply(w, ErrMethodNotAllowed)
+			ErrorReply(r, w, ErrMethodNotAllowed, o)
 			return
 		}
 
@@ -95,15 +95,15 @@ func validateImage(next http.Handler, o ServerOptions) http.Handler {
 	})
 }
 
-func authorizeClient(next http.Handler, validKey string) http.Handler {
+func authorizeClient(next http.Handler, o ServerOptions) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		key := r.Header.Get("API-Key")
 		if key == "" {
 			key = r.URL.Query().Get("key")
 		}
 
-		if key != validKey {
-			ErrorReply(w, ErrInvalidApiKey)
+		if key != o.ApiKey {
+			ErrorReply(r, w, ErrInvalidApiKey, o)
 			return
 		}
 
