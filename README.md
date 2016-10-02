@@ -12,7 +12,11 @@ with additional optional features such as **API token authorization**, **gzip co
 
 `imaginary` is able to output images as JPEG, PNG and WEBP formats, including transparent conversion across them.
 
-It uses internally libvips, a powerful and efficient library written in C for image processing
+`imaginary` also optionally **supports image placeholder fallback mechanism** in case of image processing error or server error of any nature, therefore an image will be always returned by the server in terms of HTTP response body and content MIME type, even in case of error, matching the expected image size and format transparently.
+This is particularly useful when using `imaginary` as public HTTP service consumed by Web clients.
+In case of error, the appropriate HTTP status code will be used to reflect the error, and the error details will be exposed serialized as JSON in the `Error` response HTTP header, for further inspection and convenience for API clients.
+
+It uses internally `libvips`, a powerful and efficient library written in C for image processing
 which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use)
 and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick
 settings or Go native `image` package, and in some cases it's even 8x faster processing JPEG images.
@@ -314,10 +318,24 @@ imaginary -p 8080 -enable-url-source -authorization "Bearer s3cr3t"
 ```
 
 Send caching headers (only possible with the -mount option). The headers can be set in either "cache nothing" or
-"cache for N seconds". By specifying 0 Imaginary will send the "don't cache" headers, otherwise it sends headers with a
+"cache for N seconds". By specifying `0` imaginary will send the "don't cache" headers, otherwise it sends headers with a
 TTL. The following example informs the client to cache the result for 1 year:
 ```
 imaginary -mount ~/images -http-cache-ttl 31556926
+```
+
+Enable placeholder image HTTP responses in case of server error/bad request.
+The placeholder image will be dynamically and transparently resized matching the expected image `width`x`height` define in the HTTP request params.
+Also, the placeholder image will be also transparently converted to the desired image type defined in the HTTP request params, so the API contract should be maintained as much better as possible.
+```
+imaginary -p 8080 -enable-placeholder -enable-url-source
+```
+
+You can optionally use a custom placeholder image.
+Since the placeholder image should fit a variety of different sizes, it's recommended to use a large image, such as `1200`x`1200`.
+Supported custom placeholder image types are: `JPEG`, `PNG` and `WEBP`.
+```
+imaginary -p 8080 -placeholder=placeholder.jpg -enable-url-source
 ```
 
 Increase libvips threads concurrency (experimental):
