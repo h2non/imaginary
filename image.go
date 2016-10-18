@@ -66,7 +66,7 @@ func Resize(buf []byte, o ImageOptions) (Image, error) {
 	}
 
 	opts := BimgOptions(o)
-	opts.Embed = true
+	// opts.Embed = true
 
 	if o.NoCrop == false {
 		opts.Crop = true

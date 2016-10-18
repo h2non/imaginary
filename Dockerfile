@@ -29,9 +29,27 @@ ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 WORKDIR $GOPATH
 
-# Fetch the latest version of the package
-RUN go get -u golang.org/x/net/context
-RUN go get -u github.com/h2non/imaginary
+# Fetch the latest version of the package dependencies
+RUN go get -u \
+  golang.org/x/net/context \
+  github.com/daaku/go.httpgzip \
+  github.com/rs/cors \
+  github.com/tj/go-debug \
+  gopkg.in/h2non/filetype.v0 \
+  gopkg.in/throttled/throttled.v2 \
+  gopkg.in/throttled/throttled.v2/store/memstore
+
+# Fetch and patch bimg
+COPY bimg-resize.patch /tmp
+RUN git clone https://github.com/h2non/bimg.git /go/src/gopkg.in/h2non/bimg.v1 && \
+    patch /go/src/gopkg.in/h2non/bimg.v1/resize.go /tmp/bimg-resize.patch
+
+# Build imaginary
+COPY *.go /go/src/imaginary/
+RUN cd /go/src/imaginary && \
+    go build -o /go/bin/imaginary && \
+    cd /go && \
+    rm -rf /go/src
 
 # Run the outyet command by default when the container starts.
 ENTRYPOINT ["/go/bin/imaginary"]
