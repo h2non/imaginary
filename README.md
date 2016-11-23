@@ -83,7 +83,7 @@ go get -u gopkg.in/h2non/bimg.v1
 
 Run the following script as `sudo` (supports OSX, Debian/Ubuntu, Redhat, Fedora, Amazon Linux):
 ```bash
-curl -s https://raw.githubusercontent.com/lovell/sharp/master/preinstall.sh | sudo bash -
+curl -s https://raw.githubusercontent.com/h2non/bimg/master/preinstall.sh | sudo bash -
 ```
 
 The [install script](https://github.com/h2non/bimg/blob/master/preinstall.sh) requires `curl` and `pkg-config`
