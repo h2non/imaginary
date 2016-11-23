@@ -207,7 +207,6 @@ libvips is probably the faster open source solution for image processing.
 Here you can see some performance test comparisons for multiple scenarios:
 
 - [libvips speed and memory usage](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use)
-- [sharp performance tests](https://github.com/lovell/sharp#the-task)
 - [bimg](https://github.com/h2non/bimg#Performance) (Go library with C bindings to libvips)
 
 ## Benchmark
