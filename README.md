@@ -86,7 +86,7 @@ Run the following script as `sudo` (supports OSX, Debian/Ubuntu, Redhat, Fedora,
 curl -s https://raw.githubusercontent.com/lovell/sharp/master/preinstall.sh | sudo bash -
 ```
 
-The [install script](https://github.com/lovell/sharp/blob/master/preinstall.sh) requires `curl` and `pkg-config`
+The [install script](https://github.com/h2non/bimg/blob/master/preinstall.sh) requires `curl` and `pkg-config`
 
 ### Docker
 
