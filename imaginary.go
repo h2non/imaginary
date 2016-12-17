@@ -33,6 +33,7 @@ var (
 	aEnableURLSource   = flag.Bool("enable-url-source", false, "Enable remote HTTP URL image source processing")
 	aEnablePlaceholder = flag.Bool("enable-placeholder", false, "Enable image response placeholder to be used in case of error")
 	aAlloweOrigins     = flag.String("allowed-origins", "", "Restrict remote image source processing to certain origins (separated by commas)")
+	aMaxAllowedSize    = flag.Int("max-allowed-size", 0, "Restrict maximum size of http image source (in bytes)")
 	aKey               = flag.String("key", "", "Define API key for authorization")
 	aMount             = flag.String("mount", "", "Mount server local directory")
 	aCertFile          = flag.String("certfile", "", "TLS certificate file path")
@@ -81,6 +82,7 @@ Options:
 	-enable-placeholder       Enable image response placeholder to be used in case of error [default: false]
   -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
   -allowed-origins <urls>   Restrict remote image source processing to certain origins (separated by commas)
+  -max-allowed-size <bytes> Restrict maximum size of http image source (in bytes)
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
   -authorization <value>    Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization
@@ -130,6 +132,7 @@ func main() {
 		HttpWriteTimeout:  *aWriteTimeout,
 		Authorization:     *aAuthorization,
 		AlloweOrigins:     parseOrigins(*aAlloweOrigins),
+		MaxAllowedSize:    *aMaxAllowedSize,
 	}
 
 	// Create a memory release goroutine
