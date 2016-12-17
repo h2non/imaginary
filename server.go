@@ -31,6 +31,7 @@ type ServerOptions struct {
 	Placeholder       string
 	PlaceholderImage  []byte
 	AlloweOrigins     []*url.URL
+	MaxAllowedSize    int
 }
 
 func Server(o ServerOptions) error {

@@ -9,6 +9,7 @@ import (
 )
 
 const fixtureImage = "fixtures/large.jpg"
+const fixture1024Bytes = "fixtures/1024bytes"
 
 func TestHttpImageSource(t *testing.T) {
 	var body []byte
@@ -143,6 +144,36 @@ func TestHttpImageSourceError(t *testing.T) {
 		if err == nil {
 			t.Fatalf("Server response should not be valid: %s", err)
 		}
+	}
+
+	r, _ := http.NewRequest("GET", "http://foo/bar?url="+ts.URL, nil)
+	w := httptest.NewRecorder()
+	fakeHandler(w, r)
+}
+
+func TestHttpImageSourceExceedsMaximumAllowedLength(t *testing.T) {
+	var body []byte
+	var err error
+
+	buf, _ := ioutil.ReadFile(fixture1024Bytes)
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write(buf)
+	}))
+	defer ts.Close()
+
+	source := NewHttpImageSource(&SourceConfig{
+		MaxAllowedSize: 1023,
+	})
+	fakeHandler := func(w http.ResponseWriter, r *http.Request) {
+		if !source.Matches(r) {
+			t.Fatal("Cannot match the request")
+		}
+
+		body, err = source.GetImage(r)
+		if err == nil {
+			t.Fatalf("It should not allow a request to image exceeding maximum allowed size: %s", err)
+		}
+		w.Write(body)
 	}
 
 	r, _ := http.NewRequest("GET", "http://foo/bar?url="+ts.URL, nil)
