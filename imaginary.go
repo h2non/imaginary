@@ -81,7 +81,7 @@ Options:
   -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
 	-enable-placeholder       Enable image response placeholder to be used in case of error [default: false]
   -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
-  -allowed-origins <urls>   TLS certificate file path
+  -allowed-origins <urls>   Restrict remote image source processing to certain origins (separated by commas)
   -max-allowed-size <bytes> Restrict maximum size of http image source (in bytes)
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
