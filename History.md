@@ -1,7 +1,7 @@
 ## 0.1.29 / 2016-12-18
 
-* feat(max-allowed-size): add new option max-allowed-size in bytes
-* fix(max-allowed-size): HEAD response handling
+- feat(max-allowed-size): add new option max-allowed-size in bytes
+- fix(max-allowed-size): HEAD response handling
 - fix(usage): correct help message of 'allowed-origins'
 
 ## 0.1.28 / 01-10-2016
