@@ -60,7 +60,7 @@ func TestCrop(t *testing.T) {
 		t.Fatalf("Empty response body")
 	}
 
-	err = assertSize(image, 300, 169)
+	err = assertSize(image, 300, 1080)
 	if err != nil {
 		t.Error(err)
 	}
