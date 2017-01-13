@@ -158,7 +158,7 @@ func main() {
 		}
 
 		imageType := bimg.DetermineImageType(buf)
-		if !bimg.IsImageTypeSupportedByVips(imageType) {
+		if !bimg.IsImageTypeSupportedByVips(imageType).Load {
 			exitWithError("Placeholder image type is not supported. Only JPEG, PNG or WEBP are supported")
 		}
 
