@@ -16,7 +16,6 @@ env:
   - LIBVIPS=8.2
   - LIBVIPS=8.3
   - LIBVIPS=8.4
-  - LIBVIPS=8.5
   - LIBVIPS=master
 
 matrix:
