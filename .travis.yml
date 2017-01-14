@@ -9,5 +9,5 @@ go:
   - tip
 
 before_install:
-  - curl -s https://raw.githubusercontent.com/h2non/bimg/preinstall.sh | sudo bash -
+  - curl -s https://raw.githubusercontent.com/h2non/bimg/master/preinstall.sh | sudo bash -
   - go get ./...
