@@ -1,5 +1,8 @@
 language: go
 
+sudo: required
+dist: trusty
+
 go:
   - 1.7
   - 1.6
@@ -8,6 +11,62 @@ go:
   - 1.3
   - tip
 
+env:
+  - LIBVIPS=7.42
+  - LIBVIPS=8.2
+  - LIBVIPS=8.3
+  - LIBVIPS=8.4
+  - LIBVIPS=8.5
+  - LIBVIPS=master
+
+matrix:
+  allow_failures:
+    - env: LIBVIPS=7.42
+    - env: LIBVIPS=8.2
+    - env: LIBVIPS=8.3
+
+cache: apt
+
+addons:
+  apt:
+    packages:
+      - gobject-introspection
+      - gtk-doc-tools
+      - libcfitsio3-dev
+      - libfftw3-dev
+      - libgif-dev
+      - libgs-dev
+      - libgsf-1-dev
+      - libmatio-dev
+      - libopenslide-dev
+      - liborc-0.4-dev
+      - libpango1.0-dev
+      - libpoppler-glib-dev
+      - libwebp-dev
+
 before_install:
-  - curl -s https://raw.githubusercontent.com/h2non/bimg/master/preinstall.sh | sudo bash -
+  - wget https://github.com/jcupitt/libvips/archive/$LIBVIPS.zip
+  - unzip $LIBVIPS
+  - cd libvips-$LIBVIPS
+  - test -f autogen.sh && ./autogen.sh || ./bootstrap.sh
+  - >
+    CXXFLAGS=-D_GLIBCXX_USE_CXX11_ABI=0
+    ./configure
+    --disable-debug
+    --disable-dependency-tracking
+    --disable-introspection
+    --disable-static
+    --enable-gtk-doc-html=no
+    --enable-gtk-doc=no
+    --enable-pyvips8=no
+    --without-orc
+    --without-python
+    $1
+  - make
+  - sudo make install
+  - sudo ldconfig
+  - cd ..
   - go get ./...
+
+script:
+  - go test -v -race -covermode=atomic
