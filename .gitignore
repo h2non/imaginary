@@ -36,3 +36,4 @@ bin/imaginary
 
 ## ignore vendor packages
 vendor/
+glide.lock

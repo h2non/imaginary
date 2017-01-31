@@ -14,7 +14,7 @@ import (
 )
 
 func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) http.Handler {
-	next := http.Handler(http.HandlerFunc(fn))
+	next := http.HandlerFunc(fn)
 
 	if o.Concurrency > 0 {
 		next = throttle(next, o)

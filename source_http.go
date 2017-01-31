@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 const ImageSourceTypeHttp ImageSourceType = "http"
@@ -33,14 +34,26 @@ func (s *HttpImageSource) GetImage(req *http.Request) ([]byte, error) {
 }
 
 func (s *HttpImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, error) {
-	req := newHTTPRequest(url)
+	// Check remote image size by fetching HTTP Headers
+	if s.Config.MaxAllowedSize > 0 {
+		req := newHTTPRequest(s, ireq, "HEAD", url)
+		res, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return nil, fmt.Errorf("Error fetching image http headers: %v", err)
+		}
+		res.Body.Close()
+		if res.StatusCode >= 200 && res.StatusCode <= 206 {
+			return nil, fmt.Errorf("Error fetching image http headers: (status=%d) (url=%s)", res.StatusCode, req.URL.String())
+		}
 
-	// Forward auth header to the target server, if necessary
-	if s.Config.AuthForwarding || s.Config.Authorization != "" {
-		s.setAuthorizationHeader(req, ireq)
+		contentLength, _ := strconv.Atoi(res.Header.Get("Content-Length"))
+		if contentLength > s.Config.MaxAllowedSize {
+			return nil, fmt.Errorf("Content-Length %d exceeds maximum allowed %d bytes", contentLength, s.Config.MaxAllowedSize)
+		}
 	}
 
 	// Perform the request using the default client
+	req := newHTTPRequest(s, ireq, "GET", url)
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("Error downloading image: %v", err)
@@ -76,10 +89,16 @@ func parseURL(request *http.Request) (*url.URL, error) {
 	return url.Parse(queryUrl)
 }
 
-func newHTTPRequest(url *url.URL) *http.Request {
-	req, _ := http.NewRequest("GET", url.String(), nil)
+func newHTTPRequest(s *HttpImageSource, ireq *http.Request, method string, url *url.URL) *http.Request {
+	req, _ := http.NewRequest(method, url.String(), nil)
 	req.Header.Set("User-Agent", "imaginary/"+Version)
 	req.URL = url
+
+	// Forward auth header to the target server, if necessary
+	if s.Config.AuthForwarding || s.Config.Authorization != "" {
+		s.setAuthorizationHeader(req, ireq)
+	}
+
 	return req
 }
 
