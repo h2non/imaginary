@@ -1,4 +1,5 @@
-# imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Docker Registry](https://img.shields.io/docker/pulls/h2non/imaginary.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Heroku](https://img.shields.io/badge/Heroku-Deploy_Now-blue.svg)](https://heroku.com/deploy) [![Go Report Card](http://goreportcard.com/badge/h2non/imaginary)](http://goreportcard.com/report/h2non/imaginary)
+# imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Docker Registry](https://img.shields.io/docker/pulls/h2non/imaginary.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Heroku](https://img.shields.io/badge/Heroku-Deploy_Now-blue.svg)](https://heroku.com/deploy) [![Go Report Card](http://goreportcard.com/badge/h2non/imaginary)](http://goreportcard.com/report/h2non/imaginary) 
+[![OpenCollective](https://opencollective.com/imaginary/backers/badge.svg)](#backers) [![OpenCollective](https://opencollective.com/imaginary/sponsors/badge.svg)](#sponsors)
 
 <img src="http://s14.postimg.org/8th71a201/imaginary_world.jpg" width="100%" />
 
@@ -789,6 +790,77 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
+
+## Support
+
+### Backers
+Support us with a monthly donation and help us continue our activities. [[Become a backer](https://opencollective.com/imaginary#backer)]
+
+<a href="https://opencollective.com/imaginary/backer/0/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/0/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/1/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/1/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/2/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/2/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/3/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/3/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/4/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/4/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/5/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/5/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/6/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/6/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/7/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/7/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/8/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/8/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/9/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/9/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/10/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/10/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/11/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/11/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/12/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/12/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/13/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/13/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/14/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/14/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/15/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/15/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/16/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/16/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/17/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/17/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/18/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/18/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/19/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/19/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/20/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/20/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/21/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/21/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/22/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/22/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/23/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/23/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/24/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/24/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/25/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/25/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/26/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/26/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/27/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/27/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/28/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/28/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/backer/29/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/29/avatar.svg"></a>
+
+
+### Sponsors
+Become a sponsor and get your logo on our README on Github with a link to your site. [[Become a sponsor](https://opencollective.com/imaginary#sponsor)]
+
+<a href="https://opencollective.com/imaginary/sponsor/0/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/1/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/2/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/3/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/4/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/5/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/6/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/7/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/8/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/9/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/9/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/10/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/10/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/11/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/11/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/12/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/12/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/13/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/13/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/14/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/14/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/15/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/15/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/16/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/16/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/17/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/17/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/18/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/18/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/19/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/19/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/20/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/20/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/21/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/21/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/22/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/22/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/23/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/23/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/24/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/24/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/25/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/25/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/26/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/26/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/27/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/27/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/28/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/28/avatar.svg"></a>
+<a href="https://opencollective.com/imaginary/sponsor/29/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/29/avatar.svg"></a>
 
 ## License
 
