@@ -31,6 +31,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 - [Installation](#installation)
   - [Docker](#docker)
   - [Heroku](#heroku)
+  - [Cloud Foundry](#cloudfoundry)
 - [Recommended resources](#recommended-resources)
 - [Production notes](#production-notes)
 - [Scalability](#scalability)
@@ -151,6 +152,30 @@ heroku git:remote -a your-application
 Deploy it!
 ```
 git push heroku master
+```
+
+### CloudFoundry
+
+Assuming you have cloudfoundry account, [bluemix](https://console.ng.bluemix.net/) or [pivotal](https://console.run.pivotal.io/) and [command line utility installed](https://github.com/cloudfoundry/cli).
+
+Clone this repository:
+```
+git clone https://github.com/h2non/imaginary.git
+```
+
+Push the application
+```
+cf push -b https://github.com/yacloud-io/go-buildpack-imaginary.git imaginary-inst01 --no-start
+```
+
+Define the library path
+```
+cf set-env imaginary-inst01 LD_LIBRARY_PATH /home/vcap/app/vendor/vips/lib
+```
+
+Start the application
+```
+cf start imaginary-inst01
 ```
 
 ### Recommended resources
