@@ -24,6 +24,12 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 
 `imaginary` is currently used in production processing thousands of images per day.
 
+#### Seeking for maintainers
+
+As a single human with a full-time job and other projects in the queue, I'm not able to provide agile and reliable support to this project.
+
+If you or your company are relying on `imaginary` and you wish to get back the favor to the open source community, please [take a look here](https://github.com/h2non/imaginary/issues/128).
+
 ## Contents
 
 - [Supported image operations](#supported-image-operations)
