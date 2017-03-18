@@ -1,5 +1,4 @@
-# imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Docker Registry](https://img.shields.io/docker/pulls/h2non/imaginary.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Heroku](https://img.shields.io/badge/Heroku-Deploy_Now-blue.svg)](https://heroku.com/deploy) [![Go Report Card](http://goreportcard.com/badge/h2non/imaginary)](http://goreportcard.com/report/h2non/imaginary) 
-[![OpenCollective](https://opencollective.com/imaginary/backers/badge.svg)](#backers) [![OpenCollective](https://opencollective.com/imaginary/sponsors/badge.svg)](#sponsors)
+# imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Docker Registry](https://img.shields.io/docker/pulls/h2non/imaginary.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Heroku](https://img.shields.io/badge/Heroku-Deploy_Now-blue.svg)](https://heroku.com/deploy) [![Go Report Card](http://goreportcard.com/badge/h2non/imaginary)](http://goreportcard.com/report/h2non/imaginary) [![OpenCollective](https://opencollective.com/imaginary/sponsors/badge.svg)](#sponsors)
 
 <img src="http://s14.postimg.org/8th71a201/imaginary_world.jpg" width="100%" />
 
@@ -858,8 +857,12 @@ Support us with a monthly donation and help us continue our activities. [[Become
 <a href="https://opencollective.com/imaginary/backer/28/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/28/avatar.svg"></a>
 <a href="https://opencollective.com/imaginary/backer/29/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/29/avatar.svg"></a>
 
+### Support this project
+
+[![OpenCollective](https://opencollective.com/imaginary/backers/badge.svg)](#backers) 
 
 ### Sponsors
+
 Become a sponsor and get your logo on our README on Github with a link to your site. [[Become a sponsor](https://opencollective.com/imaginary#sponsor)]
 
 <a href="https://opencollective.com/imaginary/sponsor/0/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/0/avatar.svg"></a>
