@@ -290,7 +290,7 @@ Options:
   -gzip                     Enable gzip compression [default: false]
   -key <key>                Define API key for authorization
   -mount <path>             Mount server local directory
-  -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
+  -http-cache-ttl <num>     The TTL in seconds. Adds caching headers.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
   -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
@@ -345,11 +345,9 @@ Or alternatively you can manually define an constant Authorization header value 
 imaginary -p 8080 -enable-url-source -authorization "Bearer s3cr3t"
 ```
 
-Send caching headers (only possible with the -mount option). The headers can be set in either "cache nothing" or
-"cache for N seconds". By specifying `0` imaginary will send the "don't cache" headers, otherwise it sends headers with a
-TTL. The following example informs the client to cache the result for 1 year:
+Send fixed caching headers in the response. The headers can be set in either "cache nothing" or "cache for N seconds". By specifying `0` imaginary will send the "don't cache" headers, otherwise it sends headers with a TTL. The following example informs the client to cache the result for 1 year:
 ```
-imaginary -mount ~/images -http-cache-ttl 31556926
+imaginary -p 8080 -enable-url-source -http-cache-ttl 31556926
 ```
 
 Enable placeholder image HTTP responses in case of server error/bad request.
