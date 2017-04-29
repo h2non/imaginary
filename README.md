@@ -44,8 +44,8 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
   - [Form data](#form-data)
   - [Params](#params)
   - [Endpoints](#get-)
-  - [Authors](#authors)
-  - [License](#license)
+- [Authors](#authors)
+- [License](#license)
 
 ## Supported image operations
 
