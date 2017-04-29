@@ -21,13 +21,7 @@ settings or Go native `image` package, and in some cases it's even 8x faster pro
 
 To get started, take a look the [installation](#installation) steps, [usage](#usage) cases and [API](#http-api) docs.
 
-`imaginary` is currently used in production processing thousands of images per day.
-
-#### Seeking for maintainers
-
-As a single human with a full-time job and other projects in the queue, I'm not able to provide agile and reliable support to this project.
-
-If you or your company are relying on `imaginary` and you wish to get back the favor to the open source community, please [take a look here](https://github.com/h2non/imaginary/issues/128).
+`imaginary` is currently maintained by [Kirill Danshin](https://github.com/kirillDanshin).
 
 ## Contents
 
@@ -50,6 +44,8 @@ If you or your company are relying on `imaginary` and you wish to get back the f
   - [Form data](#form-data)
   - [Params](#params)
   - [Endpoints](#get-)
+  - [Authors](#authors)
+  - [License](#license)
 
 ## Supported image operations
 
@@ -859,7 +855,7 @@ Support us with a monthly donation and help us continue our activities. [[Become
 
 ### Support this project
 
-[![OpenCollective](https://opencollective.com/imaginary/backers/badge.svg)](#backers) 
+[![OpenCollective](https://opencollective.com/imaginary/backers/badge.svg)](#backers)
 
 ### Sponsors
 
@@ -895,6 +891,11 @@ Become a sponsor and get your logo on our README on Github with a link to your s
 <a href="https://opencollective.com/imaginary/sponsor/27/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/27/avatar.svg"></a>
 <a href="https://opencollective.com/imaginary/sponsor/28/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/28/avatar.svg"></a>
 <a href="https://opencollective.com/imaginary/sponsor/29/website" target="_blank"><img src="https://opencollective.com/imaginary/sponsor/29/avatar.svg"></a>
+
+## Authors
+
+- [Tomás Aparicio](https://github.com/h2non) - Original author and architect.
+- [Kirill Danshin](https://github.com/kirillDanshin) - Maintainer since April 2017.
 
 ## License
 
