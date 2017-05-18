@@ -1,4 +1,20 @@
 
+## v0.1.31 / 2017-05-18
+
+  * feat(version): bump to 0.1.31
+  * feat(Dockerfile): use libvips v8.5.5, Go v1.8.1 and bimg v1.0.8
+  * Correcting the documentation, caching headers are always sent, regardless of being fetched from mount or by URL. (#133)
+  * fix(docs): move toc top level sections
+  * feat(docs): add new maintainer notice (thanks to @kirillDanshin)
+  * feat(travis): use Go 1.8
+  * refactor(docs): update support badges
+  * feat(docs): add maintainers section
+  * fix(.godir): add project name
+  * fix(#124): fast workaround to unblock Heroku deployment until the buildpack can be updated
+  * Deploy on Cloud Foundry PaaS (#122)
+  * Add backers & sponsors from open collective (#119)
+  * 1. remove the .godir as Heroku and Cloud Foundry remove the support. (#117)
+
 ## v0.1.30 / 2017-01-18
 
 - fix(resizer): calculate proper crop width/height if only one axis is provided
