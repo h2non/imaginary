@@ -67,7 +67,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 
 ## Prerequisites
 
-- [libvips](https://github.com/jcupitt/libvips) v7.40.0+ or 8+ (8.5+ recommended)
+- [libvips](https://github.com/jcupitt/libvips) v7.40.0+ or 8+ (8.4+ recommended)
 - C compatible compiler such as gcc 4.6+ or clang 3.0+
 - Go 1.3+
 
@@ -95,7 +95,7 @@ The [install script](https://github.com/h2non/bimg/blob/master/preinstall.sh) re
 
 See [Dockerfile](https://github.com/h2non/imaginary/blob/master/Dockerfile) for image details.
 
-Fetch the image (comes with latest stable Go and libvips versions)
+Fetch the image (comes with latest stable Go and `libvips` versions)
 ```
 docker pull h2non/imaginary
 ```
