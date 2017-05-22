@@ -390,6 +390,12 @@ Fetching the image from a remote server (you must pass the `-enable-url-source` 
 curl -O "http://localhost:8088/crop?width=500&height=400&url=https://raw.githubusercontent.com/h2non/imaginary/master/fixtures/large.jpg"
 ```
 
+Crop behaviour can be influenced with the `gravity` parameter. You can specify a preference for a certain region (north, south, etc.). To enable Smart Crop you can specify the value "smart" to autodetect the most interesting section to consider as center point for the crop operation:
+```
+curl -O "http://localhost:8088/crop?width=500&height=200&gravity=smart&url=https://raw.githubusercontent.com/h2non/imaginary/master/fixtures/smart-crop.jpg"
+```
+
+
 #### Playground
 
 `imaginary` exposes an ugly HTML form for playground purposes in: [`http://localhost:8088/form`](http://localhost:8088/form)
@@ -473,7 +479,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **font**        `string` - Watermark text font type and format. Example: `sans bold 12`
 - **color**       `string` - Watermark text RGB decimal base color. Example: `255,200,150`
 - **type**        `string` - Specify the image format to output. Possible values are: `jpeg`, `png` and `webp`
-- **gravity**     `string` - Define the crop operation gravity. Supported values are: `north`, `south`, `centre`, `west` and `east`. Defaults to `centre`.
+- **gravity**     `string` - Define the crop operation gravity. Supported values are: `north`, `south`, `centre`, `west`, `east` and `smart`. Defaults to `centre`.
 - **file**        `string` - Use image from server local file path. In order to use this you must pass the `-mount=<dir>` flag.
 - **url**         `string` - Fetch the image from a remove HTTP server. In order to use this you must pass the `-enable-url-source` flag.
 - **colorspace**  `string` - Use a custom color space for the output image. Allowed values are: `srgb` or `bw` (black&white)

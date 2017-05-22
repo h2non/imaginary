@@ -3,10 +3,7 @@
 FROM ubuntu:14.04
 MAINTAINER tomas@aparicio.me
 
-ENV LIBVIPS_VERSION_MAJOR 8
-ENV LIBVIPS_VERSION_MINOR 4
-ENV LIBVIPS_VERSION_PATCH 5
-ENV LIBVIPS_VERSION $LIBVIPS_VERSION_MAJOR.$LIBVIPS_VERSION_MINOR.$LIBVIPS_VERSION_PATCH
+ENV LIBVIPS_VERSION 8.5.5
 
 # Installs libvips + required libraries
 RUN \
@@ -22,9 +19,9 @@ RUN \
 
   # Build libvips
   cd /tmp && \
-  curl -O http://www.vips.ecs.soton.ac.uk/supported/$LIBVIPS_VERSION_MAJOR.$LIBVIPS_VERSION_MINOR/vips-$LIBVIPS_VERSION.tar.gz && \
-  tar zvxf vips-$LIBVIPS_VERSION.tar.gz && \
-  cd /tmp/vips-$LIBVIPS_VERSION && \
+  curl -OL https://github.com/jcupitt/libvips/releases/download/v${LIBVIPS_VERSION}/vips-${LIBVIPS_VERSION}.tar.gz && \
+  tar zvxf vips-${LIBVIPS_VERSION}.tar.gz && \
+  cd /tmp/vips-${LIBVIPS_VERSION} && \
   ./configure --enable-debug=no --without-python $1 && \
   make && \
   make install && \

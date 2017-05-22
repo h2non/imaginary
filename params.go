@@ -163,18 +163,18 @@ func parseExtendMode(val string) bimg.Extend {
 }
 
 func parseGravity(val string) bimg.Gravity {
+	var m = map[string]bimg.Gravity{
+		"south": bimg.GravitySouth,
+		"north": bimg.GravityNorth,
+		"east":  bimg.GravityEast,
+		"west":  bimg.GravityWest,
+		"smart": bimg.GravitySmart,
+	}
+
 	val = strings.TrimSpace(strings.ToLower(val))
-	if val == "south" {
-		return bimg.GravitySouth
+	if g, ok := m[val]; ok {
+		return g
 	}
-	if val == "north" {
-		return bimg.GravityNorth
-	}
-	if val == "east" {
-		return bimg.GravityEast
-	}
-	if val == "west" {
-		return bimg.GravityWest
-	}
+
 	return bimg.GravityCentre
 }

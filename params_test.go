@@ -148,3 +148,20 @@ func TestParseExtend(t *testing.T) {
 		}
 	}
 }
+
+func TestGravity(t *testing.T) {
+	cases := []struct {
+		gravityValue   string
+		smartCropValue bool
+	}{
+		{gravityValue: "foo", smartCropValue: false},
+		{gravityValue: "smart", smartCropValue: true},
+	}
+
+	for _, td := range cases {
+		io := readParams(url.Values{"gravity": []string{td.gravityValue}})
+		if (io.Gravity == bimg.GravitySmart) != td.smartCropValue {
+			t.Errorf("Expected %t to be %t, test data: %+v", io.Gravity == bimg.GravitySmart, td.smartCropValue, td)
+		}
+	}
+}
