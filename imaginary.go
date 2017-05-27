@@ -60,9 +60,9 @@ Usage:
   imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
   imaginary -enable-url-source -enable-auth-forwarding
   imaginary -enable-url-source -authorization "Basic AwDJdL2DbwrD=="
-	imaginary -enable-placeholder
-	imaginery -enable-url-source -placeholder ./placeholder.jpg
-	imaginary -h | -help
+  imaginary -enable-placeholder
+  imaginary -enable-url-source -placeholder ./placeholder.jpg
+  imaginary -h | -help
   imaginary -v | -version
 
 Options:
@@ -79,7 +79,7 @@ Options:
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
   -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
-	-enable-placeholder       Enable image response placeholder to be used in case of error [default: false]
+  -enable-placeholder       Enable image response placeholder to be used in case of error [default: false]
   -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
   -allowed-origins <urls>   Restrict remote image source processing to certain origins (separated by commas)
   -max-allowed-size <bytes> Restrict maximum size of http image source (in bytes)
@@ -87,7 +87,7 @@ Options:
   -keyfile <path>           TLS private key file path
   -authorization <value>    Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization
   -placeholder <path>       Image path to image custom placeholder to be used in case of error. Recommended minimum image size is: 1200x1200
-	-concurreny <num>         Throttle concurrency limit per second [default: disabled]
+  -concurreny <num>         Throttle concurrency limit per second [default: disabled]
   -burst <num>              Throttle burst max cache size [default: 100]
   -mrelease <num>           OS memory release interval in seconds [default: 30]
   -cpus <num>               Number of used cpu cores.
@@ -241,7 +241,7 @@ func parseOrigins(origins string) []*url.URL {
 func memoryRelease(interval int) {
 	ticker := time.NewTicker(time.Duration(interval) * time.Second)
 	go func() {
-		for _ = range ticker.C {
+		for range ticker.C {
 			debug("FreeOSMemory()")
 			d.FreeOSMemory()
 		}
