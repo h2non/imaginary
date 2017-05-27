@@ -1,4 +1,11 @@
 
+## v1.0.0 / 2017-05-27
+
+  * Supporting smart crop (#136).
+  * Deprecate Go < 1.5 support.
+  * Uses `bimg` v1.0.9.
+  * Uses `libvips` v8.5.5 in Docker image.
+
 ## v0.1.31 / 2017-05-18
 
   * feat(version): bump to 0.1.31
