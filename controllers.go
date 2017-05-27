@@ -101,6 +101,7 @@ func formController(w http.ResponseWriter, r *http.Request) {
 		{"Resize", "resize", "width=300&height=200&type=jpeg"},
 		{"Force resize", "resize", "width=300&height=200&force=true"},
 		{"Crop", "crop", "width=300&quality=95"},
+		{"SmartCrop", "crop", "width=300&quality=95&gravity=smart"},
 		{"Extract", "extract", "top=100&left=100&areawidth=300&areaheight=150"},
 		{"Enlarge", "enlarge", "width=1440&height=900&quality=95"},
 		{"Rotate", "rotate", "rotate=180"},
