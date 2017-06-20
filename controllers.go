@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"strconv"
 
 	"gopkg.in/h2non/bimg.v1"
 	"gopkg.in/h2non/filetype.v0"
@@ -88,6 +89,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation 
 		return
 	}
 
+	w.Header().Set("Content-Length", strconv.Itoa(len(image.Body)))
 	w.Header().Set("Content-Type", image.Mime)
 	w.Write(image.Body)
 }
