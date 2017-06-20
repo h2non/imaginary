@@ -14,6 +14,7 @@ type ServerOptions struct {
 	Burst             int
 	Concurrency       int
 	HttpCacheTtl      int
+	HttpContentLength bool
 	HttpReadTimeout   int
 	HttpWriteTimeout  int
 	CORS              bool
