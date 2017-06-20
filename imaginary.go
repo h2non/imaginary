@@ -41,7 +41,6 @@ var (
 	aAuthorization     = flag.String("authorization", "", "Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization")
 	aPlaceholder       = flag.String("placeholder", "", "Image path to image custom placeholder to be used in case of error. Recommended minimum image size is: 1200x1200")
 	aHttpCacheTtl      = flag.Int("http-cache-ttl", -1, "The TTL in seconds")
-	aHttpContentLength = flag.Bool("http-content-length", false, "Enable a buffer to add the Content-Length")
 	aReadTimeout       = flag.Int("http-read-timeout", 60, "HTTP read timeout in seconds")
 	aWriteTimeout      = flag.Int("http-write-timeout", 60, "HTTP write timeout in seconds")
 	aConcurrency       = flag.Int("concurrency", 0, "Throttle concurrency limit per second")
@@ -79,7 +78,6 @@ Options:
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
-  -http-content-length      Buffer the body in order to set the Content-Length header (use more memory)
   -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
   -enable-placeholder       Enable image response placeholder to be used in case of error [default: false]
   -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
@@ -130,7 +128,6 @@ func main() {
 		KeyFile:           *aKeyFile,
 		Placeholder:       *aPlaceholder,
 		HttpCacheTtl:      *aHttpCacheTtl,
-		HttpContentLength: *aHttpContentLength,
 		HttpReadTimeout:   *aReadTimeout,
 		HttpWriteTimeout:  *aWriteTimeout,
 		Authorization:     *aAuthorization,

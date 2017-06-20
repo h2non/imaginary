@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"strings"
 	"time"
-	"strconv"
-	"net/http/httptest"
 
 	"github.com/daaku/go.httpgzip"
 	"github.com/rs/cors"
@@ -32,9 +30,6 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 	}
 	if o.HttpCacheTtl >= 0 {
 		next = setCacheHeaders(next, o.HttpCacheTtl)
-	}
-	if o.HttpContentLength {
-		next = setContentLengthHeader(next)
 	}
 
 	return validate(defaultHeaders(next), o)
@@ -136,25 +131,6 @@ func setCacheHeaders(next http.Handler, ttl int) http.Handler {
 
 		w.Header().Add("Expires", strings.Replace(expires.Format(time.RFC1123), "UTC", "GMT", -1))
 		w.Header().Add("Cache-Control", getCacheControl(ttl))
-	})
-}
-
-func setContentLengthHeader(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" || isPublicPath(r.URL.Path) {
-			return
-		}
-
-		rec := httptest.NewRecorder()
-		next.ServeHTTP(rec, r)
-
-		// we copy the original headers first
-		for k, v := range rec.Header() {
-			w.Header()[k] = v
-		}
-		w.Header().Set("Content-Length", strconv.Itoa(rec.Body.Len()))
-		// write out the original body
-		w.Write(rec.Body.Bytes())
 	})
 }
 
