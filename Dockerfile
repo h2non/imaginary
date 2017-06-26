@@ -3,7 +3,7 @@
 FROM ubuntu:14.04
 MAINTAINER tomas@aparicio.me
 
-ENV LIBVIPS_VERSION 8.5.5
+ENV LIBVIPS_VERSION 8.5.6
 
 # Installs libvips + required libraries
 RUN \
@@ -38,7 +38,7 @@ RUN \
 ENV PORT 9000
 
 # Go version to use
-ENV GOLANG_VERSION 1.8.1
+ENV GOLANG_VERSION 1.8.3
 
 # gcc for cgo
 RUN apt-get update && apt-get install -y \
