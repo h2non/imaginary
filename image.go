@@ -9,8 +9,8 @@ import (
 
 // Image stores an image binary buffer and its MIME type
 type Image struct {
-	Body []byte
-	Mime string
+	Body   []byte
+	Mime   string
 }
 
 // Operation implements an image transformation runnable interface
