@@ -5,6 +5,8 @@ v1.0.1 / 2017-06-26
   * feat(version): bump to v1.0.1
   * feat(#140): expose Content-Length header
   * feat(bimg): upgrade to bimg v1.0.10
+  * feat(Docker): use Go v1.8.3.
+  * feat(Docker): use libvips v8.5.6.
 
 ## v1.0.0 / 2017-05-27
 
