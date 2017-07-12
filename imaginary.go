@@ -20,8 +20,8 @@ import (
 var debug = Debug("imaginary")
 
 var (
-	aAddr              = flag.String("a", "", "bind address")
-	aPort              = flag.Int("p", 8088, "port to listen")
+	aAddr              = flag.String("a", "", "Bind address")
+	aPort              = flag.Int("p", 8088, "Port to listen")
 	aVers              = flag.Bool("v", false, "Show version")
 	aVersl             = flag.Bool("version", false, "Show version")
 	aHelp              = flag.Bool("h", false, "Show help")
@@ -66,10 +66,10 @@ Usage:
   imaginary -v | -version
 
 Options:
-  -a <addr>                 bind address [default: *]
-  -p <port>                 bind port [default: 8088]
-  -h, -help                 output help
-  -v, -version              output version
+  -a <addr>                 Bind address [default: *]
+  -p <port>                 Bind port [default: 8088]
+  -h, -help                 Show help
+  -v, -version              Show version
   -path-prefix <value>      Url path prefix to listen to [default: "/"]
   -cors                     Enable CORS support [default: false]
   -gzip                     Enable gzip compression [default: false]
@@ -87,7 +87,7 @@ Options:
   -keyfile <path>           TLS private key file path
   -authorization <value>    Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization
   -placeholder <path>       Image path to image custom placeholder to be used in case of error. Recommended minimum image size is: 1200x1200
-  -concurreny <num>         Throttle concurrency limit per second [default: disabled]
+  -concurrency <num>        Throttle concurrency limit per second [default: disabled]
   -burst <num>              Throttle burst max cache size [default: 100]
   -mrelease <num>           OS memory release interval in seconds [default: 30]
   -cpus <num>               Number of used cpu cores.
