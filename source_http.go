@@ -42,7 +42,7 @@ func (s *HttpImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, 
 			return nil, fmt.Errorf("Error fetching image http headers: %v", err)
 		}
 		res.Body.Close()
-		if res.StatusCode >= 200 && res.StatusCode <= 206 {
+		if res.StatusCode < 200 && res.StatusCode > 206 {
 			return nil, fmt.Errorf("Error fetching image http headers: (status=%d) (url=%s)", res.StatusCode, req.URL.String())
 		}
 
