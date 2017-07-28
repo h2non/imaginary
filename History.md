@@ -1,4 +1,18 @@
 
+v1.0.2 / 2017-07-28
+===================
+
+  * fix(#146): handle proper response code range for max allowed size
+  * Typos and minor language in help text (#144)
+  * Update README.md (#143)
+  * feat(History): add missing Docker changes
+  * fix(server_test): assert content type header is present
+  * fix(Docker): use proper SHA256 hash
+  * feat(Docker): upgrade Go to v1.8.3 and libvips to v8.5.6
+  * feat(changelog): update v1.0.1 changes
+  * feat(version): bump to v1.0.1
+  * feat(#140): expose Content-Length header
+
 v1.0.1 / 2017-06-26
 ===================
 
