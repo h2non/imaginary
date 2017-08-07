@@ -21,7 +21,7 @@ settings or Go native `image` package, and in some cases it's even 8x faster pro
 
 To get started, take a look the [installation](#installation) steps, [usage](#usage) cases and [API](#http-api) docs.
 
-`imaginary` is currently maintained by [Kirill Danshin](https://github.com/kirillDanshin).
+`imaginary` is currently co-maintained by [Kirill Danshin](https://github.com/kirillDanshin).
 
 ## Contents
 
