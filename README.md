@@ -821,6 +821,14 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
 
+#### GET | POST /blur
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
+
+##### Allowed params
+
+- sigma `float` `required`
+- minampl `float`
+
 ## Support
 
 ### Backers

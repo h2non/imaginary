@@ -9,8 +9,8 @@ import (
 
 // Image stores an image binary buffer and its MIME type
 type Image struct {
-	Body   []byte
-	Mime   string
+	Body []byte
+	Mime string
 }
 
 // Operation implements an image transformation runnable interface
@@ -199,6 +199,16 @@ func Watermark(buf []byte, o ImageOptions) (Image, error) {
 		opts.Watermark.Background = bimg.Color{o.Color[0], o.Color[1], o.Color[2]}
 	}
 
+	return Process(buf, opts)
+}
+
+func GaussianBlur(buf []byte, o ImageOptions) (Image, error) {
+	if o.Sigma == 0 && o.MinAmpl == 0 {
+		return Image{}, NewError("Missing required param: sigma or minampl", BadRequest)
+	}
+	opts := BimgOptions(o)
+	opts.GaussianBlur.Sigma = o.Sigma
+	opts.GaussianBlur.MinAmpl = o.MinAmpl
 	return Process(buf, opts)
 }
 
