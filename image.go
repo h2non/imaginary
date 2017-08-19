@@ -207,8 +207,6 @@ func GaussianBlur(buf []byte, o ImageOptions) (Image, error) {
 		return Image{}, NewError("Missing required param: sigma or minampl", BadRequest)
 	}
 	opts := BimgOptions(o)
-	opts.GaussianBlur.Sigma = o.Sigma
-	opts.GaussianBlur.MinAmpl = o.MinAmpl
 	return Process(buf, opts)
 }
 
