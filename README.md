@@ -64,6 +64,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 - Format conversion (with additional quality/compression settings)
 - Info (image size, format, orientation, alpha...)
 - Reply with default or custom placeholder image in case of error.
+- Blur
 
 ## Prerequisites
 
@@ -486,6 +487,8 @@ Image measures are always in pixels, unless otherwise indicated.
 - **field**       `string` - Custom image form field name if using `multipart/form`. Defaults to: `file`
 - **extend**      `string` - Extend represents the image extend mode used when the edges of an image are extended. Allowed values are: `black`, `copy`, `mirror`, `white` and `background`. If `background` value is specified, you can define the desired extend RGB color via `background` param, such as `?extend=background&background=250,20,10`. For more info, see [libvips docs](http://www.vips.ecs.soton.ac.uk/supported/8.4/doc/html/libvips/libvips-conversion.html#VIPS-EXTEND-BACKGROUND:CAPS).
 - **background**  `string` - Background RGB decimal base color to use when flattening transparent PNGs. Example: `255,200,150`
+- **sigma**       `float`  - Size of the gaussian mask to use when blurring an image. Example: `15.0`
+- **minampl**     `float`  - Minimum amplitude of the gaussian filter to use when blurring an image. Default: Example: `0.5`
 
 #### GET /
 Content-Type: `application/json`
@@ -569,6 +572,8 @@ Crop the image by a given width or height. Image ratio is maintained
 - extend `string`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
+- sigma `float`
+- minampl `float`
 - gravity `string`
 - field `string` - Only POST and `multipart/form` payloads
 
@@ -596,6 +601,8 @@ Resize an image by width or height. Image aspect ratio is maintained
 - extend `string`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
+- sigma `float`
+- minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /enlarge
@@ -620,6 +627,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - extend `string`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
+- sigma `float`
+- minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /extract
@@ -648,6 +657,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - extend `string`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
+- sigma `float`
+- minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /zoom
@@ -673,6 +684,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - extend `string`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
+- sigma `float`
+- minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /thumbnail
@@ -697,6 +710,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - extend `string`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
+- sigma `float`
+- minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /rotate
@@ -721,6 +736,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - extend `string`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
+- sigma `float`
+- minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /flip
@@ -744,6 +761,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - extend `string`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
+- sigma `float`
+- minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /flop
@@ -767,6 +786,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - extend `string`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
+- sigma `float`
+- minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /convert
@@ -789,6 +810,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - extend `string`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
+- sigma `float`
+- minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /watermark
@@ -819,6 +842,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - extend `string`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
+- sigma `float`
+- minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
 
 #### GET | POST /blur
@@ -828,6 +853,23 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 - sigma `float` `required`
 - minampl `float`
+- width `int`
+- height `int`
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+- type `string`
+- file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
+- force `bool`
+- norotation `bool`
+- noprofile `bool`
+- flip `bool`
+- flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
+- colorspace `string`
+- field `string` - Only POST and `multipart/form` payloads
 
 ## Support
 
