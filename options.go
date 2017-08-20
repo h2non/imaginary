@@ -34,6 +34,8 @@ type ImageOptions struct {
 	Gravity     bimg.Gravity
 	Colorspace  bimg.Interpretation
 	Background  []uint8
+	Sigma       float64
+	MinAmpl     float64
 }
 
 // BimgOptions creates a new bimg compatible options struct mapping the fields properly
@@ -59,6 +61,11 @@ func BimgOptions(o ImageOptions) bimg.Options {
 	if len(o.Background) != 0 {
 		opts.Background = bimg.Color{o.Background[0], o.Background[1], o.Background[2]}
 	}
-
+	if o.Sigma > 0 || o.MinAmpl > 0 {
+		opts.GaussianBlur = bimg.GaussianBlur{
+			Sigma:   o.Sigma,
+			MinAmpl: o.MinAmpl,
+		}
+	}
 	return opts
 }
