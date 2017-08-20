@@ -1,4 +1,12 @@
 
+v1.0.3 / 2017-08-20
+===================
+
+  * Merge branch 'master' of https://github.com/h2non/imaginary
+  * fix(docs): CLI spec typo
+  * Adding the Gaussian Blur feature plus a few minor formatting with gofmt. (#150)
+  * feat(docs): update maintainer note
+
 v1.0.2 / 2017-07-28
 ===================
 
