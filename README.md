@@ -740,6 +740,14 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
 
+#### GET | POST /autorotate
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
+
+##### Allowed params
+
+- file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
+
 #### GET | POST /flip
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
