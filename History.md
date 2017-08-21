@@ -1,4 +1,9 @@
 
+v1.0.4 / 2017-08-21
+===================
+
+  * Mapping Blur URL params to the ImageOptions struct fields (#152)
+
 v1.0.3 / 2017-08-20
 ===================
 
