@@ -62,7 +62,7 @@ WORKDIR $GOPATH
 
 # Fetch the latest version of the package
 RUN go get -u golang.org/x/net/context
-RUN go get -u github.com/h2non/imaginary
+RUN go get -u github.com/tariq1890/imaginary
 
 # Run the outyet command by default when the container starts.
 ENTRYPOINT ["/go/bin/imaginary"]

@@ -116,6 +116,7 @@ func formController(w http.ResponseWriter, r *http.Request) {
 		{"Add watermark", "watermark", "textwidth=100&text=Hello&font=sans%2012&opacity=0.5&color=255,200,50"},
 		{"Convert format", "convert", "type=png"},
 		{"Image metadata", "info", ""},
+		{"Gaussian blur", "blur", "sigma=15.0&minampl=0.2"},
 	}
 
 	html := "<html><body>"

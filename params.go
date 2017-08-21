@@ -109,6 +109,8 @@ func mapImageParams(params map[string]interface{}) ImageOptions {
 		Gravity:     params["gravity"].(bimg.Gravity),
 		Colorspace:  params["colorspace"].(bimg.Interpretation),
 		Background:  params["background"].([]uint8),
+		Sigma:       float64(params["sigma"].(float64)),
+		MinAmpl:     float64(params["minampl"].(float64)),
 	}
 }
 

@@ -53,7 +53,7 @@ func NewLog(handler http.Handler, io io.Writer) http.Handler {
 	return &LogHandler{handler, io}
 }
 
-// Implementes the required method as standard HTTP handler, serving the request.
+// Implements the required method as standard HTTP handler, serving the request.
 func (h *LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
 	if colon := strings.LastIndex(clientIP, ":"); colon != -1 {
