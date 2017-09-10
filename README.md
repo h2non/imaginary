@@ -476,6 +476,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **noreplicate** `bool`  - Disable text replication in watermark. Defaults to `false`
 - **norotation**  `bool`  - Disable auto rotation based on EXIF orientation. Defaults to `false`
 - **noprofile**   `bool`  - Disable adding ICC profile metadata. Defaults to `false`
+- **stripmeta**   `bool`  - Remove original image metadata, such as EXIF metadata. Defaults to `false`
 - **text**        `string` - Watermark text content. Example: `copyright (c) 2189`
 - **font**        `string` - Watermark text font type and format. Example: `sans bold 12`
 - **color**       `string` - Watermark text RGB decimal base color. Example: `255,200,150`
@@ -569,6 +570,7 @@ Crop the image by a given width or height. Image ratio is maintained
 - noprofile `bool`
 - flip `bool`
 - flop `bool`
+- stripmeta `bool`
 - extend `string`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
@@ -596,6 +598,7 @@ Resize an image by width or height. Image aspect ratio is maintained
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- stripmeta `bool`
 - flip `bool`
 - flop `bool`
 - extend `string`
@@ -622,6 +625,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- stripmeta `bool`
 - flip `bool`
 - flop `bool`
 - extend `string`
@@ -652,6 +656,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- stripmeta `bool`
 - flip `bool`
 - flop `bool`
 - extend `string`
@@ -679,6 +684,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- stripmeta `bool`
 - flip `bool`
 - flop `bool`
 - extend `string`
@@ -705,6 +711,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- stripmeta `bool`
 - flip `bool`
 - flop `bool`
 - extend `string`
@@ -731,6 +738,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
+- stripmeta `bool`
 - flip `bool`
 - flop `bool`
 - extend `string`
@@ -756,6 +764,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
+- stripmeta `bool`
 - flip `bool`
 - flop `bool`
 - extend `string`
@@ -781,6 +790,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
+- stripmeta `bool`
 - flip `bool`
 - flop `bool`
 - extend `string`
@@ -805,6 +815,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- stripmeta `bool`
 - flip `bool`
 - flop `bool`
 - extend `string`
@@ -837,6 +848,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - rotate `int`
 - norotation `bool`
 - noprofile `bool`
+- stripmeta `bool`
 - flip `bool`
 - flop `bool`
 - extend `string`
@@ -864,6 +876,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - force `bool`
 - norotation `bool`
 - noprofile `bool`
+- stripmeta `bool`
 - flip `bool`
 - flop `bool`
 - extend `string`
@@ -874,6 +887,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 ## Support
 
 ### Backers
+
 Support us with a monthly donation and help us continue our activities. [[Become a backer](https://opencollective.com/imaginary#backer)]
 
 <a href="https://opencollective.com/imaginary/backer/0/website" target="_blank"><img src="https://opencollective.com/imaginary/backer/0/avatar.svg"></a>
