@@ -21,8 +21,6 @@ settings or Go native `image` package, and in some cases it's even 8x faster pro
 
 To get started, take a look the [installation](#installation) steps, [usage](#usage) cases and [API](#http-api) docs.
 
-`imaginary` is currently co-maintained by [Kirill Danshin](https://github.com/kirillDanshin).
-
 <a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/1MpD3pzt63uUeG43NP4tDHPY/h2non/imaginary'>  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/1MpD3pzt63uUeG43NP4tDHPY/h2non/imaginary.svg' /></a>
 
 ## Contents
@@ -1083,8 +1081,8 @@ Become a sponsor and get your logo on our README on Github with a link to your s
 
 ## Authors
 
-- [Tomás Aparicio](https://github.com/h2non) - Original author and architect.
-- [Kirill Danshin](https://github.com/kirillDanshin) - Maintainer since April 2017.
+- [Tomás Aparicio](https://github.com/h2non) - Original author and maintainer.
+- [Kirill Danshin](https://github.com/kirillDanshin) - Co-maintainer since April 2017.
 
 ## License
 
