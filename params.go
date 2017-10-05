@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"math"
 	"net/url"
 	"strconv"
@@ -43,6 +44,7 @@ var allowedParams = map[string]string{
 	"extend":      "extend",
 	"sigma":       "float",
 	"minampl":     "float",
+	"operations":  "json",
 }
 
 func readParams(query url.Values) ImageOptions {
@@ -51,6 +53,37 @@ func readParams(query url.Values) ImageOptions {
 	for key, kind := range allowedParams {
 		param := query.Get(key)
 		params[key] = parseParam(param, kind)
+	}
+
+	return mapImageParams(params)
+}
+
+func readMapParams(options map[string]interface{}) ImageOptions {
+	params := make(map[string]interface{})
+
+	for key, kind := range allowedParams {
+		value, ok := options[key]
+		if !ok {
+			// Force type defaults
+			params[key] = parseParam("", kind)
+			continue
+		}
+
+		// Parse non JSON primitive types that would be represented as string types
+		if kind == "color" || kind == "colorspace" || kind == "gravity" || kind == "extend" {
+			if v, ok := value.(string); ok {
+				params[key] = parseParam(v, kind)
+			}
+		} else if kind == "int" {
+			if v, ok := value.(float64); ok {
+				params[key] = int(v)
+			}
+			if v, ok := value.(int); ok {
+				params[key] = v
+			}
+		} else {
+			params[key] = value
+		}
 	}
 
 	return mapImageParams(params)
@@ -78,6 +111,9 @@ func parseParam(param, kind string) interface{} {
 	if kind == "extend" {
 		return parseExtendMode(param)
 	}
+	if kind == "json" {
+		return parseJSONOperations(param)
+	}
 	return param
 }
 
@@ -101,7 +137,7 @@ func mapImageParams(params map[string]interface{}) ImageOptions {
 		Type:          params["type"].(string),
 		Flip:          params["flip"].(bool),
 		Flop:          params["flop"].(bool),
-		Embed:         params["flop"].(bool),
+		Embed:         params["embed"].(bool),
 		NoCrop:        params["nocrop"].(bool),
 		Force:         params["force"].(bool),
 		NoReplicate:   params["noreplicate"].(bool),
@@ -115,6 +151,7 @@ func mapImageParams(params map[string]interface{}) ImageOptions {
 		Background:    params["background"].([]uint8),
 		Sigma:         params["sigma"].(float64),
 		MinAmpl:       params["minampl"].(float64),
+		Operations:    params["operations"].(PipelineOperations),
 	}
 }
 
@@ -149,6 +186,12 @@ func parseColor(val string) []uint8 {
 		}
 	}
 	return buf
+}
+
+func parseJSONOperations(data string) PipelineOperations {
+	operations := PipelineOperations{}
+	json.Unmarshal([]byte(data), &operations)
+	return operations
 }
 
 func parseExtendMode(val string) bimg.Extend {

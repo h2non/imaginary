@@ -25,11 +25,11 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 	if o.CORS {
 		next = cors.Default().Handler(next)
 	}
-	if o.ApiKey != "" {
+	if o.APIKey != "" {
 		next = authorizeClient(next, o)
 	}
-	if o.HttpCacheTtl >= 0 {
-		next = setCacheHeaders(next, o.HttpCacheTtl)
+	if o.HTTPCacheTTL >= 0 {
+		next = setCacheHeaders(next, o.HTTPCacheTTL)
 	}
 
 	return validate(defaultHeaders(next), o)
@@ -102,7 +102,7 @@ func authorizeClient(next http.Handler, o ServerOptions) http.Handler {
 			key = r.URL.Query().Get("key")
 		}
 
-		if key != o.ApiKey {
+		if key != o.APIKey {
 			ErrorReply(r, w, ErrInvalidApiKey, o)
 			return
 		}

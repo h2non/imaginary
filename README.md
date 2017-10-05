@@ -54,11 +54,13 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 - Resize
 - Enlarge
 - Crop
+- SmartCrop (based on [libvips built-in algorithm](https://github.com/jcupitt/libvips/blob/master/libvips/conversion/smartcrop.c))
 - Rotate (with auto-rotate based on EXIF orientation)
 - Flip (with auto-flip based on EXIF metadata)
 - Flop
 - Zoom
 - Thumbnail
+- Pipeline of multiple independent image transformations in a single HTTP request.
 - Configurable image area extraction
 - Embed/Extend image, supporting multiple modes (white, black, mirror, copy or custom background color)
 - Watermark (customizable by text)
@@ -492,6 +494,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **background**  `string` - Background RGB decimal base color to use when flattening transparent PNGs. Example: `255,200,150`
 - **sigma**       `float`  - Size of the gaussian mask to use when blurring an image. Example: `15.0`
 - **minampl**     `float`  - Minimum amplitude of the gaussian filter to use when blurring an image. Default: Example: `0.5`
+- **operations**  `json`   - Pipeline of image operation transformations defined as URL safe encoded JSON array. See [pipeline](#pipeline) endpoints for more details.
 
 #### GET /
 Content-Type: `application/json`
@@ -555,6 +558,37 @@ Returns the image metadata as JSON:
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 Crop the image by a given width or height. Image ratio is maintained
+
+##### Allowed params
+
+- width `int`
+- height `int`
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+- type `string`
+- file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
+- force `bool`
+- rotate `int`
+- embed `bool`
+- norotation `bool`
+- noprofile `bool`
+- flip `bool`
+- flop `bool`
+- stripmeta `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
+- colorspace `string`
+- sigma `float`
+- minampl `float`
+- gravity `string`
+- field `string` - Only POST and `multipart/form` payloads
+
+
+#### GET | POST /smartcrop
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
+
+Crop the image by a given width or height using the [libvips](https://github.com/jcupitt/libvips/blob/master/libvips/conversion/smartcrop.c) built-in smart crop algorithm.
 
 ##### Allowed params
 
@@ -826,6 +860,91 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+
+#### GET | POST /pipeline
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
+
+This endpoint allow the user to declare a pipeline of multiple independent image transformation operations all in a single HTTP request.
+
+Internally, it operates pretty much as a sequential reducer pattern, where given an input image and a set of operations, for each independent image operation iteration, the output result image will be passed to the next one, as the accumulated result, until finishing all the operations.
+
+In imperative programming, this would be pretty much analog to the following code:
+```js
+var image
+for operation in operations {
+  image = operation.Run(image, operation.Options)
+}
+```
+
+##### Allowed params
+
+- operations `json` `required` - URL safe encoded JSON with a list of operations. See below for interface details.
+- file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
+
+##### Operations JSON specification
+
+Self-documented JSON operation schema:
+```js
+[
+  {
+    "operation": string, // Operation name identifier. Required.
+    "ignore_failure": boolean, // Ignore error in case of failure and continue with the next operation. Optional.
+    "params": map[string]mixed, // Object defining operation specific image transformation params, same as supported URL query params per each endpoint.
+  }
+]
+```
+
+###### Supported operations names
+
+- **crop** - Same as `/crop` endpoint.
+- **smartcrop** - Same as `/smartcrop` endpoint.
+- **resize** - Same as `/resize` endpoint.
+- **enlarge** - Same as `/enlarge` endpoint.
+- **extract** - Same as `/extract` endpoint.
+- **rotate** - Same as `/rotate` endpoint.
+- **flip** - Same as `/flip` endpoint.
+- **flop** - Same as `/flop` endpoint.
+- **thumbnail** - Same as `/thumbnail` endpoint.
+- **zoom** - Same as `/zoom` endpoint.
+- **convert** - Same as `/convert` endpoint.
+- **watermark** - Same as `/watermark` endpoint.
+- **blur** - Same as `/blur` endpoint.
+
+###### Example
+
+```json
+[
+  {
+    "operation": "crop",
+    "params": {
+      "width": 500,
+      "height": 300
+    }
+  },
+  {
+    "operation": "watermark",
+    "params": {
+      "text": "I need some covfete",
+      "font": "Verdana",
+      "textwidth": 100,
+      "opacity": 0.8
+    }
+  },
+  {
+    "operation": "rotate",
+    "params": {
+      "rotate": 180
+    }
+  },
+  {
+    "operation": "convert",
+    "params": {
+      "type": "webp"
+    }
+  }
+]
+```
 
 #### GET | POST /watermark
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`

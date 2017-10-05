@@ -3,9 +3,29 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"strings"
 
 	"gopkg.in/h2non/bimg.v1"
 )
+
+// OperationsMap defines the allowed image transformation operations listed by name.
+// Used for pipeline image processing.
+var OperationsMap = map[string]Operation{
+	"crop":      Crop,
+	"resize":    Resize,
+	"enlarge":   Enlarge,
+	"extract":   Extract,
+	"rotate":    Rotate,
+	"flip":      Flip,
+	"flop":      Flop,
+	"thumbnail": Thumbnail,
+	"zoom":      Zoom,
+	"convert":   Convert,
+	"watermark": Watermark,
+	"blur":      GaussianBlur,
+	"smartcrop": SmartCrop,
+}
 
 // Image stores an image binary buffer and its MIME type
 type Image struct {
@@ -114,6 +134,17 @@ func Crop(buf []byte, o ImageOptions) (Image, error) {
 	return Process(buf, opts)
 }
 
+func SmartCrop(buf []byte, o ImageOptions) (Image, error) {
+	if o.Width == 0 && o.Height == 0 {
+		return Image{}, NewError("Missing required param: height or width", BadRequest)
+	}
+
+	opts := BimgOptions(o)
+	opts.Crop = true
+	opts.Gravity = bimg.GravitySmart
+	return Process(buf, opts)
+}
+
 func Rotate(buf []byte, o ImageOptions) (Image, error) {
 	if o.Rotate == 0 {
 		return Image{}, NewError("Missing required param: rotate", BadRequest)
@@ -208,6 +239,54 @@ func GaussianBlur(buf []byte, o ImageOptions) (Image, error) {
 	}
 	opts := BimgOptions(o)
 	return Process(buf, opts)
+}
+
+func Pipeline(buf []byte, o ImageOptions) (Image, error) {
+	if len(o.Operations) == 0 {
+		return Image{}, NewError("Missing or invalid pipeline operations JSON", BadRequest)
+	}
+	if len(o.Operations) > 10 {
+		return Image{}, NewError("Maximum allowed pipeline operations exceeded", BadRequest)
+	}
+
+	// Validate and built operations
+	for i, operation := range o.Operations {
+		// Normalize operation name
+		name := strings.TrimSpace(strings.ToLower(operation.Name))
+
+		// Validate supported operation name
+		var exists bool
+		if operation.Operation, exists = OperationsMap[operation.Name]; !exists {
+			return Image{}, NewError(fmt.Sprintf("Unsupported operation name: %s", name), BadRequest)
+		}
+
+		// Parse and construct operation options
+		operation.ImageOptions = readMapParams(operation.Options)
+
+		// Mutate list by value
+		o.Operations[i] = operation
+	}
+
+	var image Image
+	var err error
+
+	// Reduce image by running multiple operations
+	image = Image{Body: buf}
+	for _, operation := range o.Operations {
+		var curImage Image
+		curImage, err = operation.Operation(image.Body, operation.ImageOptions)
+		if err != nil && !operation.IgnoreFailure {
+			return Image{}, err
+		}
+		if operation.IgnoreFailure {
+			err = nil
+		}
+		if err == nil {
+			image = curImage
+		}
+	}
+
+	return image, err
 }
 
 func Process(buf []byte, opts bimg.Options) (out Image, err error) {

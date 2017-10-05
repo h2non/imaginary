@@ -117,6 +117,7 @@ func formController(w http.ResponseWriter, r *http.Request) {
 		{"Convert format", "convert", "type=png"},
 		{"Image metadata", "info", ""},
 		{"Gaussian blur", "blur", "sigma=15.0&minampl=0.2"},
+		{"Pipeline (image reduction via multiple transformations)", "pipeline", "operations=%5B%7B%22operation%22:%20%22crop%22,%20%22params%22:%20%7B%22width%22:%20300,%20%22height%22:%20260%7D%7D,%20%7B%22operation%22:%20%22convert%22,%20%22params%22:%20%7B%22type%22:%20%22webp%22%7D%7D%5D"},
 	}
 
 	html := "<html><body>"
