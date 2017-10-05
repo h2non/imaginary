@@ -27,14 +27,14 @@ func TestImagePipelineOperations(t *testing.T) {
 	operations := PipelineOperations{
 		PipelineOperation{
 			Name: "crop",
-			Options: map[string]interface{}{
+			Params: map[string]interface{}{
 				"width":  width,
 				"height": height,
 			},
 		},
 		PipelineOperation{
 			Name: "convert",
-			Options: map[string]interface{}{
+			Params: map[string]interface{}{
 				"type": "webp",
 			},
 		},

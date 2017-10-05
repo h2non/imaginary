@@ -261,7 +261,7 @@ func Pipeline(buf []byte, o ImageOptions) (Image, error) {
 		}
 
 		// Parse and construct operation options
-		operation.ImageOptions = readMapParams(operation.Options)
+		operation.ImageOptions = readMapParams(operation.Params)
 
 		// Mutate list by value
 		o.Operations[i] = operation
