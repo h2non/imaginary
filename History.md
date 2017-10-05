@@ -1,4 +1,20 @@
 
+v1.0.8 / 2017-10-06
+===================
+
+  * feat(docker): upgrade Go to v1.9.1
+  * feat(docker): upgrade bimg to v1.0.15
+  * feat(api): add smartcrop endpoint
+  * feat(#101): add pipeline endpoint implementation + smart crop
+  * fix(api): properly parse and use `embed`
+  * feat(docs): add note about pipeline max operations
+  * fix(tests): refactor Options -> Params
+  * refactor(docs): update author notes
+  * refactor(docs): update internal docs links
+  * refactor(docs): move sponsor banner
+  * feat(docs): add sponsor ad
+  * refactor(license): update copyright
+
 v1.0.7 / 2017-09-11
 ===================
 
