@@ -60,7 +60,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 - Flop
 - Zoom
 - Thumbnail
-- Pipeline of multiple independent image transformations in a single HTTP request.
+- [Pipeline](#get--post-pipeline) of multiple independent image transformations in a single HTTP request.
 - Configurable image area extraction
 - Embed/Extend image, supporting multiple modes (white, black, mirror, copy or custom background color)
 - Watermark (customizable by text)
@@ -494,7 +494,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **background**  `string` - Background RGB decimal base color to use when flattening transparent PNGs. Example: `255,200,150`
 - **sigma**       `float`  - Size of the gaussian mask to use when blurring an image. Example: `15.0`
 - **minampl**     `float`  - Minimum amplitude of the gaussian filter to use when blurring an image. Default: Example: `0.5`
-- **operations**  `json`   - Pipeline of image operation transformations defined as URL safe encoded JSON array. See [pipeline](#pipeline) endpoints for more details.
+- **operations**  `json`   - Pipeline of image operation transformations defined as URL safe encoded JSON array. See [pipeline](#get--post-pipeline) endpoints for more details.
 
 #### GET /
 Content-Type: `application/json`
@@ -897,19 +897,19 @@ Self-documented JSON operation schema:
 
 ###### Supported operations names
 
-- **crop** - Same as `/crop` endpoint.
-- **smartcrop** - Same as `/smartcrop` endpoint.
-- **resize** - Same as `/resize` endpoint.
-- **enlarge** - Same as `/enlarge` endpoint.
-- **extract** - Same as `/extract` endpoint.
-- **rotate** - Same as `/rotate` endpoint.
-- **flip** - Same as `/flip` endpoint.
-- **flop** - Same as `/flop` endpoint.
-- **thumbnail** - Same as `/thumbnail` endpoint.
-- **zoom** - Same as `/zoom` endpoint.
-- **convert** - Same as `/convert` endpoint.
-- **watermark** - Same as `/watermark` endpoint.
-- **blur** - Same as `/blur` endpoint.
+- **crop** - Same as [`/crop`](#get--post-crop) endpoint.
+- **smartcrop** - Same as [`/smartcrop`](#get--post-smartcrop) endpoint.
+- **resize** - Same as [`/resize`](#get--post-resize) endpoint.
+- **enlarge** - Same as [`/enlarge`](#get--post-enlarge) endpoint.
+- **extract** - Same as [`/extract`](#get--post-extract) endpoint.
+- **rotate** - Same as [`/rotate`](#get--post-rotate) endpoint.
+- **flip** - Same as [`/flip`](#get--post-flip) endpoint.
+- **flop** - Same as [`/flop`](#get--post-flop) endpoint.
+- **thumbnail** - Same as [`/thumbnail`](#get--post-thumbnail) endpoint.
+- **zoom** - Same as [`/zoom`](#get--post-zoom) endpoint.
+- **convert** - Same as [`/convert`](#get--post-convert) endpoint.
+- **watermark** - Same as [`/watermark`](#get--post-watermark) endpoint.
+- **blur** - Same as [`/blur`](#get--post-blur) endpoint.
 
 ###### Example
 
