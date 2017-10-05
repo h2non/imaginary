@@ -864,7 +864,9 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 This endpoint allow the user to declare a pipeline of multiple independent image transformation operations all in a single HTTP request.
 
-Internally, it operates pretty much as a sequential reducer pattern, where given an input image and a set of operations, for each independent image operation iteration, the output result image will be passed to the next one, as the accumulated result, until finishing all the operations.
+**Note**: a maximum of 10 independent operations are current allowed within the same HTTP request.
+
+Internally, it operates pretty much as a sequential reducer pattern chain, where given an input image and a set of operations, for each independent image operation iteration, the output result image will be passed to the next one, as the accumulated result, until finishing all the operations.
 
 In imperative programming, this would be pretty much analog to the following code:
 ```js
