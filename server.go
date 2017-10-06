@@ -13,9 +13,9 @@ type ServerOptions struct {
 	Port              int
 	Burst             int
 	Concurrency       int
-	HttpCacheTtl      int
-	HttpReadTimeout   int
-	HttpWriteTimeout  int
+	HTTPCacheTTL      int
+	HTTPReadTimeout   int
+	HTTPWriteTimeout  int
 	CORS              bool
 	Gzip              bool
 	AuthForwarding    bool
@@ -23,7 +23,7 @@ type ServerOptions struct {
 	EnablePlaceholder bool
 	Address           string
 	PathPrefix        string
-	ApiKey            string
+	APIKey            string
 	Mount             string
 	CertFile          string
 	KeyFile           string
@@ -42,8 +42,8 @@ func Server(o ServerOptions) error {
 		Addr:           addr,
 		Handler:        handler,
 		MaxHeaderBytes: 1 << 20,
-		ReadTimeout:    time.Duration(o.HttpReadTimeout) * time.Second,
-		WriteTimeout:   time.Duration(o.HttpWriteTimeout) * time.Second,
+		ReadTimeout:    time.Duration(o.HTTPReadTimeout) * time.Second,
+		WriteTimeout:   time.Duration(o.HTTPWriteTimeout) * time.Second,
 	}
 
 	return listenAndServe(server, o)
@@ -73,6 +73,7 @@ func NewServerMux(o ServerOptions) http.Handler {
 	mux.Handle(join(o, "/enlarge"), image(Enlarge))
 	mux.Handle(join(o, "/extract"), image(Extract))
 	mux.Handle(join(o, "/crop"), image(Crop))
+	mux.Handle(join(o, "/smartcrop"), image(SmartCrop))
 	mux.Handle(join(o, "/rotate"), image(Rotate))
 	mux.Handle(join(o, "/flip"), image(Flip))
 	mux.Handle(join(o, "/flop"), image(Flop))
@@ -82,6 +83,7 @@ func NewServerMux(o ServerOptions) http.Handler {
 	mux.Handle(join(o, "/watermark"), image(Watermark))
 	mux.Handle(join(o, "/info"), image(Info))
 	mux.Handle(join(o, "/blur"), image(GaussianBlur))
+	mux.Handle(join(o, "/pipeline"), image(Pipeline))
 
 	return mux
 }

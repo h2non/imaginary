@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"testing"
 
-	bimg "gopkg.in/h2non/bimg.v1"
+	"gopkg.in/h2non/bimg.v1"
 )
 
 const fixture = "fixtures/large.jpg"
@@ -162,6 +162,54 @@ func TestGravity(t *testing.T) {
 		io := readParams(url.Values{"gravity": []string{td.gravityValue}})
 		if (io.Gravity == bimg.GravitySmart) != td.smartCropValue {
 			t.Errorf("Expected %t to be %t, test data: %+v", io.Gravity == bimg.GravitySmart, td.smartCropValue, td)
+		}
+	}
+}
+
+func TestReadMapParams(t *testing.T) {
+	cases := []struct {
+		params   map[string]interface{}
+		expected ImageOptions
+	}{
+		{
+			map[string]interface{}{
+				"width":   100,
+				"opacity": 0.1,
+				"type":    "webp",
+				"embed":   true,
+				"gravity": "west",
+				"color":   "255,200,150",
+			},
+			ImageOptions{
+				Width:   100,
+				Opacity: 0.1,
+				Type:    "webp",
+				Embed:   true,
+				Gravity: bimg.GravityWest,
+				Color:   []uint8{255, 200, 150},
+			},
+		},
+	}
+
+	for _, test := range cases {
+		opts := readMapParams(test.params)
+		if opts.Width != test.expected.Width {
+			t.Errorf("Invalid width: %d != %d", opts.Width, test.expected.Width)
+		}
+		if opts.Opacity != test.expected.Opacity {
+			t.Errorf("Invalid opacity: %#v != %#v", opts.Opacity, test.expected.Opacity)
+		}
+		if opts.Type != test.expected.Type {
+			t.Errorf("Invalid type: %s != %s", opts.Type, test.expected.Type)
+		}
+		if opts.Embed != test.expected.Embed {
+			t.Errorf("Invalid embed: %#v != %#v", opts.Embed, test.expected.Embed)
+		}
+		if opts.Gravity != test.expected.Gravity {
+			t.Errorf("Invalid gravity: %#v != %#v", opts.Gravity, test.expected.Gravity)
+		}
+		if opts.Color[0] != test.expected.Color[0] || opts.Color[1] != test.expected.Color[1] || opts.Color[2] != test.expected.Color[2] {
+			t.Errorf("Invalid color: %#v != %#v", opts.Color, test.expected.Color)
 		}
 	}
 }

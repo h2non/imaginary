@@ -2,8 +2,8 @@
 
 <img src="http://s14.postimg.org/8th71a201/imaginary_world.jpg" width="100%" />
 
-**[Fast](#benchmarks) HTTP [microservice](http://microservices.io/patterns/microservices.html)** written in Go **for high-level image processing** backed by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). `imaginary` can be used as private or public HTTP service for massive image processing.
-It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package for better [performance](#performance).
+**[Fast](#benchmarks) HTTP [microservice](http://microservices.io/patterns/microservices.html)** written in Go **for high-level image processing** backed by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). `imaginary` can be used as private or public HTTP service for massive image processing with first-class support for [Docker](#docker) & [Heroku](#heroku).
+It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package without additional abstractions for better [performance](#performance).
 
 Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api),
 with additional optional features such as **API token authorization**, **gzip compression**, **HTTP traffic throttle** strategy and **CORS support** for web clients.
@@ -20,8 +20,6 @@ and it's typically 4x faster than using the quickest ImageMagick and GraphicsMag
 settings or Go native `image` package, and in some cases it's even 8x faster processing JPEG images.
 
 To get started, take a look the [installation](#installation) steps, [usage](#usage) cases and [API](#http-api) docs.
-
-`imaginary` is currently co-maintained by [Kirill Danshin](https://github.com/kirillDanshin).
 
 <a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/1MpD3pzt63uUeG43NP4tDHPY/h2non/imaginary'>  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/1MpD3pzt63uUeG43NP4tDHPY/h2non/imaginary.svg' /></a>
 
@@ -54,11 +52,13 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 - Resize
 - Enlarge
 - Crop
+- SmartCrop (based on [libvips built-in algorithm](https://github.com/jcupitt/libvips/blob/master/libvips/conversion/smartcrop.c))
 - Rotate (with auto-rotate based on EXIF orientation)
 - Flip (with auto-flip based on EXIF metadata)
 - Flop
 - Zoom
 - Thumbnail
+- [Pipeline](#get--post-pipeline) of multiple independent image transformations in a single HTTP request.
 - Configurable image area extraction
 - Embed/Extend image, supporting multiple modes (white, black, mirror, copy or custom background color)
 - Watermark (customizable by text)
@@ -492,6 +492,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **background**  `string` - Background RGB decimal base color to use when flattening transparent PNGs. Example: `255,200,150`
 - **sigma**       `float`  - Size of the gaussian mask to use when blurring an image. Example: `15.0`
 - **minampl**     `float`  - Minimum amplitude of the gaussian filter to use when blurring an image. Default: Example: `0.5`
+- **operations**  `json`   - Pipeline of image operation transformations defined as URL safe encoded JSON array. See [pipeline](#get--post-pipeline) endpoints for more details.
 
 #### GET /
 Content-Type: `application/json`
@@ -555,6 +556,37 @@ Returns the image metadata as JSON:
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 Crop the image by a given width or height. Image ratio is maintained
+
+##### Allowed params
+
+- width `int`
+- height `int`
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+- type `string`
+- file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
+- force `bool`
+- rotate `int`
+- embed `bool`
+- norotation `bool`
+- noprofile `bool`
+- flip `bool`
+- flop `bool`
+- stripmeta `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
+- colorspace `string`
+- sigma `float`
+- minampl `float`
+- gravity `string`
+- field `string` - Only POST and `multipart/form` payloads
+
+
+#### GET | POST /smartcrop
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
+
+Crop the image by a given width or height using the [libvips](https://github.com/jcupitt/libvips/blob/master/libvips/conversion/smartcrop.c) built-in smart crop algorithm.
 
 ##### Allowed params
 
@@ -827,6 +859,93 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
 
+#### GET | POST /pipeline
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
+
+This endpoint allow the user to declare a pipeline of multiple independent image transformation operations all in a single HTTP request.
+
+**Note**: a maximum of 10 independent operations are current allowed within the same HTTP request.
+
+Internally, it operates pretty much as a sequential reducer pattern chain, where given an input image and a set of operations, for each independent image operation iteration, the output result image will be passed to the next one, as the accumulated result, until finishing all the operations.
+
+In imperative programming, this would be pretty much analog to the following code:
+```js
+var image
+for operation in operations {
+  image = operation.Run(image, operation.Options)
+}
+```
+
+##### Allowed params
+
+- operations `json` `required` - URL safe encoded JSON with a list of operations. See below for interface details.
+- file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
+
+##### Operations JSON specification
+
+Self-documented JSON operation schema:
+```js
+[
+  {
+    "operation": string, // Operation name identifier. Required.
+    "ignore_failure": boolean, // Ignore error in case of failure and continue with the next operation. Optional.
+    "params": map[string]mixed, // Object defining operation specific image transformation params, same as supported URL query params per each endpoint.
+  }
+]
+```
+
+###### Supported operations names
+
+- **crop** - Same as [`/crop`](#get--post-crop) endpoint.
+- **smartcrop** - Same as [`/smartcrop`](#get--post-smartcrop) endpoint.
+- **resize** - Same as [`/resize`](#get--post-resize) endpoint.
+- **enlarge** - Same as [`/enlarge`](#get--post-enlarge) endpoint.
+- **extract** - Same as [`/extract`](#get--post-extract) endpoint.
+- **rotate** - Same as [`/rotate`](#get--post-rotate) endpoint.
+- **flip** - Same as [`/flip`](#get--post-flip) endpoint.
+- **flop** - Same as [`/flop`](#get--post-flop) endpoint.
+- **thumbnail** - Same as [`/thumbnail`](#get--post-thumbnail) endpoint.
+- **zoom** - Same as [`/zoom`](#get--post-zoom) endpoint.
+- **convert** - Same as [`/convert`](#get--post-convert) endpoint.
+- **watermark** - Same as [`/watermark`](#get--post-watermark) endpoint.
+- **blur** - Same as [`/blur`](#get--post-blur) endpoint.
+
+###### Example
+
+```json
+[
+  {
+    "operation": "crop",
+    "params": {
+      "width": 500,
+      "height": 300
+    }
+  },
+  {
+    "operation": "watermark",
+    "params": {
+      "text": "I need some covfete",
+      "font": "Verdana",
+      "textwidth": 100,
+      "opacity": 0.8
+    }
+  },
+  {
+    "operation": "rotate",
+    "params": {
+      "rotate": 180
+    }
+  },
+  {
+    "operation": "convert",
+    "params": {
+      "type": "webp"
+    }
+  }
+]
+```
+
 #### GET | POST /watermark
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
@@ -964,8 +1083,8 @@ Become a sponsor and get your logo on our README on Github with a link to your s
 
 ## Authors
 
-- [Tomás Aparicio](https://github.com/h2non) - Original author and architect.
-- [Kirill Danshin](https://github.com/kirillDanshin) - Maintainer since April 2017.
+- [Tomás Aparicio](https://github.com/h2non) - Original author and maintainer.
+- [Kirill Danshin](https://github.com/kirillDanshin) - Co-maintainer since April 2017.
 
 ## License
 

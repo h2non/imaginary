@@ -40,7 +40,7 @@ var (
 	aKeyFile           = flag.String("keyfile", "", "TLS private key file path")
 	aAuthorization     = flag.String("authorization", "", "Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization")
 	aPlaceholder       = flag.String("placeholder", "", "Image path to image custom placeholder to be used in case of error. Recommended minimum image size is: 1200x1200")
-	aHttpCacheTtl      = flag.Int("http-cache-ttl", -1, "The TTL in seconds")
+	aHTTPCacheTTL      = flag.Int("http-cache-ttl", -1, "The TTL in seconds")
 	aReadTimeout       = flag.Int("http-read-timeout", 60, "HTTP read timeout in seconds")
 	aWriteTimeout      = flag.Int("http-write-timeout", 60, "HTTP write timeout in seconds")
 	aConcurrency       = flag.Int("concurrency", 0, "Throttle concurrency limit per second")
@@ -120,16 +120,16 @@ func main() {
 		EnableURLSource:   *aEnableURLSource,
 		EnablePlaceholder: *aEnablePlaceholder,
 		PathPrefix:        *aPathPrefix,
-		ApiKey:            *aKey,
+		APIKey:            *aKey,
 		Concurrency:       *aConcurrency,
 		Burst:             *aBurst,
 		Mount:             *aMount,
 		CertFile:          *aCertFile,
 		KeyFile:           *aKeyFile,
 		Placeholder:       *aPlaceholder,
-		HttpCacheTtl:      *aHttpCacheTtl,
-		HttpReadTimeout:   *aReadTimeout,
-		HttpWriteTimeout:  *aWriteTimeout,
+		HTTPCacheTTL:      *aHTTPCacheTTL,
+		HTTPReadTimeout:   *aReadTimeout,
+		HTTPWriteTimeout:  *aWriteTimeout,
 		Authorization:     *aAuthorization,
 		AlloweOrigins:     parseOrigins(*aAlloweOrigins),
 		MaxAllowedSize:    *aMaxAllowedSize,
@@ -146,8 +146,8 @@ func main() {
 	}
 
 	// Validate HTTP cache param, if present
-	if *aHttpCacheTtl != -1 {
-		checkHttpCacheTtl(*aHttpCacheTtl)
+	if *aHTTPCacheTTL != -1 {
+		checkHttpCacheTtl(*aHTTPCacheTTL)
 	}
 
 	// Read placeholder image, if required
