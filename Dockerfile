@@ -62,10 +62,16 @@ WORKDIR $GOPATH
 
 # Fetch the latest version of the package
 RUN go get -u golang.org/x/net/context
-RUN go get -u github.com/h2non/imaginary
+RUN go get -u github.com/golang/dep/cmd/dep
+
+# Copy imaginary sources
+COPY . $GOPATH/src/github.com/h2non/imaginary
+
+# Compile imaginary
+RUN go build -race -o bin/imaginary github.com/h2non/imaginary
 
 # Run the outyet command by default when the container starts.
-ENTRYPOINT ["/go/bin/imaginary"]
+ENTRYPOINT ["bin/imaginary"]
 
 # Expose the server TCP port
 EXPOSE 9000
