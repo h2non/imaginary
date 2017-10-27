@@ -2,8 +2,6 @@
 *.o
 *.a
 *.so
-.DS_Store
-Thumbs.db
 
 # Folders
 _obj
@@ -21,15 +19,5 @@ _cgo_export.*
 
 _testmain.go
 
-/dist
 *.exe
 *.test
-bin/
-.vagrant/
-
-*.old
-*.attr
-*.swp
-
-imaginary
-bin/imaginary
