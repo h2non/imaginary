@@ -64,6 +64,9 @@ before_install:
   - make
   - sudo make install
   - sudo ldconfig
+  - go get -u github.com/golang/dep/cmd/dep
 
 script:
+  - mkdir -p $GOPATH/src/github.com/h2non/imaginary
+  - ln -s $PWD $GOPATH/src/github.com/h2non/imaginary
   - go test -v -race -covermode=atomic
