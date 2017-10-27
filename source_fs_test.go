@@ -11,9 +11,9 @@ import (
 func TestFileSystemImageSource(t *testing.T) {
 	var body []byte
 	var err error
-	const fixtureFile = "fixtures/large.jpg"
+	const fixtureFile = "testdata/large.jpg"
 
-	source := NewFileSystemImageSource(&SourceConfig{MountPath: "fixtures"})
+	source := NewFileSystemImageSource(&SourceConfig{MountPath: "testdata"})
 	fakeHandler := func(w http.ResponseWriter, r *http.Request) {
 		if !source.Matches(r) {
 			t.Fatal("Cannot match the request")

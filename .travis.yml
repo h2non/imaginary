@@ -28,6 +28,8 @@ matrix:
     - env: LIBVIPS=8.3
     - go: 1.3
     - go: 1.4
+    - go: 1.5
+    - go: 1.6
 
 cache: apt
 
@@ -69,8 +71,6 @@ before_install:
   - make
   - sudo make install
   - sudo ldconfig
-  - cd ..
-  - go get ./...
 
 script:
   - go test -v -race -covermode=atomic

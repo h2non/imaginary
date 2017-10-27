@@ -179,7 +179,7 @@ func TestRemoteHTTPSource(t *testing.T) {
 	LoadSources(opts)
 
 	tsImage := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		buf, _ := ioutil.ReadFile("fixtures/large.jpg")
+		buf, _ := ioutil.ReadFile("testdata/large.jpg")
 		w.Write(buf)
 	}))
 	defer tsImage.Close()
@@ -238,7 +238,7 @@ func TestInvalidRemoteHTTPSource(t *testing.T) {
 }
 
 func TestMountDirectory(t *testing.T) {
-	opts := ServerOptions{Mount: "fixtures"}
+	opts := ServerOptions{Mount: "testdata"}
 	fn := ImageMiddleware(opts)(Crop)
 	LoadSources(opts)
 
@@ -316,7 +316,7 @@ func testServer(fn func(w http.ResponseWriter, r *http.Request)) *httptest.Serve
 }
 
 func readFile(file string) io.Reader {
-	buf, _ := os.Open(path.Join("fixtures", file))
+	buf, _ := os.Open(path.Join("testdata", file))
 	return buf
 }
 
