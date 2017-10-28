@@ -64,7 +64,6 @@ before_install:
   - make
   - sudo make install
   - sudo ldconfig
-  - go get -u github.com/golang/dep/cmd/dep
 
 script:
   - cd ..
