@@ -54,7 +54,7 @@ const usage = `imaginary %s
 
 Usage:
   imaginary -p 80
-  imaginary -cors -no-form
+  imaginary -cors
   imaginary -concurrency 10
   imaginary -path-prefix /api/v1
   imaginary -enable-url-source
