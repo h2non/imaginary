@@ -28,7 +28,7 @@ var (
 	aHelpl             = flag.Bool("help", false, "Show help")
 	aPathPrefix        = flag.String("path-prefix", "/", "Url path prefix to listen to")
 	aCors              = flag.Bool("cors", false, "Enable CORS support")
-	aGzip              = flag.Bool("gzip", false, "Enable gzip compression")
+	aGzip              = flag.Bool("gzip", false, "Enable gzip compression (deprecated)")
 	aAuthForwarding    = flag.Bool("enable-auth-forwarding", false, "Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors")
 	aEnableURLSource   = flag.Bool("enable-url-source", false, "Enable remote HTTP URL image source processing")
 	aEnablePlaceholder = flag.Bool("enable-placeholder", false, "Enable image response placeholder to be used in case of error")
@@ -53,7 +53,7 @@ const usage = `imaginary %s
 
 Usage:
   imaginary -p 80
-  imaginary -cors -gzip
+  imaginary -cors
   imaginary -concurrency 10
   imaginary -path-prefix /api/v1
   imaginary -enable-url-source
@@ -72,7 +72,7 @@ Options:
   -v, -version              Show version
   -path-prefix <value>      Url path prefix to listen to [default: "/"]
   -cors                     Enable CORS support [default: false]
-  -gzip                     Enable gzip compression [default: false]
+  -gzip                     Enable gzip compression (deprecated) [default: false]
   -key <key>                Define API key for authorization
   -mount <path>             Mount server local directory
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
@@ -114,7 +114,6 @@ func main() {
 	opts := ServerOptions{
 		Port:              port,
 		Address:           *aAddr,
-		Gzip:              *aGzip,
 		CORS:              *aCors,
 		AuthForwarding:    *aAuthForwarding,
 		EnableURLSource:   *aEnableURLSource,
@@ -133,6 +132,11 @@ func main() {
 		Authorization:     *aAuthorization,
 		AlloweOrigins:     parseOrigins(*aAlloweOrigins),
 		MaxAllowedSize:    *aMaxAllowedSize,
+	}
+
+	// Show warning if gzip flag is passed
+	if *aGzip {
+		fmt.Println("warning: -gzip flag is deprecated and will not have effect")
 	}
 
 	// Create a memory release goroutine

@@ -3,12 +3,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/daaku/go.httpgzip"
-  packages = ["."]
-  revision = "a336c4bfd42faf5b18b9d90dcdfe3b4fc13a8fa5"
-
-[[projects]]
-  branch = "master"
   name = "github.com/hashicorp/golang-lru"
   packages = [".","simplelru"]
   revision = "0a025b7e63adc15a622f29b0b2c4c3848243bbf6"
@@ -52,6 +46,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a208698e346f437be50eb383ea786c32277f7b442daaa847f09955167fe0aaed"
+  inputs-digest = "96331f8ecf96ea7df361afa743e1e7525eef1a9dcaf74ffd3fefd016d323fd5f"
   solver-name = "gps-cdcl"
   solver-version = 1

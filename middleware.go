@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/daaku/go.httpgzip"
 	"github.com/rs/cors"
 	"gopkg.in/h2non/bimg.v1"
 	"gopkg.in/throttled/throttled.v2"
@@ -18,9 +17,6 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 
 	if o.Concurrency > 0 {
 		next = throttle(next, o)
-	}
-	if o.Gzip {
-		next = httpgzip.NewHandler(next)
 	}
 	if o.CORS {
 		next = cors.Default().Handler(next)
