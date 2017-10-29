@@ -1,4 +1,25 @@
 
+v1.0.9 / 2017-10-29
+===================
+
+  * fix(#157): disable gzip compression support
+  * debug(travis)
+  * debug(travis)
+  * debug(travis)
+  * debug(travis)
+  * debug(travis)
+  * refactor(Dockerfile): use local source copy
+  * refactor(requirements): add Go 1.6+ as minimum requirement
+  * feat(vendor): support dependencies vendoring
+  * refactor(Gopkg): define version
+  * feat(vendor): add vendor dependencies
+  * feat(travis): add Go 1.9 support
+  * refactor(docs): specify POST payloads in description
+  * feat(docs): add imagelayer badge
+  * feat(docs): add imagelayer badge
+  * feat(docs): add imagelayer badge
+  * feat(docs): add imagelayer badge
+
 v1.0.8 / 2017-10-06
 ===================
 
