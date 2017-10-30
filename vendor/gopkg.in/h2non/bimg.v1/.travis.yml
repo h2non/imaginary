@@ -88,7 +88,7 @@ before_install:
   - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libvips/lib
   - vips --vips-version
 
-before_script:
+install:
   - go get -u github.com/golang/lint/golint
 
 script:

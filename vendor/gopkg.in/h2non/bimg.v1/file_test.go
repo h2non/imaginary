@@ -5,7 +5,7 @@ import (
 )
 
 func TestRead(t *testing.T) {
-	buf, err := Read("fixtures/test.jpg")
+	buf, err := Read("testdata/test.jpg")
 
 	if err != nil {
 		t.Errorf("Cannot read the image: %#v", err)
@@ -21,7 +21,7 @@ func TestRead(t *testing.T) {
 }
 
 func TestWrite(t *testing.T) {
-	buf, err := Read("fixtures/test.jpg")
+	buf, err := Read("testdata/test.jpg")
 
 	if err != nil {
 		t.Errorf("Cannot read the image: %#v", err)
@@ -31,7 +31,7 @@ func TestWrite(t *testing.T) {
 		t.Fatal("Empty buffer")
 	}
 
-	err = Write("fixtures/test_write_out.jpg", buf)
+	err = Write("testdata/test_write_out.jpg", buf)
 	if err != nil {
 		t.Fatalf("Cannot write the file: %#v", err)
 	}

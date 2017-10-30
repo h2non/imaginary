@@ -22,7 +22,7 @@ func TestDeterminateImageType(t *testing.T) {
 	}
 
 	for _, file := range files {
-		img, _ := os.Open(path.Join("fixtures", file.name))
+		img, _ := os.Open(path.Join("testdata", file.name))
 		buf, _ := ioutil.ReadAll(img)
 		defer img.Close()
 
@@ -49,7 +49,7 @@ func TestDeterminateImageTypeName(t *testing.T) {
 	}
 
 	for _, file := range files {
-		img, _ := os.Open(path.Join("fixtures", file.name))
+		img, _ := os.Open(path.Join("testdata", file.name))
 		buf, _ := ioutil.ReadAll(img)
 		defer img.Close()
 

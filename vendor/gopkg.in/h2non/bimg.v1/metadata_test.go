@@ -118,7 +118,7 @@ func TestColourspaceIsSupported(t *testing.T) {
 }
 
 func readFile(file string) []byte {
-	data, _ := os.Open(path.Join("fixtures", file))
+	data, _ := os.Open(path.Join("testdata", file))
 	buf, _ := ioutil.ReadAll(data)
 	return buf
 }
