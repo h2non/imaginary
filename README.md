@@ -6,7 +6,7 @@
 It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package without additional abstractions for better [performance](#performance).
 
 Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api),
-with additional optional features such as **API token authorization**, **gzip compression**, **HTTP traffic throttle** strategy and **CORS support** for web clients.
+with additional optional features such as **API token authorization**, **HTTP traffic throttle** strategy and **CORS support** for web clients.
 
 `imaginary` **can read** images **from HTTP POST payloads**, **server local path** or **remote HTTP servers**, supporting **JPEG**, **PNG**, **WEBP**, and optionally **TIFF**, **PDF**, **GIF** and **SVG** formats if `libvips@8.3+` is compiled with proper library bindings.
 
@@ -267,10 +267,11 @@ The most expensive image operation under high concurrency scenarios (> 20 req/se
 ```
 Usage:
   imaginary -p 80
-  imaginary -cors -gzip
+  imaginary -cors
   imaginary -concurrency 10
   imaginary -path-prefix /api/v1
   imaginary -enable-url-source
+  imaginary -disable-endpoints form,health,crop,rotate
   imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
   imaginary -enable-url-source -enable-auth-forwarding
   imaginary -enable-url-source -authorization "Basic AwDJdL2DbwrD=="
@@ -286,16 +287,18 @@ Options:
   -v, -version              Show version
   -path-prefix <value>      Url path prefix to listen to [default: "/"]
   -cors                     Enable CORS support [default: false]
-  -gzip                     Enable gzip compression [default: false]
+  -gzip                     Enable gzip compression (deprecated) [default: false]
+  -disable-endpoints        Comma separated endpoints to disable. E.g: form,crop,rotate,health [default: ""]
   -key <key>                Define API key for authorization
   -mount <path>             Mount server local directory
-  -http-cache-ttl <num>     The TTL in seconds. Adds caching headers.
+  -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
   -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
   -enable-placeholder       Enable image response placeholder to be used in case of error [default: false]
   -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
   -allowed-origins <urls>   Restrict remote image source processing to certain origins (separated by commas)
+  -max-allowed-size <bytes> Restrict maximum size of http image source (in bytes)
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
   -authorization <value>    Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization
