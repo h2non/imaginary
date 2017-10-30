@@ -40,6 +40,7 @@ var (
 	aKeyFile           = flag.String("keyfile", "", "TLS private key file path")
 	aAuthorization     = flag.String("authorization", "", "Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization")
 	aPlaceholder       = flag.String("placeholder", "", "Image path to image custom placeholder to be used in case of error. Recommended minimum image size is: 1200x1200")
+	aDisableEndpoints  = flag.String("disable-endpoints", "", "Comma separated endpoints to disable. E.g: form,crop,rotate,health")
 	aHTTPCacheTTL      = flag.Int("http-cache-ttl", -1, "The TTL in seconds")
 	aReadTimeout       = flag.Int("http-read-timeout", 60, "HTTP read timeout in seconds")
 	aWriteTimeout      = flag.Int("http-write-timeout", 60, "HTTP write timeout in seconds")
@@ -57,6 +58,7 @@ Usage:
   imaginary -concurrency 10
   imaginary -path-prefix /api/v1
   imaginary -enable-url-source
+  imaginary -disable-endpoints form,health,crop,rotate
   imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
   imaginary -enable-url-source -enable-auth-forwarding
   imaginary -enable-url-source -authorization "Basic AwDJdL2DbwrD=="
@@ -73,6 +75,7 @@ Options:
   -path-prefix <value>      Url path prefix to listen to [default: "/"]
   -cors                     Enable CORS support [default: false]
   -gzip                     Enable gzip compression (deprecated) [default: false]
+  -disable-endpoints        Comma separated endpoints to disable. E.g: form,crop,rotate,health [default: ""]
   -key <key>                Define API key for authorization
   -mount <path>             Mount server local directory
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
@@ -152,6 +155,11 @@ func main() {
 	// Validate HTTP cache param, if present
 	if *aHTTPCacheTTL != -1 {
 		checkHttpCacheTtl(*aHTTPCacheTTL)
+	}
+
+	// Parse endpoint names to disabled, if present
+	if *aDisableEndpoints != "" {
+		opts.Endpoints = parseEndpoints(*aDisableEndpoints)
 	}
 
 	// Read placeholder image, if required
@@ -240,6 +248,17 @@ func parseOrigins(origins string) []*url.URL {
 		urls = append(urls, u)
 	}
 	return urls
+}
+
+func parseEndpoints(input string) Endpoints {
+	endpoints := Endpoints{}
+	for _, endpoint := range strings.Split(input, ",") {
+		endpoint = strings.ToLower(strings.TrimSpace(endpoint))
+		if endpoint != "" {
+			endpoints = append(endpoints, endpoint)
+		}
+	}
+	return endpoints
 }
 
 func memoryRelease(interval int) {

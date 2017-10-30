@@ -1,4 +1,11 @@
 
+v1.0.10 / 2017-10-30
+====================
+
+  * feat(bimg): upgrade to v1.0.16
+  * fix(docs): remove no-form docs
+  * feat(#156): support disable endpoints
+
 v1.0.9 / 2017-10-29
 ===================
 

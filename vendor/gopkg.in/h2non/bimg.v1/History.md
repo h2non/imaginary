@@ -1,4 +1,13 @@
 
+## v1.0.16 / 2017-10-30
+
+  * fix(travis): use install directive
+  * Merge branch 'master' of https://github.com/h2non/bimg
+  * feat: add Gopkg manifests, move fixtures to testdata, add vendor dependencies
+  * Merge pull request #202 from openskydoor/openskydoor/fix-build-tag
+  * fix build tag
+  * fix(#199): presinstall.sh tarball download URL
+
 ## v1.0.15 / 2017-10-05
 
   * Merge pull request #198 from greut/webpload

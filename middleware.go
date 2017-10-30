@@ -15,6 +15,9 @@ import (
 func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) http.Handler {
 	next := http.Handler(http.HandlerFunc(fn))
 
+	if len(o.Endpoints) > 0 {
+		next = filterEndpoint(next, o)
+	}
 	if o.Concurrency > 0 {
 		next = throttle(next, o)
 	}
@@ -35,6 +38,16 @@ func ImageMiddleware(o ServerOptions) func(Operation) http.Handler {
 	return func(fn Operation) http.Handler {
 		return validateImage(Middleware(imageController(o, Operation(fn)), o), o)
 	}
+}
+
+func filterEndpoint(next http.Handler, o ServerOptions) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if o.Endpoints.IsValid(r) {
+			next.ServeHTTP(w, r)
+			return
+		}
+		ErrorReply(r, w, ErrNotImplemented, o)
+	})
 }
 
 func throttleError(err error) http.Handler {

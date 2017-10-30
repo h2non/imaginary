@@ -1,18 +1,24 @@
 #!/bin/bash
 
 vips_version_minimum=8.4.2
-vips_version_latest_major_minor=8.4
-vips_version_latest_patch=2
+vips_version_latest_major_minor=8.5
+vips_version_latest_patch=1
+vips_version_full="$vips_version_latest_major_minor.$vips_version_latest_patch"
 
 openslide_version_minimum=3.4.0
 openslide_version_latest_major_minor=3.4
 openslide_version_latest_patch=1
 
+tarbal_url="https://github.com/jcupitt/libvips/releases/download/v$vips_version_full/vips-$vips_version_full.tar.gz"
+
 install_libvips_from_source() {
-  echo "Compiling libvips $vips_version_latest_major_minor.$vips_version_latest_patch from source"
-  curl -O http://www.vips.ecs.soton.ac.uk/supported/$vips_version_latest_major_minor/vips-$vips_version_latest_major_minor.$vips_version_latest_patch.tar.gz
-  tar zvxf vips-$vips_version_latest_major_minor.$vips_version_latest_patch.tar.gz
-  cd vips-$vips_version_latest_major_minor.$vips_version_latest_patch
+  # Download tarball
+  echo "Compiling libvips v$vips_version_full from source"
+  curl -L -o vips-$vips_version_full.tar.gz $tarbal_url
+  tar zvxf vips-$vips_version_full.tar.gz
+  cd vips-$vips_version_full
+
+  # Compile
   CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" ./configure --disable-debug --disable-docs --disable-static --disable-introspection --disable-dependency-tracking --enable-cxx=yes --without-python --without-orc --without-fftw $1
   make
   make install

@@ -22,8 +22,8 @@
 [[projects]]
   name = "gopkg.in/h2non/bimg.v1"
   packages = ["."]
-  revision = "dd3da90710e1c9e0804a894f713abecd8e0cd259"
-  version = "v1.0.15"
+  revision = "1a5477aae5b261f4f8efb40cdeba8198b75c2238"
+  version = "v1.0.16"
 
 [[projects]]
   name = "gopkg.in/h2non/filetype.v0"

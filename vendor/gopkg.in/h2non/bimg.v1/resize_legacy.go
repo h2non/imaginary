@@ -1,4 +1,4 @@
-// +build !go17
+// +build !go1.7
 
 package bimg
 

@@ -14,7 +14,7 @@ import (
 
 func TestResize(t *testing.T) {
 	options := Options{Width: 800, Height: 600}
-	buf, _ := Read("fixtures/test.jpg")
+	buf, _ := Read("testdata/test.jpg")
 
 	newImg, err := Resize(buf, options)
 	if err != nil {
@@ -30,7 +30,7 @@ func TestResize(t *testing.T) {
 		t.Fatalf("Invalid image size: %dx%d", size.Width, size.Height)
 	}
 
-	Write("fixtures/test_out.jpg", newImg)
+	Write("testdata/test_out.jpg", newImg)
 }
 
 func TestResizeVerticalImage(t *testing.T) {
@@ -51,11 +51,11 @@ func TestResizeVerticalImage(t *testing.T) {
 		{Force: true, Width: 2000, Height: 2000},
 	}
 
-	bufJpeg, err := Read("fixtures/vertical.jpg")
+	bufJpeg, err := Read("testdata/vertical.jpg")
 	if err != nil {
 		t.Fatal(err)
 	}
-	bufWebp, err := Read("fixtures/vertical.webp")
+	bufWebp, err := Read("testdata/vertical.webp")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -90,7 +90,7 @@ func TestResizeVerticalImage(t *testing.T) {
 
 			Write(
 				fmt.Sprintf(
-					"fixtures/test_vertical_%dx%d_out.%s",
+					"testdata/test_vertical_%dx%d_out.%s",
 					options.Width,
 					options.Height,
 					ImageTypeName(source.format)),
@@ -114,11 +114,11 @@ func TestResizeCustomSizes(t *testing.T) {
 		{Force: true, Width: 2000, Height: 2000},
 	}
 
-	bufJpeg, err := Read("fixtures/test.jpg")
+	bufJpeg, err := Read("testdata/test.jpg")
 	if err != nil {
 		t.Fatal(err)
 	}
-	bufWebp, err := Read("fixtures/test.webp")
+	bufWebp, err := Read("testdata/test.webp")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -181,7 +181,7 @@ func TestResizePrecision(t *testing.T) {
 
 func TestRotate(t *testing.T) {
 	options := Options{Width: 800, Height: 600, Rotate: 270, Crop: true}
-	buf, _ := Read("fixtures/test.jpg")
+	buf, _ := Read("testdata/test.jpg")
 
 	newImg, err := Resize(buf, options)
 	if err != nil {
@@ -197,12 +197,12 @@ func TestRotate(t *testing.T) {
 		t.Errorf("Invalid image size: %dx%d", size.Width, size.Height)
 	}
 
-	Write("fixtures/test_rotate_out.jpg", newImg)
+	Write("testdata/test_rotate_out.jpg", newImg)
 }
 
 func TestInvalidRotateDegrees(t *testing.T) {
 	options := Options{Width: 800, Height: 600, Rotate: 111, Crop: true}
-	buf, _ := Read("fixtures/test.jpg")
+	buf, _ := Read("testdata/test.jpg")
 
 	newImg, err := Resize(buf, options)
 	if err != nil {
@@ -218,12 +218,12 @@ func TestInvalidRotateDegrees(t *testing.T) {
 		t.Errorf("Invalid image size: %dx%d", size.Width, size.Height)
 	}
 
-	Write("fixtures/test_rotate_invalid_out.jpg", newImg)
+	Write("testdata/test_rotate_invalid_out.jpg", newImg)
 }
 
 func TestCorruptedImage(t *testing.T) {
 	options := Options{Width: 800, Height: 600}
-	buf, _ := Read("fixtures/corrupt.jpg")
+	buf, _ := Read("testdata/corrupt.jpg")
 
 	newImg, err := Resize(buf, options)
 	if err != nil {
@@ -239,12 +239,12 @@ func TestCorruptedImage(t *testing.T) {
 		t.Fatalf("Invalid image size: %dx%d", size.Width, size.Height)
 	}
 
-	Write("fixtures/test_corrupt_out.jpg", newImg)
+	Write("testdata/test_corrupt_out.jpg", newImg)
 }
 
 func TestNoColorProfile(t *testing.T) {
 	options := Options{Width: 800, Height: 600, NoProfile: true}
-	buf, _ := Read("fixtures/test.jpg")
+	buf, _ := Read("testdata/test.jpg")
 
 	newImg, err := Resize(buf, options)
 	if err != nil {
@@ -264,7 +264,7 @@ func TestNoColorProfile(t *testing.T) {
 
 func TestEmbedExtendColor(t *testing.T) {
 	options := Options{Width: 400, Height: 600, Crop: false, Embed: true, Extend: ExtendWhite, Background: Color{255, 20, 10}}
-	buf, _ := Read("fixtures/test_issue.jpg")
+	buf, _ := Read("testdata/test_issue.jpg")
 
 	newImg, err := Resize(buf, options)
 	if err != nil {
@@ -276,12 +276,12 @@ func TestEmbedExtendColor(t *testing.T) {
 		t.Fatalf("Invalid image size: %dx%d", size.Width, size.Height)
 	}
 
-	Write("fixtures/test_extend_white_out.jpg", newImg)
+	Write("testdata/test_extend_white_out.jpg", newImg)
 }
 
 func TestEmbedExtendWithCustomColor(t *testing.T) {
 	options := Options{Width: 400, Height: 600, Crop: false, Embed: true, Extend: 5, Background: Color{255, 20, 10}}
-	buf, _ := Read("fixtures/test_issue.jpg")
+	buf, _ := Read("testdata/test_issue.jpg")
 
 	newImg, err := Resize(buf, options)
 	if err != nil {
@@ -293,12 +293,12 @@ func TestEmbedExtendWithCustomColor(t *testing.T) {
 		t.Fatalf("Invalid image size: %dx%d", size.Width, size.Height)
 	}
 
-	Write("fixtures/test_extend_background_out.jpg", newImg)
+	Write("testdata/test_extend_background_out.jpg", newImg)
 }
 
 func TestGaussianBlur(t *testing.T) {
 	options := Options{Width: 800, Height: 600, GaussianBlur: GaussianBlur{Sigma: 5}}
-	buf, _ := Read("fixtures/test.jpg")
+	buf, _ := Read("testdata/test.jpg")
 
 	newImg, err := Resize(buf, options)
 	if err != nil {
@@ -310,12 +310,12 @@ func TestGaussianBlur(t *testing.T) {
 		t.Fatalf("Invalid image size: %dx%d", size.Width, size.Height)
 	}
 
-	Write("fixtures/test_gaussian_out.jpg", newImg)
+	Write("testdata/test_gaussian_out.jpg", newImg)
 }
 
 func TestSharpen(t *testing.T) {
 	options := Options{Width: 800, Height: 600, Sharpen: Sharpen{Radius: 1, X1: 1.5, Y2: 20, Y3: 50, M1: 1, M2: 2}}
-	buf, _ := Read("fixtures/test.jpg")
+	buf, _ := Read("testdata/test.jpg")
 
 	newImg, err := Resize(buf, options)
 	if err != nil {
@@ -327,12 +327,12 @@ func TestSharpen(t *testing.T) {
 		t.Fatalf("Invalid image size: %dx%d", size.Width, size.Height)
 	}
 
-	Write("fixtures/test_sharpen_out.jpg", newImg)
+	Write("testdata/test_sharpen_out.jpg", newImg)
 }
 
 func TestExtractWithDefaultAxis(t *testing.T) {
 	options := Options{AreaWidth: 200, AreaHeight: 200}
-	buf, _ := Read("fixtures/test.jpg")
+	buf, _ := Read("testdata/test.jpg")
 
 	newImg, err := Resize(buf, options)
 	if err != nil {
@@ -344,12 +344,12 @@ func TestExtractWithDefaultAxis(t *testing.T) {
 		t.Fatalf("Invalid image size: %dx%d", size.Width, size.Height)
 	}
 
-	Write("fixtures/test_extract_defaults_out.jpg", newImg)
+	Write("testdata/test_extract_defaults_out.jpg", newImg)
 }
 
 func TestExtractCustomAxis(t *testing.T) {
 	options := Options{Top: 100, Left: 100, AreaWidth: 200, AreaHeight: 200}
-	buf, _ := Read("fixtures/test.jpg")
+	buf, _ := Read("testdata/test.jpg")
 
 	newImg, err := Resize(buf, options)
 	if err != nil {
@@ -361,7 +361,7 @@ func TestExtractCustomAxis(t *testing.T) {
 		t.Fatalf("Invalid image size: %dx%d", size.Width, size.Height)
 	}
 
-	Write("fixtures/test_extract_custom_axis_out.jpg", newImg)
+	Write("testdata/test_extract_custom_axis_out.jpg", newImg)
 }
 
 func TestConvert(t *testing.T) {
@@ -375,7 +375,7 @@ func TestConvert(t *testing.T) {
 	}
 
 	for _, file := range files {
-		img, err := os.Open("fixtures/" + file)
+		img, err := os.Open("testdata/" + file)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -410,7 +410,7 @@ func TestResizePngWithTransparency(t *testing.T) {
 	width, height := 300, 240
 
 	options := Options{Width: width, Height: height, Crop: true}
-	img, err := os.Open("fixtures/transparent.png")
+	img, err := os.Open("testdata/transparent.png")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -435,7 +435,7 @@ func TestResizePngWithTransparency(t *testing.T) {
 		t.Fatal("Invalid image size")
 	}
 
-	Write("fixtures/transparent_out.png", newImg)
+	Write("testdata/transparent_out.png", newImg)
 }
 
 func TestRotationAndFlip(t *testing.T) {
@@ -463,7 +463,7 @@ func TestRotationAndFlip(t *testing.T) {
 	}
 
 	for _, file := range files {
-		img, err := os.Open(fmt.Sprintf("fixtures/exif/%s.jpg", file.Name))
+		img, err := os.Open(fmt.Sprintf("testdata/exif/%s.jpg", file.Name))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -493,7 +493,7 @@ func TestRotationAndFlip(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		Write(fmt.Sprintf("fixtures/exif/%s_out.jpg", file.Name), newImg)
+		Write(fmt.Sprintf("testdata/exif/%s_out.jpg", file.Name), newImg)
 	}
 }
 
@@ -506,7 +506,7 @@ func TestIfBothSmartCropOptionsAreIdentical(t *testing.T) {
 	smartCropOptions := Options{Width: 100, Height: 100, Crop: true, SmartCrop: true}
 	gravityOptions := Options{Width: 100, Height: 100, Crop: true, Gravity: GravitySmart}
 
-	testImg, err := os.Open("fixtures/northern_cardinal_bird.jpg")
+	testImg, err := os.Open("testdata/northern_cardinal_bird.jpg")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -543,7 +543,7 @@ func TestIfBothSmartCropOptionsAreIdentical(t *testing.T) {
 }
 
 func runBenchmarkResize(file string, o Options, b *testing.B) {
-	buf, _ := Read(path.Join("fixtures", file))
+	buf, _ := Read(path.Join("testdata", file))
 
 	for n := 0; n < b.N; n++ {
 		Resize(buf, o)

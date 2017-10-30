@@ -163,7 +163,7 @@ func TestVipsMemory(t *testing.T) {
 }
 
 func readImage(file string) []byte {
-	img, _ := os.Open(path.Join("fixtures", file))
+	img, _ := os.Open(path.Join("testdata", file))
 	buf, _ := ioutil.ReadAll(img)
 	defer img.Close()
 	return buf
