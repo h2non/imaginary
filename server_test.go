@@ -173,6 +173,39 @@ func TestExtract(t *testing.T) {
 	}
 }
 
+func TestFit(t *testing.T) {
+	ts := testServer(controller(Fit))
+	buf := readFile("large.jpg")
+	url := ts.URL + "?width=300&height=300"
+	defer ts.Close()
+
+	res, err := http.Post(url, "image/jpeg", buf)
+	if err != nil {
+		t.Fatal("Cannot perform the request")
+	}
+
+	if res.StatusCode != 200 {
+		t.Fatalf("Invalid response status: %s", res.Status)
+	}
+
+	image, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(image) == 0 {
+		t.Fatalf("Empty response body")
+	}
+
+	err = assertSize(image, 300, 168)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if bimg.DetermineImageTypeName(image) != "jpeg" {
+		t.Fatalf("Invalid image type")
+	}
+}
+
 func TestRemoteHTTPSource(t *testing.T) {
 	opts := ServerOptions{EnableURLSource: true}
 	fn := ImageMiddleware(opts)(Crop)

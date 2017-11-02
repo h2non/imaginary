@@ -58,6 +58,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 - Flop
 - Zoom
 - Thumbnail
+- Fit
 - [Pipeline](#get--post-pipeline) of multiple independent image transformations in a single HTTP request.
 - Configurable image area extraction
 - Embed/Extend image, supporting multiple modes (white, black, mirror, copy or custom background color)
@@ -738,6 +739,36 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 - width `int`
 - height `int`
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+- type `string`
+- file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
+- force `bool`
+- rotate `int`
+- norotation `bool`
+- noprofile `bool`
+- stripmeta `bool`
+- flip `bool`
+- flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
+- colorspace `string`
+- sigma `float`
+- minampl `float`
+- field `string` - Only POST and `multipart/form` payloads
+
+#### GET | POST /fit
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
+
+Resize an image to fit within width and height, without cropping. Image aspect ratio is maintained
+The width and height specify a maximum bounding box for the image.
+
+##### Allowed params
+
+- width `int` `required`
+- height `int` `required`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
 - type `string`
