@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"mime"
 	"net/http"
 	"strconv"
 	"strings"
@@ -53,18 +54,13 @@ func imageController(o ServerOptions, operation Operation) func(http.ResponseWri
 }
 
 func determineAcceptMimeType(accept string) string {
-	for _, mime := range strings.Split(accept, ",") {
-		// strip off any other parameters after mime type
-		i := strings.Index(mime, ";")
-		if i != -1 {
-			mime = mime[0:i]
-		}
-		mime = strings.TrimSpace(mime)
-		if mime == "image/webp" {
+	for _, v := range strings.Split(accept, ",") {
+		mediatype, _, _ := mime.ParseMediaType(v)
+		if mediatype == "image/webp" {
 			return "webp"
-		} else if mime == "image/png" {
+		} else if mediatype == "image/png" {
 			return "png"
-		} else if mime == "image/jpeg" {
+		} else if mediatype == "image/jpeg" {
 			return "jpeg"
 		}
 	}
