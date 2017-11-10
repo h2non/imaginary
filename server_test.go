@@ -173,6 +173,63 @@ func TestExtract(t *testing.T) {
 	}
 }
 
+func TestTypeAuto(t *testing.T) {
+	cases := []struct {
+		acceptHeader string
+		expected     string
+	}{
+		{"", "jpeg"},
+		{"image/webp,*/*", "webp"},
+		{"image/png,*/*", "png"},
+		{"image/webp;q=0.8,image/jpeg", "webp"},
+		{"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8", "webp"}, // Chrome
+	}
+
+	for _, test := range cases {
+		ts := testServer(controller(Crop))
+		buf := readFile("large.jpg")
+		url := ts.URL + "?width=300&type=auto"
+		defer ts.Close()
+
+		req, _ := http.NewRequest("POST", url, buf)
+		req.Header.Add("Content-Type", "image/jpeg")
+		req.Header.Add("Accept", test.acceptHeader)
+		res, err := http.DefaultClient.Do(req)
+		if err != nil {
+			t.Fatal("Cannot perform the request")
+		}
+
+		if res.StatusCode != 200 {
+			t.Fatalf("Invalid response status: %s", res.Status)
+		}
+
+		if res.Header.Get("Content-Length") == "" {
+			t.Fatal("Empty content length response")
+		}
+
+		image, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(image) == 0 {
+			t.Fatalf("Empty response body")
+		}
+
+		err = assertSize(image, 300, 1080)
+		if err != nil {
+			t.Error(err)
+		}
+
+		if bimg.DetermineImageTypeName(image) != test.expected {
+			t.Fatalf("Invalid image type")
+		}
+
+		if res.Header.Get("Vary") != "Accept" {
+			t.Fatal("Vary header not set correctly")
+		}
+	}
+}
+
 func TestRemoteHTTPSource(t *testing.T) {
 	opts := ServerOptions{EnableURLSource: true}
 	fn := ImageMiddleware(opts)(Crop)
