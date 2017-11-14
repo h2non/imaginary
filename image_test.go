@@ -21,6 +21,23 @@ func TestImageResize(t *testing.T) {
 	}
 }
 
+func TestImageFit(t *testing.T) {
+	opts := ImageOptions{Width: 300, Height: 300}
+	buf, _ := ioutil.ReadAll(readFile("imaginary.jpg"))
+
+	img, err := Fit(buf, opts)
+	if err != nil {
+		t.Errorf("Cannot process image: %s", err)
+	}
+	if img.Mime != "image/jpeg" {
+		t.Error("Invalid image MIME type")
+	}
+	// 550x740 -> 222x300
+	if assertSize(img.Body, 222, 300) != nil {
+		t.Errorf("Invalid image size, expected: %dx%d", opts.Width, opts.Height)
+	}
+}
+
 func TestImagePipelineOperations(t *testing.T) {
 	width, height := 300, 260
 
