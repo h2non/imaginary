@@ -25,6 +25,7 @@ var OperationsMap = map[string]Operation{
 	"watermark": Watermark,
 	"blur":      GaussianBlur,
 	"smartcrop": SmartCrop,
+	"fit":       Fit,
 }
 
 // Image stores an image binary buffer and its MIME type
@@ -91,6 +92,36 @@ func Resize(buf []byte, o ImageOptions) (Image, error) {
 	if o.NoCrop == false {
 		opts.Crop = true
 	}
+
+	return Process(buf, opts)
+}
+
+func Fit(buf []byte, o ImageOptions) (Image, error) {
+	if o.Width == 0 || o.Height == 0 {
+		return Image{}, NewError("Missing required params: height, width", BadRequest)
+	}
+
+	dims, err := bimg.Size(buf)
+	if err != nil {
+		return Image{}, err
+	}
+
+	// if input ratio > output ratio
+	// (calculation multiplied through by denominators to avoid float division)
+	if dims.Width*o.Height > o.Width*dims.Height {
+		// constrained by width
+		if dims.Width != 0 {
+			o.Height = o.Width * dims.Height / dims.Width
+		}
+	} else {
+		// constrained by height
+		if dims.Height != 0 {
+			o.Width = o.Height * dims.Width / dims.Height
+		}
+	}
+
+	opts := BimgOptions(o)
+	opts.Embed = true
 
 	return Process(buf, opts)
 }
