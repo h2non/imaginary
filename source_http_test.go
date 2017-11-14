@@ -125,7 +125,6 @@ func TestHttpImageSourceForwardAuthHeader(t *testing.T) {
 }
 
 func TestHttpImageSourceError(t *testing.T) {
-	var body []byte
 	var err error
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -140,7 +139,7 @@ func TestHttpImageSourceError(t *testing.T) {
 			t.Fatal("Cannot match the request")
 		}
 
-		body, err = source.GetImage(r)
+		_, err = source.GetImage(r)
 		if err == nil {
 			t.Fatalf("Server response should not be valid: %s", err)
 		}
