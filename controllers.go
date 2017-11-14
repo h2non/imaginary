@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"mime"
 	"net/http"
 	"strconv"
 	"strings"
@@ -52,6 +53,21 @@ func imageController(o ServerOptions, operation Operation) func(http.ResponseWri
 	}
 }
 
+func determineAcceptMimeType(accept string) string {
+	for _, v := range strings.Split(accept, ",") {
+		mediatype, _, _ := mime.ParseMediaType(v)
+		if mediatype == "image/webp" {
+			return "webp"
+		} else if mediatype == "image/png" {
+			return "png"
+		} else if mediatype == "image/jpeg" {
+			return "jpeg"
+		}
+	}
+	// default
+	return ""
+}
+
 func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation Operation, o ServerOptions) {
 	// Infer the body MIME type via mimesniff algorithm
 	mimeType := http.DetectContentType(buf)
@@ -78,7 +94,11 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation 
 	}
 
 	opts := readParams(r.URL.Query())
-	if opts.Type != "" && ImageType(opts.Type) == 0 {
+	vary := ""
+	if opts.Type == "auto" {
+		opts.Type = determineAcceptMimeType(r.Header.Get("Accept"))
+		vary = "Accept" // Ensure caches behave correctly for negotiated content
+	} else if opts.Type != "" && ImageType(opts.Type) == 0 {
 		ErrorReply(r, w, ErrOutputFormat, o)
 		return
 	}
@@ -92,6 +112,9 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation 
 	// Expose Content-Length response header
 	w.Header().Set("Content-Length", strconv.Itoa(len(image.Body)))
 	w.Header().Set("Content-Type", image.Mime)
+	if vary != "" {
+		w.Header().Set("Vary", vary)
+	}
 	w.Write(image.Body)
 }
 
