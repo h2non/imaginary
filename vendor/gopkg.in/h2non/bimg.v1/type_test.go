@@ -68,7 +68,7 @@ func TestIsTypeSupported(t *testing.T) {
 
 	for _, n := range types {
 		if IsTypeSupported(n.name) == false {
-			t.Fatalf("Image type %#v is not valid", ImageTypes[n.name])
+			t.Fatalf("Image type %s is not valid", ImageTypes[n.name])
 		}
 	}
 }
@@ -87,7 +87,7 @@ func TestIsTypeNameSupported(t *testing.T) {
 
 	for _, n := range types {
 		if IsTypeNameSupported(n.name) != n.expected {
-			t.Fatalf("Image type %#v is not valid", n.name)
+			t.Fatalf("Image type %s is not valid", n.name)
 		}
 	}
 }
@@ -104,7 +104,7 @@ func TestIsTypeSupportedSave(t *testing.T) {
 
 	for _, n := range types {
 		if IsTypeSupportedSave(n.name) == false {
-			t.Fatalf("Image type %#v is not valid", ImageTypes[n.name])
+			t.Fatalf("Image type %s is not valid", ImageTypes[n.name])
 		}
 	}
 }
@@ -124,7 +124,7 @@ func TestIsTypeNameSupportedSave(t *testing.T) {
 
 	for _, n := range types {
 		if IsTypeNameSupportedSave(n.name) != n.expected {
-			t.Fatalf("Image type %#v is not valid", n.name)
+			t.Fatalf("Image type %s is not valid", n.name)
 		}
 	}
 }

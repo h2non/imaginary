@@ -70,7 +70,7 @@ COPY . $GOPATH/src/github.com/h2non/imaginary
 # Compile imaginary
 RUN go build -race -o bin/imaginary github.com/h2non/imaginary
 
-# Run the outyet command by default when the container starts.
+# Run the entrypoint command by default when the container starts.
 ENTRYPOINT ["bin/imaginary"]
 
 # Expose the server TCP port

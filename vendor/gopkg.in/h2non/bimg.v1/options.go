@@ -41,12 +41,15 @@ const (
 	Bilinear
 	// Nohalo interpolation value.
 	Nohalo
+	// Nearest neighbour interpolation value.
+	Nearest
 )
 
 var interpolations = map[Interpolator]string{
 	Bicubic:  "bicubic",
 	Bilinear: "bilinear",
 	Nohalo:   "nohalo",
+	Nearest:  "nearest",
 }
 
 func (i Interpolator) String() string {

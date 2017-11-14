@@ -1,4 +1,13 @@
 
+## v1.0.17 / 2017-11-14
+
+  * refactor(resizer): remove fmt statement
+  * fix(type_test): use string formatting
+  * Merge pull request #207 from traum-ferienwohnungen/nearest-neighbour
+  * Add nearest-neighbour interpolation
+  * Merge pull request #203 from traum-ferienwohnungen/fix_icc_memory_leak
+  * Fix memory leak on icc_transform
+
 ## v1.0.16 / 2017-10-30
 
   * fix(travis): use install directive
