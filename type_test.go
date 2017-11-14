@@ -75,7 +75,7 @@ func TestImageType(t *testing.T) {
 
 	for _, file := range files {
 		if ImageType(file.name) != file.expected {
-			t.Fatalf("Invalid type: %s != %s", file.name, file.expected)
+			t.Fatalf("Invalid type: %s != %s", file.name, bimg.ImageTypes[file.expected])
 		}
 	}
 }
@@ -97,7 +97,7 @@ func TestGetImageMimeType(t *testing.T) {
 
 	for _, file := range files {
 		if GetImageMimeType(file.name) != file.expected {
-			t.Fatalf("Invalid type: %s != %s", file.name, file.expected)
+			t.Fatalf("Invalid type: %s != %s", bimg.ImageTypes[file.name], file.expected)
 		}
 	}
 }
