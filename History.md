@@ -1,4 +1,15 @@
 
+v1.0.11 / 2017-11-14
+====================
+
+  * feat(bimg): update to v1.0.17
+  * Merge branch 'realla-add-fit'
+  * merge(add-fit): fix conflicts in server_test.go
+  * refactor(image): remove else statement
+  * fix(test): remove unused variable body
+  * Add type=auto using client Accept header to auto negotiate type. (#162)
+  * Add /fit action
+
 v1.0.10 / 2017-10-30
 ====================
 
