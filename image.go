@@ -90,8 +90,6 @@ func Resize(buf []byte, o ImageOptions) (Image, error) {
 
 	if o.NoCrop == false {
 		opts.Crop = true
-	} else {
-		opts.Crop = false
 	}
 
 	return Process(buf, opts)
