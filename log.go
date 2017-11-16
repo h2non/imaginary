@@ -23,7 +23,7 @@ type LogRecord struct {
 
 // Log writes a log entry in the passed io.Writer stream
 func (r *LogRecord) Log(out io.Writer) {
-	timeFormat := r.time.Format("02/Jan/2006 03:04:05")
+	timeFormat := r.time.Format("02/Jan/2006 15:04:05")
 	request := fmt.Sprintf("%s %s %s", r.method, r.uri, r.protocol)
 	fmt.Fprintf(out, formatPattern, r.ip, timeFormat, request, r.status, r.responseBytes, r.elapsedTime.Seconds())
 }
