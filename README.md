@@ -126,6 +126,18 @@ docker stop h2non/imaginary
 
 You can see all the Docker tags [here](https://hub.docker.com/r/h2non/imaginary/tags/).
 
+Alternatively you may add imaginary to your `docker-compose.yml` file:
+
+```yaml
+imaginary:
+  image: h2non/imaginary
+  ports:
+    - "8088:8088"
+  environment:
+    - PORT=8088
+  command: -concurrency 20 -enable-url-source
+```
+
 ### Heroku
 
 Click on the Heroku button to easily deploy your app:
