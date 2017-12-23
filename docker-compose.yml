@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  imaginary:
+    image: h2non/imaginary
+    ports:
+      - "8088:8088"
+    environment:
+      - PORT=8088
+    command: -concurrency 50 -enable-url-source
+
