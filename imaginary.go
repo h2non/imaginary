@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/url"
 	"os"
 	"runtime"
@@ -13,11 +14,7 @@ import (
 	"time"
 
 	bimg "gopkg.in/h2non/bimg.v1"
-
-	. "github.com/tj/go-debug"
 )
-
-var debug = Debug("imaginary")
 
 var (
 	aAddr              = flag.String("a", "", "Bind address")
@@ -274,4 +271,11 @@ func memoryRelease(interval int) {
 func exitWithError(format string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, format+"\n", args)
 	os.Exit(1)
+}
+
+func debug(msg string, values ...interface{}) {
+	debug := os.Getenv("DEBUG")
+	if debug == "imaginary" || debug == "*" {
+		log.Printf(msg, values...)
+	}
 }
