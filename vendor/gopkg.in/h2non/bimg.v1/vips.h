@@ -306,10 +306,11 @@ vips_pngsave_bridge(VipsImage *in, void **buf, size_t *len, int strip, int compr
 }
 
 int
-vips_webpsave_bridge(VipsImage *in, void **buf, size_t *len, int strip, int quality) {
+vips_webpsave_bridge(VipsImage *in, void **buf, size_t *len, int strip, int quality, int lossless) {
 	return vips_webpsave_buffer(in, buf, len,
 		"strip", INT_TO_GBOOLEAN(strip),
 		"Q", quality,
+		"lossless", INT_TO_GBOOLEAN(lossless),
 		NULL
 	);
 }
@@ -545,9 +546,17 @@ vips_smartcrop_bridge(VipsImage *in, VipsImage **out, int width, int height) {
 #endif
 }
 
-int vips_find_trim_bridge(VipsImage *in, int *top, int *left, int *width, int *height) {
+int vips_find_trim_bridge(VipsImage *in, int *top, int *left, int *width, int *height, double r, double g, double b, double threshold) {
 #if (VIPS_MAJOR_VERSION >= 8 && VIPS_MINOR_VERSION >= 6)
-	return vips_find_trim(in, top, left, width, height, NULL);
+	if (vips_is_16bit(in->Type)) {
+		r = 65535 * r / 255;
+		g = 65535 * g / 255;
+		b = 65535 * b / 255;
+	}
+
+	double background[3] = {r, g, b};
+	VipsArrayDouble *vipsBackground = vips_array_double_new(background, 3);
+	return vips_find_trim(in, top, left, width, height, "background", vipsBackground, "threshold", threshold, NULL);
 #else
 	return 0;
 #endif

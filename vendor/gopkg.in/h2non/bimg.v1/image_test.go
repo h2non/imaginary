@@ -495,6 +495,31 @@ func TestImageTrim(t *testing.T) {
 	Write("testdata/transparent_trim.png", buf)
 }
 
+func TestImageTrimParameters(t *testing.T) {
+
+	if !(VipsMajorVersion >= 8 && VipsMinorVersion >= 6) {
+		t.Skipf("Skipping this test, libvips doesn't meet version requirement %s >= 8.6", VipsVersion)
+	}
+
+	i := initImage("test.png")
+	options := Options{
+		Trim:       true,
+		Background: Color{0.0, 0.0, 0.0},
+		Threshold:  10.0,
+	}
+	buf, err := i.Process(options)
+	if err != nil {
+		t.Errorf("Cannot process the image: %#v", err)
+	}
+
+	err = assertSize(buf, 400, 257)
+	if err != nil {
+		t.Errorf("The image wasn't trimmed.")
+	}
+
+	Write("testdata/parameter_trim.png", buf)
+}
+
 func TestImageLength(t *testing.T) {
 	i := initImage("test.jpg")
 

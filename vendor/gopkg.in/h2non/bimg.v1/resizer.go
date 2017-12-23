@@ -29,8 +29,6 @@ func resizer(buf []byte, o Options) ([]byte, error) {
 		return nil, errors.New("Unsupported image output type")
 	}
 
-	debug("Options: %#v", o)
-
 	// Auto rotate image based on EXIF orientation header
 	image, rotated, err := rotateAndFlipImage(image, o)
 	if err != nil {
@@ -165,6 +163,7 @@ func saveImage(image *C.VipsImage, o Options) ([]byte, error) {
 		Interpretation: o.Interpretation,
 		OutputICC:      o.OutputICC,
 		StripMetadata:  o.StripMetadata,
+		Lossless:       o.Lossless,
 	}
 	// Finally get the resultant buffer
 	return vipsSave(image, saveOptions)
@@ -223,9 +222,6 @@ func transformImage(image *C.VipsImage, o Options, shrink int, residual float64)
 		return nil, err
 	}
 
-	debug("Transform: shrink=%v, residual=%v, interpolator=%v",
-		shrink, residual, o.Interpolator.String())
-
 	return image, nil
 }
 
@@ -245,9 +241,6 @@ func applyEffects(image *C.VipsImage, o Options) (*C.VipsImage, error) {
 			return nil, err
 		}
 	}
-
-	debug("Effects: gaussSigma=%v, gaussMinAmpl=%v, sharpenRadius=%v",
-		o.GaussianBlur.Sigma, o.GaussianBlur.MinAmpl, o.Sharpen.Radius)
 
 	return image, nil
 }
@@ -273,7 +266,7 @@ func extractOrEmbedImage(image *C.VipsImage, o Options) (*C.VipsImage, error) {
 		image, err = vipsEmbed(image, left, top, o.Width, o.Height, o.Extend, o.Background)
 		break
 	case o.Trim:
-		left, top, width, height, err := vipsTrim(image)
+		left, top, width, height, err := vipsTrim(image, o.Background, o.Threshold)
 		if err == nil {
 			image, err = vipsExtract(image, left, top, width, height)
 		}

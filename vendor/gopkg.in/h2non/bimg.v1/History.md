@@ -1,4 +1,16 @@
 
+## v1.0.18 / 2017-12-22
+
+  * Merge pull request #216 from Bynder/master
+  * Merge pull request #208 from mikestead/feature/webp-lossless
+  * Remove go-debug usage
+  * refactor(docs): remove codesponsor :(
+  * fix(options): use float64 type in Options.Threshold
+  * Merge pull request #206 from tstm/add-trim-options
+  * Add lossless option for saving webp
+  * Set the test file to write its own file
+  * Add the option to use background and threshold options on trim
+
 ## v1.0.17 / 2017-11-14
 
   * refactor(resizer): remove fmt statement

@@ -16,8 +16,8 @@
 [[projects]]
   name = "gopkg.in/h2non/bimg.v1"
   packages = ["."]
-  revision = "8aff78e4ec8e8b66c753bafb27374488009cfb36"
-  version = "v1.0.17"
+  revision = "02e621739c77c791d8c153f240b7a1f75b07816f"
+  version = "v1.0.18"
 
 [[projects]]
   name = "gopkg.in/h2non/filetype.v0"
@@ -40,6 +40,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "96331f8ecf96ea7df361afa743e1e7525eef1a9dcaf74ffd3fefd016d323fd5f"
+  inputs-digest = "e182b5b5ebe3587488846483d45821b2b53f8fdd113c8633aceacd79aba49add"
   solver-name = "gps-cdcl"
   solver-version = 1
