@@ -21,8 +21,6 @@ settings or Go native `image` package, and in some cases it's even 8x faster pro
 
 To get started, take a look the [installation](#installation) steps, [usage](#usage) cases and [API](#http-api) docs.
 
-<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/1MpD3pzt63uUeG43NP4tDHPY/h2non/imaginary'>  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/1MpD3pzt63uUeG43NP4tDHPY/h2non/imaginary.svg' /></a>
-
 ## Contents
 
 - [Supported image operations](#supported-image-operations)
@@ -394,12 +392,12 @@ curl -O "http://localhost:8088/crop?width=500&height=400&file=foo/bar/image.jpg"
 
 Fetching the image from a remote server (you must pass the `-enable-url-source` flag):
 ```
-curl -O "http://localhost:8088/crop?width=500&height=400&url=https://raw.githubusercontent.com/h2non/imaginary/master/fixtures/large.jpg"
+curl -O "http://localhost:8088/crop?width=500&height=400&url=https://raw.githubusercontent.com/h2non/imaginary/master/testdata/large.jpg"
 ```
 
 Crop behaviour can be influenced with the `gravity` parameter. You can specify a preference for a certain region (north, south, etc.). To enable Smart Crop you can specify the value "smart" to autodetect the most interesting section to consider as center point for the crop operation:
 ```
-curl -O "http://localhost:8088/crop?width=500&height=200&gravity=smart&url=https://raw.githubusercontent.com/h2non/imaginary/master/fixtures/smart-crop.jpg"
+curl -O "http://localhost:8088/crop?width=500&height=200&gravity=smart&url=https://raw.githubusercontent.com/h2non/imaginary/master/testdata/smart-crop.jpg"
 ```
 
 
