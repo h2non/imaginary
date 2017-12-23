@@ -14,12 +14,6 @@
   version = "v1.2"
 
 [[projects]]
-  name = "github.com/tj/go-debug"
-  packages = ["."]
-  revision = "ff4a55a20a86994118644bbddc6a216da193cc13"
-  version = "v2.0.0"
-
-[[projects]]
   name = "gopkg.in/h2non/bimg.v1"
   packages = ["."]
   revision = "8aff78e4ec8e8b66c753bafb27374488009cfb36"

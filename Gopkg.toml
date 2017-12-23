@@ -24,9 +24,6 @@
   name = "github.com/rs/cors"
 
 [[constraint]]
-  name = "github.com/tj/go-debug"
-
-[[constraint]]
   name = "gopkg.in/h2non/bimg.v1"
   version = "^1.0"
 
