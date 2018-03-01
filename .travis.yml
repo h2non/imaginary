@@ -4,11 +4,12 @@ sudo: required
 dist: trusty
 
 go:
-  - 1.9
-  - 1.8
-  - 1.7
-  - 1.6
-  - tip
+  - "1.10"
+  - "1.9"
+  - "1.8"
+  - "1.7"
+  - "1.6"
+  - "tip"
 
 env:
   - LIBVIPS=7.42
@@ -16,6 +17,7 @@ env:
   - LIBVIPS=8.3
   - LIBVIPS=8.4
   - LIBVIPS=8.5
+  - LIBVIPS=8.6
   - LIBVIPS=master
 
 matrix:
