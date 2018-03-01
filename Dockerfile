@@ -3,7 +3,7 @@
 FROM ubuntu:16.04 as builder
 MAINTAINER tomas@aparicio.me
 
-ENV LIBVIPS_VERSION 8.5.6
+ENV LIBVIPS_VERSION 8.6.2
 
 # Installs libvips + required libraries
 RUN \
