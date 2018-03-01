@@ -38,7 +38,7 @@ RUN \
 ENV PORT 9000
 
 # Go version to use
-ENV GOLANG_VERSION 1.9.2
+ENV GOLANG_VERSION 1.10
 
 # gcc for cgo
 RUN apt-get update && apt-get install -y \
