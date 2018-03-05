@@ -5,6 +5,11 @@ MAINTAINER tomas@aparicio.me
 
 ENV LIBVIPS_VERSION 8.6.2
 
+# installs root CA certificates
+RUN \
+  apt-get update && \
+  apt-get install -y ca-certificates
+
 # Installs libvips + required libraries
 RUN \
 
