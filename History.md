@@ -1,4 +1,10 @@
 
+v1.0.14 / 2018-03-05
+====================
+
+  * Add Docker Compose note to README (#174)
+  * Fixes https by installing root CA certificates (#186)
+
 v1.0.13 / 2018-03-01
 ====================
 
