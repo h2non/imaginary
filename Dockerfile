@@ -81,6 +81,7 @@ RUN \
   # Install runtime dependencies
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+  ca-certificates \
   libglib2.0-0 libjpeg-turbo8 libpng12-0 libopenexr22 \
   libwebp5 libtiff5 libgif7 libexif12 libxml2 libpoppler-glib8 \
   libmagickwand-6.q16-2 libpango1.0-0 libmatio2 libopenslide0 \
