@@ -25,6 +25,7 @@ matrix:
     - env: LIBVIPS=7.42
     - env: LIBVIPS=8.2
     - env: LIBVIPS=8.3
+    - env: LIBVIPS=master
 
 cache: apt
 

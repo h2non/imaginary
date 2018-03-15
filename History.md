@@ -1,4 +1,11 @@
 
+v1.0.15 / 2018-03-15
+====================
+
+  * fix(#188, #185): Install SSL CA certificates. 
+  * chore(Dockerfile): upgrade libvips to v8.6.3
+
+
 v1.0.14 / 2018-03-05
 ====================
 
