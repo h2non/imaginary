@@ -196,15 +196,15 @@ func main() {
 
 	// Check URL signature key and salt, if required
 	if *aEnableURLSignature == true {
-		if *aURLSignatureKey == "" || *aURLSignatureSalt == "" {
+		if urlSignature.Key == "" || urlSignature.Salt == "" {
 			exitWithError("URL signature key and salt are required")
 		}
 
-		if len(*aURLSignatureKey) < 32 {
+		if len(urlSignature.Key) < 32 {
 			exitWithError("URL signature key must be a minimum of 32 characters")
 		}
 
-		if len(*aURLSignatureSalt) < 32 {
+		if len(urlSignature.Salt) < 32 {
 			exitWithError("URL signature salt must be a minimum of 32 characters")
 		}
 	}
@@ -237,7 +237,7 @@ func getURLSignature(key string, salt string) URLSignature {
 	}
 
 	if saltEnv := os.Getenv("URL_SIGNATURE_SALT"); saltEnv != "" {
-		salt = salt
+		salt = saltEnv
 	}
 
 	return URLSignature{key, salt}
