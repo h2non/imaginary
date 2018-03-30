@@ -36,7 +36,7 @@ func LoadSources(o ServerOptions) {
 			MountPath:       o.Mount,
 			AuthForwarding:  o.AuthForwarding,
 			Authorization:   o.Authorization,
-			AllowedOrigings: o.AlloweOrigins,
+			AllowedOrigings: o.AllowedOrigins,
 			MaxAllowedSize:  o.MaxAllowedSize,
 		})
 	}

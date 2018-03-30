@@ -8,6 +8,7 @@ Thumbs.db
 # Folders
 _obj
 _test
+.idea
 
 # Architecture specific extensions/prefixes
 *.[568vq]

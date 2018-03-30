@@ -11,29 +11,32 @@ import (
 )
 
 type ServerOptions struct {
-	Port              int
-	Burst             int
-	Concurrency       int
-	HTTPCacheTTL      int
-	HTTPReadTimeout   int
-	HTTPWriteTimeout  int
-	MaxAllowedSize    int
-	CORS              bool
-	Gzip              bool // deprecated
-	AuthForwarding    bool
-	EnableURLSource   bool
-	EnablePlaceholder bool
-	Address           string
-	PathPrefix        string
-	APIKey            string
-	Mount             string
-	CertFile          string
-	KeyFile           string
-	Authorization     string
-	Placeholder       string
-	PlaceholderImage  []byte
-	Endpoints         Endpoints
-	AlloweOrigins     []*url.URL
+	Port               int
+	Burst              int
+	Concurrency        int
+	HTTPCacheTTL       int
+	HTTPReadTimeout    int
+	HTTPWriteTimeout   int
+	MaxAllowedSize     int
+	CORS               bool
+	Gzip               bool // deprecated
+	AuthForwarding     bool
+	EnableURLSource    bool
+	EnablePlaceholder  bool
+	EnableURLSignature bool
+	URLSignatureKey    string
+	URLSignatureSalt   string
+	Address            string
+	PathPrefix         string
+	APIKey             string
+	Mount              string
+	CertFile           string
+	KeyFile            string
+	Authorization      string
+	Placeholder        string
+	PlaceholderImage   []byte
+	Endpoints          Endpoints
+	AllowedOrigins     []*url.URL
 }
 
 // Endpoints represents a list of endpoint names to disable.
