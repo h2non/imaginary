@@ -69,7 +69,7 @@ RUN go get -u github.com/golang/dep/cmd/dep
 COPY . $GOPATH/src/github.com/h2non/imaginary
 
 # Compile imaginary
-RUN go build -race -o bin/imaginary github.com/h2non/imaginary
+RUN go build -o bin/imaginary github.com/h2non/imaginary
 
 FROM ubuntu:16.04
 
