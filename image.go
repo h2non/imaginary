@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"strings"
 
 	"gopkg.in/h2non/bimg.v1"
@@ -23,6 +25,7 @@ var OperationsMap = map[string]Operation{
 	"zoom":      Zoom,
 	"convert":   Convert,
 	"watermark": Watermark,
+	"watermarkImage": watermarkImage,
 	"blur":      GaussianBlur,
 	"smartcrop": SmartCrop,
 	"fit":       Fit,
@@ -260,6 +263,27 @@ func Watermark(buf []byte, o ImageOptions) (Image, error) {
 	if len(o.Color) > 2 {
 		opts.Watermark.Background = bimg.Color{o.Color[0], o.Color[1], o.Color[2]}
 	}
+
+	return Process(buf, opts)
+}
+
+func watermarkImage(buf []byte, o ImageOptions) (Image, error) {
+	response, err := http.Get(o.Image)
+	if err != nil {
+		return Image{}, NewError("Invalid watermark image.", BadRequest)
+	}
+	defer response.Body.Close()
+
+	imageBuf, _ := ioutil.ReadAll(response.Body)
+	if len(imageBuf) == 0 {
+		return Image{}, NewError("Invalid watermark image.", BadRequest)
+	}
+
+	opts := BimgOptions(o)
+	opts.WatermarkImage.Left = o.Left;
+	opts.WatermarkImage.Top = o.Top;
+	opts.WatermarkImage.Buf = imageBuf;
+	opts.WatermarkImage.Opacity = o.Opacity;
 
 	return Process(buf, opts)
 }
