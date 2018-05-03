@@ -31,7 +31,6 @@ var (
 	aEnablePlaceholder  = flag.Bool("enable-placeholder", false, "Enable image response placeholder to be used in case of error")
 	aEnableURLSignature = flag.Bool("enable-url-signature", false, "Enable URL signature (URL-safe Base64-encoded HMAC digest)")
 	aURLSignatureKey    = flag.String("url-signature-key", "", "The URL signature key (32 characters minimum)")
-	aURLSignatureSalt   = flag.String("url-signature-salt", "", "The URL signature salt (32 characters minimum)")
 	aAllowedOrigins     = flag.String("allowed-origins", "", "Restrict remote image source processing to certain origins (separated by commas)")
 	aMaxAllowedSize     = flag.Int("max-allowed-size", 0, "Restrict maximum size of http image source (in bytes)")
 	aKey                = flag.String("key", "", "Define API key for authorization")
@@ -64,7 +63,7 @@ Usage:
   imaginary -enable-url-source -authorization "Basic AwDJdL2DbwrD=="
   imaginary -enable-placeholder
   imaginary -enable-url-source -placeholder ./placeholder.jpg
-  imaginary -enable-url-signature -url-signature-key 4f46feebafc4b5e988f131c4ff8b5997 -url-signature-salt 88f131c4ff8b59974f46feebafc4b5e9
+  imaginary -enable-url-signature -url-signature-key 4f46feebafc4b5e988f131c4ff8b5997
   imaginary -h | -help
   imaginary -v | -version
 
@@ -87,7 +86,6 @@ Options:
   -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
   -enable-url-signature     Enable URL signature (URL-safe Base64-encoded HMAC digest) [default: false]
   -url-signature-key        The URL signature key (32 characters minimum)
-  -url-signature-salt       The URL signature salt (32 characters minimum)
   -allowed-origins <urls>   Restrict remote image source processing to certain origins (separated by commas)
   -max-allowed-size <bytes> Restrict maximum size of http image source (in bytes)
   -certfile <path>          TLS certificate file path
@@ -103,7 +101,6 @@ Options:
 
 type URLSignature struct {
 	Key  string
-	Salt string
 }
 
 func main() {
@@ -123,7 +120,7 @@ func main() {
 	runtime.GOMAXPROCS(*aCpus)
 
 	port := getPort(*aPort)
-	urlSignature := getURLSignature(*aURLSignatureKey, *aURLSignatureSalt)
+	urlSignature := getURLSignature(*aURLSignatureKey)
 
 	opts := ServerOptions{
 		Port:               port,
@@ -134,7 +131,6 @@ func main() {
 		EnablePlaceholder:  *aEnablePlaceholder,
 		EnableURLSignature: *aEnableURLSignature,
 		URLSignatureKey:    urlSignature.Key,
-		URLSignatureSalt:   urlSignature.Salt,
 		PathPrefix:         *aPathPrefix,
 		APIKey:             *aKey,
 		Concurrency:        *aConcurrency,
@@ -194,18 +190,14 @@ func main() {
 		opts.PlaceholderImage = placeholder
 	}
 
-	// Check URL signature key and salt, if required
+	// Check URL signature key, if required
 	if *aEnableURLSignature == true {
-		if urlSignature.Key == "" || urlSignature.Salt == "" {
-			exitWithError("URL signature key and salt are required")
+		if urlSignature.Key == "" {
+			exitWithError("URL signature key is required")
 		}
 
 		if len(urlSignature.Key) < 32 {
 			exitWithError("URL signature key must be a minimum of 32 characters")
-		}
-
-		if len(urlSignature.Salt) < 32 {
-			exitWithError("URL signature salt must be a minimum of 32 characters")
 		}
 	}
 
@@ -231,16 +223,12 @@ func getPort(port int) int {
 	return port
 }
 
-func getURLSignature(key string, salt string) URLSignature {
+func getURLSignature(key string) URLSignature {
 	if keyEnv := os.Getenv("URL_SIGNATURE_KEY"); keyEnv != "" {
 		key = keyEnv
 	}
 
-	if saltEnv := os.Getenv("URL_SIGNATURE_SALT"); saltEnv != "" {
-		salt = saltEnv
-	}
-
-	return URLSignature{key, salt}
+	return URLSignature{key}
 }
 
 func showUsage() {
