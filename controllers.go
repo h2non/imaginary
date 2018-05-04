@@ -131,6 +131,7 @@ func formController(w http.ResponseWriter, r *http.Request) {
 		{"Extract", "extract", "top=100&left=100&areawidth=300&areaheight=150"},
 		{"Enlarge", "enlarge", "width=1440&height=900&quality=95"},
 		{"Rotate", "rotate", "rotate=180"},
+		{"Autorotate", "autorotate", ""},
 		{"Flip", "flip", ""},
 		{"Flop", "flop", ""},
 		{"Thumbnail", "thumbnail", "width=100"},

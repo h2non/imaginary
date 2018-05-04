@@ -185,6 +185,31 @@ func Rotate(buf []byte, o ImageOptions) (Image, error) {
 	return Process(buf, opts)
 }
 
+func AutoRotate(buf []byte, o ImageOptions) (out Image, err error) {
+	opts := BimgOptions(o)
+	defer func() {
+		if r := recover(); r != nil {
+			switch value := r.(type) {
+			case error:
+				err = value
+			case string:
+				err = errors.New(value)
+			default:
+				err = errors.New("libvips internal error")
+			}
+			out = Image{}
+		}
+	}()
+
+	buf, err = bimg.AutoRotate(buf, opts)
+	if err != nil {
+		return Image{}, err
+	}
+
+	mime := GetImageMimeType(bimg.DetermineImageType(buf))
+	return Image{Body: buf, Mime: mime}, nil
+}
+
 func Flip(buf []byte, o ImageOptions) (Image, error) {
 	opts := BimgOptions(o)
 	opts.Flip = true

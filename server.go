@@ -95,6 +95,7 @@ func NewServerMux(o ServerOptions) http.Handler {
 	mux.Handle(join(o, "/crop"), image(Crop))
 	mux.Handle(join(o, "/smartcrop"), image(SmartCrop))
 	mux.Handle(join(o, "/rotate"), image(Rotate))
+	mux.Handle(join(o, "/autorotate"), image(AutoRotate))
 	mux.Handle(join(o, "/flip"), image(Flip))
 	mux.Handle(join(o, "/flop"), image(Flop))
 	mux.Handle(join(o, "/thumbnail"), image(Thumbnail))
