@@ -572,7 +572,7 @@ Provides some useful statistics about the server stats with the following struct
 - **uptime** `number` - Server process uptime in seconds.
 - **allocatedMemory** `number` - Currently allocated memory in megabytes.
 - **totalAllocatedMemory** `number` - Total allocated memory over the time in megabytes.
-- **gorouting** `number` - Number of running gorouting.
+- **goroutines** `number` - Number of running goroutines.
 - **cpus** `number` - Number of used CPU cores.
 
 Example response:
