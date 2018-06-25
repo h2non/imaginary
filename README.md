@@ -19,7 +19,7 @@ which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.ph
 and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick
 settings or Go native `image` package, and in some cases it's even 8x faster processing JPEG images.
 
-To get started, take a look the [installation](#installation) steps, [usage](#usage) cases and [API](#http-api) docs.
+To get started, take a look the [installation](#installation) steps, [usage](#command-line-usage) cases and [API](#http-api) docs.
 
 ## Contents
 
