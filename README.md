@@ -35,7 +35,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 - [Clients](#clients)
 - [Performance](#performance)
 - [Benchmark](#benchmark)
-- [Usage](#usage)
+- [Command-line usage](#command-line-usage)
 - [HTTP API](#http-api)
   - [Authorization](#authorization)
   - [URL signature](#url-signature)
