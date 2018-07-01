@@ -19,6 +19,7 @@ const (
 	NotFound
 	NotImplemented
 	Forbidden
+	NotAcceptable
 )
 
 var (
@@ -75,6 +76,9 @@ func (e Error) HTTPCode() int {
 	}
 	if e.Code == Forbidden {
 		return http.StatusForbidden
+	}
+	if e.Code == NotAcceptable {
+		return http.StatusNotAcceptable
 	}
 	return http.StatusServiceUnavailable
 }
