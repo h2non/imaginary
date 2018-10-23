@@ -186,7 +186,9 @@ func TestShouldRestrictOrigin(t *testing.T) {
 	}
 
 	wildCardOrigins := []*url.URL{
+		createURL("https://localhost", t),
 		createURL("https://*.example.org", t),
+		createURL("https://some.s3.bucket.on.aws.org", t),
 	}
 
 	t.Run("Plain origin", func(t *testing.T) {

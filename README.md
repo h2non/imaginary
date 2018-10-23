@@ -289,7 +289,7 @@ Usage:
   imaginary -path-prefix /api/v1
   imaginary -enable-url-source
   imaginary -disable-endpoints form,health,crop,rotate
-  imaginary -enable-url-source -allowed-origins http://localhost,http://server.com
+  imaginary -enable-url-source -allowed-origins http://localhost,http://server.com,http://*.example.org
   imaginary -enable-url-source -enable-auth-forwarding
   imaginary -enable-url-source -authorization "Basic AwDJdL2DbwrD=="
   imaginary -enable-placeholder
