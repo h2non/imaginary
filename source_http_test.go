@@ -179,3 +179,61 @@ func TestHttpImageSourceExceedsMaximumAllowedLength(t *testing.T) {
 	w := httptest.NewRecorder()
 	fakeHandler(w, r)
 }
+
+func TestShouldRestrictOrigin(t *testing.T) {
+	plainOrigins := []*url.URL{
+		createURL("https://example.org", t),
+	}
+
+	wildCardOrigins := []*url.URL{
+		createURL("https://*.example.org", t),
+	}
+
+	t.Run("Plain origin", func(t *testing.T) {
+		testUrl := createURL("https://example.org/logo.jpg", t)
+
+		if shouldRestrictOrigin(testUrl, plainOrigins) {
+			t.Errorf("Expected '%s' to be allowed with origins: %+v", testUrl, plainOrigins)
+		}
+	})
+
+	t.Run("Wildcard origin, plain URL", func(t *testing.T) {
+		testUrl := createURL("https://example.org/logo.jpg", t)
+
+		if shouldRestrictOrigin(testUrl, wildCardOrigins) {
+			t.Errorf("Expected '%s' to be allowed with origins: %+v", testUrl, wildCardOrigins)
+		}
+	})
+
+	t.Run("Wildcard origin, sub domain URL", func(t *testing.T) {
+		testUrl := createURL("https://node-42.example.org/logo.jpg", t)
+
+		if shouldRestrictOrigin(testUrl, wildCardOrigins) {
+			t.Errorf("Expected '%s' to be allowed with origins: %+v", testUrl, wildCardOrigins)
+		}
+	})
+
+	t.Run("Wildcard origin, incorrect domain URL", func(t *testing.T) {
+		testUrl := createURL("https://myexample.org/logo.jpg", t)
+
+		if !shouldRestrictOrigin(testUrl, plainOrigins) {
+			t.Errorf("Expected '%s' to not be allowed with plain origins: %+v", testUrl, plainOrigins)
+		}
+
+		if !shouldRestrictOrigin(testUrl, wildCardOrigins) {
+			t.Errorf("Expected '%s' to not be allowed with wildcard origins: %+v", testUrl, wildCardOrigins)
+		}
+	})
+}
+
+func createURL(urlStr string, t *testing.T) *url.URL {
+	t.Helper()
+
+	result, err := url.Parse(urlStr)
+
+	if err != nil {
+		t.Error("Test setup failed, unable to parse test URL")
+	}
+
+	return result
+}
