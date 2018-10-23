@@ -52,7 +52,7 @@ func TestHttpImageSourceAllowedOrigin(t *testing.T) {
 
 	origin, _ := url.Parse(ts.URL)
 	origins := []*url.URL{origin}
-	source := NewHttpImageSource(&SourceConfig{AllowedOrigings: origins})
+	source := NewHttpImageSource(&SourceConfig{AllowedOrigins: origins})
 
 	fakeHandler := func(w http.ResponseWriter, r *http.Request) {
 		if !source.Matches(r) {
@@ -78,7 +78,7 @@ func TestHttpImageSourceAllowedOrigin(t *testing.T) {
 func TestHttpImageSourceNotAllowedOrigin(t *testing.T) {
 	origin, _ := url.Parse("http://foo")
 	origins := []*url.URL{origin}
-	source := NewHttpImageSource(&SourceConfig{AllowedOrigings: origins})
+	source := NewHttpImageSource(&SourceConfig{AllowedOrigins: origins})
 
 	fakeHandler := func(w http.ResponseWriter, r *http.Request) {
 		if !source.Matches(r) {

@@ -27,7 +27,7 @@ func (s *HttpImageSource) GetImage(req *http.Request) ([]byte, error) {
 	if err != nil {
 		return nil, ErrInvalidImageURL
 	}
-	if shouldRestrictOrigin(url, s.Config.AllowedOrigings) {
+	if shouldRestrictOrigin(url, s.Config.AllowedOrigins) {
 		return nil, fmt.Errorf("Not allowed remote URL origin: %s", url.Host)
 	}
 	return s.fetchImage(url, req)
