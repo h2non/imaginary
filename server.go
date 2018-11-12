@@ -25,7 +25,6 @@ type ServerOptions struct {
 	EnablePlaceholder  bool
 	EnableURLSignature bool
 	URLSignatureKey    string
-	URLSignatureSalt   string
 	Address            string
 	PathPrefix         string
 	APIKey             string

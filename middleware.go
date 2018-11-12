@@ -174,7 +174,6 @@ func validateURLSignature(next http.Handler, o ServerOptions) http.Handler {
 		h := hmac.New(sha256.New, []byte(o.URLSignatureKey))
 		h.Write([]byte(r.URL.Path))
 		h.Write([]byte(query.Encode()))
-		h.Write([]byte(o.URLSignatureSalt))
 		expectedSign := h.Sum(nil)
 
 		urlSign, err := base64.RawURLEncoding.DecodeString(sign)

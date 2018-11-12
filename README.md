@@ -19,7 +19,7 @@ which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.ph
 and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick
 settings or Go native `image` package, and in some cases it's even 8x faster processing JPEG images.
 
-To get started, take a look the [installation](#installation) steps, [usage](#usage) cases and [API](#http-api) docs.
+To get started, take a look the [installation](#installation) steps, [usage](#command-line-usage) cases and [API](#http-api) docs.
 
 ## Contents
 
@@ -35,7 +35,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#us
 - [Clients](#clients)
 - [Performance](#performance)
 - [Benchmark](#benchmark)
-- [Usage](#usage)
+- [Command-line usage](#command-line-usage)
 - [HTTP API](#http-api)
   - [Authorization](#authorization)
   - [URL signature](#url-signature)
@@ -294,7 +294,7 @@ Usage:
   imaginary -enable-url-source -authorization "Basic AwDJdL2DbwrD=="
   imaginary -enable-placeholder
   imaginary -enable-url-source -placeholder ./placeholder.jpg
-  imaginary -enable-url-signature -url-signature-key 4f46feebafc4b5e988f131c4ff8b5997 -url-signature-salt 88f131c4ff8b59974f46feebafc4b5e9
+  imaginary -enable-url-signature -url-signature-key 4f46feebafc4b5e988f131c4ff8b5997
   imaginary -h | -help
   imaginary -v | -version
 
@@ -317,7 +317,6 @@ Options:
   -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
   -enable-url-signature     Enable URL signature (URL-safe Base64-encoded HMAC digest) [default: false]
   -url-signature-key        The URL signature key (32 characters minimum)
-  -url-signature-salt       The URL signature salt (32 characters minimum)
   -allowed-origins <urls>   Restrict remote image source processing to certain origins (separated by commas)
   -max-allowed-size <bytes> Restrict maximum size of http image source (in bytes)
   -certfile <path>          TLS certificate file path
@@ -394,12 +393,12 @@ Enable URL signature (URL-safe Base64-encoded HMAC digest).
 
 This feature is particularly useful to protect against multiple image operations attacks and to verify the requester identity.
 ```
-imaginary -p 8080 -enable-url-signature -url-signature-key 4f46feebafc4b5e988f131c4ff8b5997 -url-signature-salt 88f131c4ff8b59974f46feebafc4b5e9
+imaginary -p 8080 -enable-url-signature -url-signature-key 4f46feebafc4b5e988f131c4ff8b5997
 ```
 
-It is recommanded to pass key and salt as environment variables:
+It is recommanded to pass key as environment variables:
 ```
-URL_SIGNATURE_KEY=4f46feebafc4b5e988f131c4ff8b5997 URL_SIGNATURE_SALT=88f131c4ff8b59974f46feebafc4b5e9 imaginary -p 8080 -enable-url-signature
+URL_SIGNATURE_KEY=4f46feebafc4b5e988f131c4ff8b5997 imaginary -p 8080 -enable-url-signature
 ```
 
 Increase libvips threads concurrency (experimental):
@@ -459,19 +458,17 @@ API-Key: secret
 
 The URL signature is provided by the `sign` request parameter.
 
-The HMAC-SHA256 hash is created by taking the URL path (including the leading /), the request parameters (alphabetically-sorted, excluding the `sign` one and concatenated with & into a string) and the signature salt. The hash is then base64url-encoded.
+The HMAC-SHA256 hash is created by taking the URL path (including the leading /), the request parameters (alphabetically-sorted and concatenated with & into a string). The hash is then base64url-encoded.
 
 Here an example in Go:
 ```
 signKey  := "4f46feebafc4b5e988f131c4ff8b5997"
-signSalt := "88f131c4ff8b59974f46feebafc4b5e9"
 urlPath  := "/resize"
 urlQuery := "file=image.jpg&height=200&type=jpeg&width=300"
 
 h := hmac.New(sha256.New, []byte(signKey))
 h.Write([]byte(urlPath))
 h.Write([]byte(urlQuery))
-h.Write([]byte(signSalt))
 buf := h.Sum(nil)
 
 fmt.Println("sign=" + base64.RawURLEncoding.EncodeToString(buf))
@@ -575,7 +572,7 @@ Provides some useful statistics about the server stats with the following struct
 - **uptime** `number` - Server process uptime in seconds.
 - **allocatedMemory** `number` - Currently allocated memory in megabytes.
 - **totalAllocatedMemory** `number` - Total allocated memory over the time in megabytes.
-- **gorouting** `number` - Number of running gorouting.
+- **goroutines** `number` - Number of running goroutines.
 - **cpus** `number` - Number of used CPU cores.
 
 Example response:
