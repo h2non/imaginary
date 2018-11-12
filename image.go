@@ -7,7 +7,6 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"strings"
 
 	"gopkg.in/h2non/bimg.v1"
 )
@@ -312,9 +311,6 @@ func Pipeline(buf []byte, o ImageOptions) (Image, error) {
 
 	// Validate and built operations
 	for i, operation := range o.Operations {
-		// Normalize operation name
-		name := strings.TrimSpace(strings.ToLower(operation.Name))
-
 		// Validate supported operation name
 		var exists bool
 		if operation.Operation, exists = OperationsMap[operation.Name]; !exists {
