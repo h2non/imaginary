@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -14,21 +15,21 @@ import (
 // OperationsMap defines the allowed image transformation operations listed by name.
 // Used for pipeline image processing.
 var OperationsMap = map[string]Operation{
-	"crop":      Crop,
-	"resize":    Resize,
-	"enlarge":   Enlarge,
-	"extract":   Extract,
-	"rotate":    Rotate,
-	"flip":      Flip,
-	"flop":      Flop,
-	"thumbnail": Thumbnail,
-	"zoom":      Zoom,
-	"convert":   Convert,
-	"watermark": Watermark,
-	"watermarkImage": watermarkImage,
-	"blur":      GaussianBlur,
-	"smartcrop": SmartCrop,
-	"fit":       Fit,
+	"crop":           Crop,
+	"resize":         Resize,
+	"enlarge":        Enlarge,
+	"extract":        Extract,
+	"rotate":         Rotate,
+	"flip":           Flip,
+	"flop":           Flop,
+	"thumbnail":      Thumbnail,
+	"zoom":           Zoom,
+	"convert":        Convert,
+	"watermark":      Watermark,
+	"watermarkImage": WatermarkImage,
+	"blur":           GaussianBlur,
+	"smartcrop":      SmartCrop,
+	"fit":            Fit,
 }
 
 // Image stores an image binary buffer and its MIME type
@@ -267,23 +268,28 @@ func Watermark(buf []byte, o ImageOptions) (Image, error) {
 	return Process(buf, opts)
 }
 
-func watermarkImage(buf []byte, o ImageOptions) (Image, error) {
+func WatermarkImage(buf []byte, o ImageOptions) (Image, error) {
+	if o.Image == "" {
+		return Image{}, NewError("Missing required param: image", BadRequest)
+	}
 	response, err := http.Get(o.Image)
 	if err != nil {
-		return Image{}, NewError("Invalid watermark image.", BadRequest)
+		return Image{}, NewError(fmt.Sprintf("Unable to retrieve watermark image. %s", o.Image), BadRequest)
 	}
 	defer response.Body.Close()
 
-	imageBuf, _ := ioutil.ReadAll(response.Body)
+	bodyReader := io.LimitReader(response.Body, 1e6)
+
+	imageBuf, err := ioutil.ReadAll(bodyReader)
 	if len(imageBuf) == 0 {
-		return Image{}, NewError("Invalid watermark image.", BadRequest)
+		return Image{}, NewError(fmt.Sprintf("Unable to read watermark image. %s", err.Error()), BadRequest)
 	}
 
 	opts := BimgOptions(o)
-	opts.WatermarkImage.Left = o.Left;
-	opts.WatermarkImage.Top = o.Top;
-	opts.WatermarkImage.Buf = imageBuf;
-	opts.WatermarkImage.Opacity = o.Opacity;
+	opts.WatermarkImage.Left = o.Left
+	opts.WatermarkImage.Top = o.Top
+	opts.WatermarkImage.Buf = imageBuf
+	opts.WatermarkImage.Opacity = o.Opacity
 
 	return Process(buf, opts)
 }
@@ -312,7 +318,7 @@ func Pipeline(buf []byte, o ImageOptions) (Image, error) {
 		// Validate supported operation name
 		var exists bool
 		if operation.Operation, exists = OperationsMap[operation.Name]; !exists {
-			return Image{}, NewError(fmt.Sprintf("Unsupported operation name: %s", name), BadRequest)
+			return Image{}, NewError(fmt.Sprintf("Unsupported operation name: %s", operation.Name), BadRequest)
 		}
 
 		// Parse and construct operation options
