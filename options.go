@@ -30,6 +30,7 @@ type ImageOptions struct {
 	Sigma         float64
 	MinAmpl       float64
 	Text          string
+	Image         string
 	Font          string
 	Type          string
 	Color         []uint8

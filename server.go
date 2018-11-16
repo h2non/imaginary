@@ -101,6 +101,7 @@ func NewServerMux(o ServerOptions) http.Handler {
 	mux.Handle(join(o, "/zoom"), image(Zoom))
 	mux.Handle(join(o, "/convert"), image(Convert))
 	mux.Handle(join(o, "/watermark"), image(Watermark))
+	mux.Handle(join(o, "/watermarkimage"), image(WatermarkImage))
 	mux.Handle(join(o, "/info"), image(Info))
 	mux.Handle(join(o, "/blur"), image(GaussianBlur))
 	mux.Handle(join(o, "/pipeline"), image(Pipeline))
