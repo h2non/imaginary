@@ -203,7 +203,7 @@ func (i *Image) Metadata() (ImageMetadata, error) {
 }
 
 // Interpretation gets the image interpretation type.
-// See: http://www.vips.ecs.soton.ac.uk/supported/current/doc/html/libvips/VipsImage.html#VipsInterpretation
+// See: https://jcupitt.github.io/libvips/API/current/VipsImage.html#VipsInterpretation
 func (i *Image) Interpretation() (Interpretation, error) {
 	return ImageInterpretation(i.buffer)
 }

@@ -3,43 +3,70 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:43987212a2f16bfacc1a286e9118f212d60c136ed53c6c9477c18921db53140b"
   name = "github.com/hashicorp/golang-lru"
-  packages = [".","simplelru"]
+  packages = [
+    ".",
+    "simplelru",
+  ]
+  pruneopts = ""
   revision = "0a025b7e63adc15a622f29b0b2c4c3848243bbf6"
 
 [[projects]]
+  digest = "1:bfc8db90e2676a2fc0d742a536f376044a9b74f2745b2c60d339eb06c6c6988a"
   name = "github.com/rs/cors"
   packages = ["."]
+  pruneopts = ""
   revision = "7af7a1e09ba336d2ea14b1ce73bf693c6837dbf6"
   version = "v1.2"
 
 [[projects]]
+  digest = "1:7f43e2481f54c8430be68af817f608b6b83c27b537a954e2713b1b7f97d54ae1"
   name = "gopkg.in/h2non/bimg.v1"
   packages = ["."]
-  revision = "02e621739c77c791d8c153f240b7a1f75b07816f"
-  version = "v1.0.18"
+  pruneopts = ""
+  revision = "4b9abdb945893c295f0e58b6803102f23e061ad0"
+  version = "v1.0.19"
 
 [[projects]]
+  digest = "1:fa565368b1ccf94adc18bbcfa553a6451a0828a711bbd90b1df33825a07cec02"
   name = "gopkg.in/h2non/filetype.v0"
   packages = ["."]
+  pruneopts = ""
   revision = "098c8d214a5ac605000f2a822fdc86793300cde6"
   version = "v0.1.0"
 
 [[projects]]
+  digest = "1:debed3f8b68f15aedacef39c9fa83d8557ce5b0040dc2eb57a5585dd72571196"
   name = "gopkg.in/h2non/filetype.v1"
-  packages = ["matchers","types"]
+  packages = [
+    "matchers",
+    "types",
+  ]
+  pruneopts = ""
   revision = "22e255079ab40241c671d457081831d972f0436b"
   version = "v1.0.3"
 
 [[projects]]
+  digest = "1:7d897a9344f0392e5b211b2b4bf4f2995fa42c4ffe2c3a48efbf9c600173fd2e"
   name = "gopkg.in/throttled/throttled.v2"
-  packages = [".","store/memstore"]
+  packages = [
+    ".",
+    "store/memstore",
+  ]
+  pruneopts = ""
   revision = "b5675e93f9d999b22f92d859a5bf2138d3641af4"
   version = "v2.0.3"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e182b5b5ebe3587488846483d45821b2b53f8fdd113c8633aceacd79aba49add"
+  input-imports = [
+    "github.com/rs/cors",
+    "gopkg.in/h2non/bimg.v1",
+    "gopkg.in/h2non/filetype.v0",
+    "gopkg.in/throttled/throttled.v2",
+    "gopkg.in/throttled/throttled.v2/store/memstore",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -233,7 +233,7 @@ func vipsRotate(image *C.VipsImage, angle Angle) (*C.VipsImage, error) {
 	var out *C.VipsImage
 	defer C.g_object_unref(C.gpointer(image))
 
-	err := C.vips_rotate(image, &out, C.int(angle))
+	err := C.vips_rotate_bimg(image, &out, C.int(angle))
 	if err != 0 {
 		return nil, catchVipsError()
 	}
@@ -572,7 +572,7 @@ func vipsReduce(input *C.VipsImage, xshrink float64, yshrink float64) (*C.VipsIm
 func vipsEmbed(input *C.VipsImage, left, top, width, height int, extend Extend, background Color) (*C.VipsImage, error) {
 	var image *C.VipsImage
 
-	// Max extend value, see: http://www.vips.ecs.soton.ac.uk/supported/8.4/doc/html/libvips/libvips-conversion.html#VipsExtend
+	// Max extend value, see: https://jcupitt.github.io/libvips/API/current/libvips-conversion.html#VipsExtend
 	if extend > 5 {
 		extend = ExtendBackground
 	}

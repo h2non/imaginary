@@ -1,15 +1,15 @@
 #!/bin/bash
 
 vips_version_minimum=8.4.2
-vips_version_latest_major_minor=8.5
-vips_version_latest_patch=1
+vips_version_latest_major_minor=8.6
+vips_version_latest_patch=5
 vips_version_full="$vips_version_latest_major_minor.$vips_version_latest_patch"
 
 openslide_version_minimum=3.4.0
 openslide_version_latest_major_minor=3.4
 openslide_version_latest_patch=1
 
-tarbal_url="https://github.com/jcupitt/libvips/releases/download/v$vips_version_full/vips-$vips_version_full.tar.gz"
+tarbal_url="https://github.com/libvips/libvips/releases/download/v$vips_version_full/vips-$vips_version_full.tar.gz"
 
 install_libvips_from_source() {
   # Download tarball
@@ -125,8 +125,8 @@ if [ $enable_openslide -eq 1 ] && [ -z $vips_with_openslide ] && [ $openslide_ex
     DISTRO=$(lsb_release -c -s)
     echo "Detected Debian Linux '$DISTRO'"
     case "$DISTRO" in
-      jessie|vivid|wily|xenial)
-        # Debian 8, Ubuntu 15
+      jessie|vivid|wily|xenial|stretch)
+        # Debian 9, Debian 8, Ubuntu 15
         echo "Installing libopenslide via apt-get"
         apt-get install -y libopenslide-dev
         ;;
@@ -156,7 +156,7 @@ if [ $enable_openslide -eq 1 ] && [ -z $vips_with_openslide ] && [ $openslide_ex
         # RHEL/CentOS 7
         echo "Installing libopenslide dependencies via yum"
         yum groupinstall -y "Development Tools"
-        yum install -y tar curl libpng-devel libjpeg-devel libxml2-devel zlib-devel openjpeg-devel libtiff-devel gdk-pixbuf2-devel sqlite-devel cairo-devel glib2-devel
+        yum install -y tar curl libpng-devel libjpeg-devel libxml2-devel zlib-devel openjpeg-devel libtiff-devel gdk-pixbuf2-devel sqlite-devel cairo-devel glib2-devel expat-devel
         install_libopenslide_from_source "--prefix=/usr"
         ;;
       "Red Hat Enterprise Linux release 6."*|"CentOS release 6."*|"Scientific Linux release 6."*)
@@ -213,6 +213,12 @@ if [ -f /etc/debian_version ]; then
       # Debian 8, Ubuntu 14.04+, Mint 17+
       echo "Installing libvips dependencies via apt-get"
       apt-get install -y automake build-essential gobject-introspection gtk-doc-tools libglib2.0-dev libjpeg-dev libpng12-dev libwebp-dev libtiff5-dev libexif-dev libgsf-1-dev liblcms2-dev libxml2-dev swig libmagickcore-dev curl
+      install_libvips_from_source
+      ;;
+    stretch)
+      # Debian 9
+      echo "Installing libvips dependencies via apt-get"
+      apt-get install -y automake build-essential gobject-introspection gtk-doc-tools libglib2.0-dev libjpeg-dev libpng-dev libwebp-dev libtiff5-dev libexif-dev libgsf-1-dev liblcms2-dev libxml2-dev swig libmagickcore-dev curl
       install_libvips_from_source
       ;;
     precise|wheezy|maya)
