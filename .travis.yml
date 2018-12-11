@@ -16,6 +16,7 @@ env:
   - LIBVIPS=8.4
   - LIBVIPS=8.5
   - LIBVIPS=8.6
+  - LIBVIPS=8.7
   - LIBVIPS=master
 
 matrix:
@@ -46,7 +47,7 @@ addons:
       - libwebp-dev
 
 before_install:
-  - wget https://github.com/jcupitt/libvips/archive/$LIBVIPS.zip
+  - wget https://github.com/libvips/libvips/archive/$LIBVIPS.zip
   - unzip $LIBVIPS
   - cd libvips-$LIBVIPS
   - test -f autogen.sh && ./autogen.sh || ./bootstrap.sh
