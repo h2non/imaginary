@@ -60,6 +60,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#co
 - Configurable image area extraction
 - Embed/Extend image, supporting multiple modes (white, black, mirror, copy or custom background color)
 - Watermark (customizable by text)
+- Watermark image
 - Custom output color space (RGB, black/white...)
 - Format conversion (with additional quality/compression settings)
 - Info (image size, format, orientation, alpha...)
@@ -523,7 +524,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **margin**      `int`   - Text area margin for watermark. Example: `50`
 - **dpi**         `int`   - DPI value for watermark. Example: `150`
 - **textwidth**   `int`   - Text area width for watermark. Example: `200`
-- **opacity**     `float` - Opacity level for watermark text. Default: `0.2`
+- **opacity**     `float` - Opacity level for watermark text or watermark image. Default: `0.2`
 - **flip**        `bool`  - Transform the resultant image with flip operation. Default: `false`
 - **flop**        `bool`  - Transform the resultant image with flop operation. Default: `false`
 - **force**       `bool`  - Force image transformation size. Default: `false`
@@ -535,6 +536,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **text**        `string` - Watermark text content. Example: `copyright (c) 2189`
 - **font**        `string` - Watermark text font type and format. Example: `sans bold 12`
 - **color**       `string` - Watermark text RGB decimal base color. Example: `255,200,150`
+- **image**       `string` - Watermark image URL pointing to the remote HTTP server.
 - **type**        `string` - Specify the image format to output. Possible values are: `jpeg`, `png`, `webp` and `auto`. `auto` will use the preferred format requested by the client in the HTTP Accept header. A client can provide multiple comma-separated choices in `Accept` with the best being the one picked.
 - **gravity**     `string` - Define the crop operation gravity. Supported values are: `north`, `south`, `centre`, `west`, `east` and `smart`. Defaults to `centre`.
 - **file**        `string` - Use image from server local file path. In order to use this you must pass the `-mount=<dir>` flag.
@@ -993,6 +995,7 @@ Self-documented JSON operation schema:
 - **zoom** - Same as [`/zoom`](#get--post-zoom) endpoint.
 - **convert** - Same as [`/convert`](#get--post-convert) endpoint.
 - **watermark** - Same as [`/watermark`](#get--post-watermark) endpoint.
+- **watermarkimage** - Same as [`/watermarkimage`](#get--post-watermarkimage) endpoint.
 - **blur** - Same as [`/blur`](#get--post-blur) endpoint.
 
 ###### Example
@@ -1043,6 +1046,35 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - noreplicate `bool`
 - font `string`
 - color `string`
+- quality `int` (JPEG-only)
+- compression `int` (PNG-only)
+- type `string`
+- file `string` - Only GET method and if the `-mount` flag is present
+- url `string` - Only GET method and if the `-enable-url-source` flag is present
+- embed `bool`
+- force `bool`
+- rotate `int`
+- norotation `bool`
+- noprofile `bool`
+- stripmeta `bool`
+- flip `bool`
+- flop `bool`
+- extend `string`
+- background `string` - Example: `?background=250,20,10`
+- colorspace `string`
+- sigma `float`
+- minampl `float`
+- field `string` - Only POST and `multipart/form` payloads
+
+#### GET | POST /watermarkimage
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
+
+##### Allowed params
+
+- image `string` `required` - URL to watermark image, example: `?image=https://logo-server.com/logo.jpg`
+- top `int` - Top position of the watermark image
+- left `int` - Left position of the watermark image
+- opacity `float` - Opacity value of the watermark image
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
 - type `string`
