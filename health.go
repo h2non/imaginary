@@ -15,7 +15,12 @@ type HealthStats struct {
 	AllocatedMemory      float64 `json:"allocatedMemory"`
 	TotalAllocatedMemory float64 `json:"totalAllocatedMemory"`
 	Goroutines           int     `json:"goroutines"`
+	GCCycles             uint32  `json:"completedGCCycles"`
 	NumberOfCPUs         int     `json:"cpus"`
+	HeapSys              float64 `json:"maxHeapUsage"`
+	HeapAllocated        float64 `json:"heapInUse"`
+	ObjectsInUse         uint64  `json:"objectsInUse"`
+	OSMemoryObtained     float64 `json:"OSMemoryObtained"`
 }
 
 func GetHealthStats() *HealthStats {
@@ -28,6 +33,11 @@ func GetHealthStats() *HealthStats {
 		TotalAllocatedMemory: toMegaBytes(mem.TotalAlloc),
 		Goroutines:           runtime.NumGoroutine(),
 		NumberOfCPUs:         runtime.NumCPU(),
+		GCCycles:             mem.NumGC,
+		HeapSys:              toMegaBytes(mem.HeapSys),
+		HeapAllocated:        toMegaBytes(mem.HeapAlloc),
+		ObjectsInUse:         mem.Mallocs - mem.Frees,
+		OSMemoryObtained:     toMegaBytes(mem.Sys),
 	}
 }
 
