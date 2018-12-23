@@ -189,6 +189,7 @@ func TestShouldRestrictOrigin(t *testing.T) {
 		createURL("https://localhost", t),
 		createURL("https://*.example.org", t),
 		createURL("https://some.s3.bucket.on.aws.org", t),
+		createURL("https://*.s3.bucket.on.aws.org", t),
 	}
 
 	t.Run("Plain origin", func(t *testing.T) {
@@ -209,6 +210,14 @@ func TestShouldRestrictOrigin(t *testing.T) {
 
 	t.Run("Wildcard origin, sub domain URL", func(t *testing.T) {
 		testUrl := createURL("https://node-42.example.org/logo.jpg", t)
+
+		if shouldRestrictOrigin(testUrl, wildCardOrigins) {
+			t.Errorf("Expected '%s' to be allowed with origins: %+v", testUrl, wildCardOrigins)
+		}
+	})
+
+	t.Run("Wildcard origin, sub-sub domain URL", func(t *testing.T) {
+		testUrl := createURL("https://n.s3.bucket.on.aws.org/logo.jpg", t)
 
 		if shouldRestrictOrigin(testUrl, wildCardOrigins) {
 			t.Errorf("Expected '%s' to be allowed with origins: %+v", testUrl, wildCardOrigins)
