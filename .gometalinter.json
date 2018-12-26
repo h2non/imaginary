@@ -1,0 +1,41 @@
+{
+  "Cyclo": 10,
+  "Deadline": "5m",
+  "Vendor": true,
+  "Test": true,
+  "EnableAll": false,
+  "Checkstyle": true,
+  "Errors": true,
+  "Enable": [
+    "deadcode",
+    "dupl",
+    "errcheck",
+    "gochecknoglobals",
+    "gochecknoinits",
+    "goconst",
+    "gofmt",
+    "goimports",
+    "golint",
+    "gosec",
+    "ineffassign",
+    "interfacer",
+    "megacheck",
+    "misspell",
+    "nakedret",
+    "test",
+    "testify",
+    "unconvert",
+    "unparam",
+    "vetshadow"
+  ],
+  "Disable": [
+    "gotype",
+    "errcheck",
+    "gosec disabled for now",
+    "gosec_"
+  ],
+  "Exclude": [
+    "Errors unhandled",
+    "Potential file inclusion via variable"
+  ]
+}
