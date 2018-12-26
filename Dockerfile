@@ -1,12 +1,6 @@
-# Start from a Debian image with the latest version of Go installed
-# and a workspace (GOPATH) configured at /go.
-FROM h2non/bimg:build as builder
+FROM h2non/imaginary:build as builder
 
-ARG GO_VERSION
-ARG LIBVIPS_VERSION
-ARG BIMG_VERSION
 ARG IMAGINARY_VERSION="dev"
-
 
 ENV GOPATH /go
 ENV PATH ${GOPATH}/bin:/usr/local/go/bin:${PATH}
@@ -21,7 +15,7 @@ WORKDIR ${GOPATH}/src/github.com/h2non/imaginary
 COPY . .
 
 # Making sure all dependencies are up-to-date
-RUN dep ensure
+RUN rm -rf vendor && dep ensure
 
 # Run quality control
 RUN go test -test.v ./...
