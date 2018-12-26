@@ -18,7 +18,11 @@ func indexController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, _ := json.Marshal(CurrentVersions)
+	body, _ := json.Marshal(Versions{
+		Version,
+		bimg.Version,
+		bimg.VipsVersion,
+	})
 	w.Header().Set("Content-Type", "application/json")
 	_, _ = w.Write(body)
 }
