@@ -164,7 +164,7 @@ func main() {
 
 	// Validate HTTP cache param, if present
 	if *aHTTPCacheTTL != -1 {
-		checkHttpCacheTtl(*aHTTPCacheTTL)
+		checkHTTPCacheTTL(*aHTTPCacheTTL)
 	}
 
 	// Parse endpoint names to disabled, if present
@@ -254,7 +254,7 @@ func checkMountDirectory(path string) {
 	}
 }
 
-func checkHttpCacheTtl(ttl int) {
+func checkHTTPCacheTTL(ttl int) {
 	if ttl < -1 || ttl > 31556926 {
 		exitWithError("The -http-cache-ttl flag only accepts a value from 0 to 31556926")
 	}
