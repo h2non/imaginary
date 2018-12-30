@@ -4,8 +4,8 @@
   "Vendor": true,
   "Test": true,
   "EnableAll": false,
-  "Checkstyle": true,
-  "Errors": true,
+  "Checkstyle": false,
+  "Errors": false,
   "Enable": [
     "deadcode",
     "dupl",
@@ -14,6 +14,7 @@
     "gochecknoinits",
     "goconst",
     "gofmt",
+    "gotypex",
     "goimports",
     "golint",
     "gosec",
@@ -26,16 +27,19 @@
     "testify",
     "unconvert",
     "unparam",
-    "vetshadow"
+    "vetshadow",
+    "staticcheck"
   ],
   "Disable": [
-    "gotype",
-    "errcheck",
-    "gosec disabled for now",
-    "gosec_"
+    "gochecknoglobals",
+    "gochecknoinits",
+    "dupl"
   ],
   "Exclude": [
+    "vendor/.*",
+    "by package bimg",
     "Errors unhandled",
-    "Potential file inclusion via variable"
+    "Potential file inclusion via variable",
+    "should have comment"
   ]
 }
