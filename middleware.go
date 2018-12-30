@@ -1,13 +1,13 @@
 package main
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"strings"
 	"time"
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/base64"
 
 	"github.com/rs/cors"
 	"gopkg.in/h2non/bimg.v1"

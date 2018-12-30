@@ -100,7 +100,7 @@ Options:
 `
 
 type URLSignature struct {
-	Key  string
+	Key string
 }
 
 func main() {
