@@ -89,8 +89,6 @@ func NewError(err string, code uint8) Error {
 }
 
 func replyWithPlaceholder(req *http.Request, w http.ResponseWriter, err Error, o ServerOptions) error {
-	image := o.PlaceholderImage
-
 	// Resize placeholder to expected output
 	buf, _err := bimg.Resize(o.PlaceholderImage, bimg.Options{
 		Force:   true,
@@ -104,18 +102,19 @@ func replyWithPlaceholder(req *http.Request, w http.ResponseWriter, err Error, o
 	if _err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(fmt.Sprintf("{\"error\":\"%s\", \"code\": %d}", _err.Error(), BadRequest)))
+		_, _ = w.Write([]byte(fmt.Sprintf("{\"error\":\"%s\", \"code\": %d}", _err.Error(), BadRequest)))
 		return _err
 	}
 
 	// Use final response body image
-	image = buf
+	image := buf
 
 	// Placeholder image response
 	w.Header().Set("Content-Type", GetImageMimeType(bimg.DetermineImageType(image)))
 	w.Header().Set("Error", string(err.JSON()))
 	w.WriteHeader(err.HTTPCode())
-	w.Write(image)
+	_, _ = w.Write(image)
+
 	return err
 }
 
@@ -127,6 +126,6 @@ func ErrorReply(req *http.Request, w http.ResponseWriter, err Error, o ServerOpt
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(err.HTTPCode())
-	w.Write(err.JSON())
+	_, _ = w.Write(err.JSON())
 	return err
 }
