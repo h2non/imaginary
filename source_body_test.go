@@ -13,7 +13,7 @@ const fixtureFile = "testdata/large.jpg"
 
 func TestSourceBodyMatch(t *testing.T) {
 	u, _ := url.Parse("http://foo")
-	req := &http.Request{Method: "POST", URL: u}
+	req := &http.Request{Method: http.MethodPost, URL: u}
 	source := NewBodyImageSource(&SourceConfig{})
 
 	if !source.Matches(req) {
@@ -39,7 +39,7 @@ func TestBodyImageSource(t *testing.T) {
 	}
 
 	file, _ := os.Open(fixtureFile)
-	r, _ := http.NewRequest("POST", "http://foo/bar", file)
+	r, _ := http.NewRequest(http.MethodPost, "http://foo/bar", file)
 	w := httptest.NewRecorder()
 	fakeHandler(w, r)
 
@@ -67,7 +67,7 @@ func testReadBody(t *testing.T) {
 	}
 
 	file, _ := os.Open(fixtureFile)
-	r, _ := http.NewRequest("POST", "http://foo/bar", file)
+	r, _ := http.NewRequest(http.MethodPost, "http://foo/bar", file)
 	w := httptest.NewRecorder()
 	fakeHandler(w, r)
 

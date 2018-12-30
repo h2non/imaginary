@@ -34,7 +34,7 @@ func TestHttpImageSource(t *testing.T) {
 		w.Write(body)
 	}
 
-	r, _ := http.NewRequest("GET", "http://foo/bar?url="+ts.URL, nil)
+	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+ts.URL, nil)
 	w := httptest.NewRecorder()
 	fakeHandler(w, r)
 
@@ -70,7 +70,7 @@ func TestHttpImageSourceAllowedOrigin(t *testing.T) {
 		}
 	}
 
-	r, _ := http.NewRequest("GET", "http://foo/bar?url="+ts.URL, nil)
+	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+ts.URL, nil)
 	w := httptest.NewRecorder()
 	fakeHandler(w, r)
 }
@@ -95,7 +95,7 @@ func TestHttpImageSourceNotAllowedOrigin(t *testing.T) {
 		}
 	}
 
-	r, _ := http.NewRequest("GET", "http://foo/bar?url=http://bar.com", nil)
+	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url=http://bar.com", nil)
 	w := httptest.NewRecorder()
 	fakeHandler(w, r)
 }
@@ -107,7 +107,7 @@ func TestHttpImageSourceForwardAuthHeader(t *testing.T) {
 	}
 
 	for _, header := range cases {
-		r, _ := http.NewRequest("GET", "http://foo/bar?url=http://bar.com", nil)
+		r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url=http://bar.com", nil)
 		r.Header.Set(header, "foobar")
 
 		source := &HTTPImageSource{&SourceConfig{AuthForwarding: true}}
@@ -145,7 +145,7 @@ func TestHttpImageSourceError(t *testing.T) {
 		}
 	}
 
-	r, _ := http.NewRequest("GET", "http://foo/bar?url="+ts.URL, nil)
+	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+ts.URL, nil)
 	w := httptest.NewRecorder()
 	fakeHandler(w, r)
 }
@@ -175,7 +175,7 @@ func TestHttpImageSourceExceedsMaximumAllowedLength(t *testing.T) {
 		w.Write(body)
 	}
 
-	r, _ := http.NewRequest("GET", "http://foo/bar?url="+ts.URL, nil)
+	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+ts.URL, nil)
 	w := httptest.NewRecorder()
 	fakeHandler(w, r)
 }

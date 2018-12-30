@@ -27,7 +27,7 @@ func TestFileSystemImageSource(t *testing.T) {
 	}
 
 	file, _ := os.Open(fixtureFile)
-	r, _ := http.NewRequest("GET", "http://foo/bar?file=large.jpg", file)
+	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?file=large.jpg", file)
 	w := httptest.NewRecorder()
 	fakeHandler(w, r)
 
