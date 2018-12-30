@@ -107,14 +107,14 @@ func replyWithPlaceholder(req *http.Request, w http.ResponseWriter, err Error, o
 	return err
 }
 
-func ErrorReply(req *http.Request, w http.ResponseWriter, err Error, o ServerOptions) error {
+func ErrorReply(req *http.Request, w http.ResponseWriter, err Error, o ServerOptions) {
 	// Reply with placeholder if required
 	if o.EnablePlaceholder || o.Placeholder != "" {
-		return replyWithPlaceholder(req, w, err, o)
+		_ = replyWithPlaceholder(req, w, err, o)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(err.HTTPCode())
 	_, _ = w.Write(err.JSON())
-	return err
 }
