@@ -54,13 +54,6 @@ func readFormBody(r *http.Request) ([]byte, error) {
 	return buf, err
 }
 
-func formField(r *http.Request) string {
-	if field := r.URL.Query().Get("field"); field != "" {
-		return field
-	}
-	return formFieldName
-}
-
 func readRawBody(r *http.Request) ([]byte, error) {
 	return ioutil.ReadAll(r.Body)
 }
