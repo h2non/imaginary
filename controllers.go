@@ -20,14 +20,14 @@ func indexController(w http.ResponseWriter, r *http.Request) {
 
 	body, _ := json.Marshal(CurrentVersions)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(body)
+	_, _ = w.Write(body)
 }
 
 func healthController(w http.ResponseWriter, r *http.Request) {
 	health := GetHealthStats()
 	body, _ := json.Marshal(health)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(body)
+	_, _ = w.Write(body)
 }
 
 func imageController(o ServerOptions, operation Operation) func(http.ResponseWriter, *http.Request) {
@@ -115,7 +115,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation 
 	if vary != "" {
 		w.Header().Set("Vary", vary)
 	}
-	w.Write(image.Body)
+	_, _ = w.Write(image.Body)
 }
 
 func formController(w http.ResponseWriter, r *http.Request) {
@@ -157,5 +157,5 @@ func formController(w http.ResponseWriter, r *http.Request) {
 	html += "</body></html>"
 
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(html))
+	_, _ = w.Write([]byte(html))
 }
