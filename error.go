@@ -53,33 +53,22 @@ func (e Error) Error() string {
 }
 
 func (e Error) HTTPCode() int {
-	if e.Code == BadRequest {
-		return http.StatusBadRequest
+	var codes = map[uint8]int{
+		BadRequest:     http.StatusBadRequest,
+		NotAllowed:     http.StatusMethodNotAllowed,
+		Unsupported:    http.StatusUnsupportedMediaType,
+		InternalError:  http.StatusInternalServerError,
+		Unauthorized:   http.StatusUnauthorized,
+		NotFound:       http.StatusNotFound,
+		NotImplemented: http.StatusNotImplemented,
+		Forbidden:      http.StatusForbidden,
+		NotAcceptable:  http.StatusNotAcceptable,
 	}
-	if e.Code == NotAllowed {
-		return http.StatusMethodNotAllowed
+
+	if v, ok := codes[e.Code]; ok {
+		return v
 	}
-	if e.Code == Unsupported {
-		return http.StatusUnsupportedMediaType
-	}
-	if e.Code == InternalError {
-		return http.StatusInternalServerError
-	}
-	if e.Code == Unauthorized {
-		return http.StatusUnauthorized
-	}
-	if e.Code == NotFound {
-		return http.StatusNotFound
-	}
-	if e.Code == NotImplemented {
-		return http.StatusNotImplemented
-	}
-	if e.Code == Forbidden {
-		return http.StatusForbidden
-	}
-	if e.Code == NotAcceptable {
-		return http.StatusNotAcceptable
-	}
+
 	return http.StatusServiceUnavailable
 }
 
