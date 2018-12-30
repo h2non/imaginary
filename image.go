@@ -92,7 +92,7 @@ func Resize(buf []byte, o ImageOptions) (Image, error) {
 	opts := BimgOptions(o)
 	opts.Embed = true
 
-	if o.NoCrop == false {
+	if !o.NoCrop {
 		opts.Crop = true
 	}
 
@@ -111,7 +111,7 @@ func Fit(buf []byte, o ImageOptions) (Image, error) {
 
 	dims := metadata.Size
 
-	if (dims.Width == 0) || (dims.Height == 0) {
+	if dims.Width == 0 || dims.Height == 0 {
 		return Image{}, NewError("Width or height of requested image is zero", NotAcceptable)
 	}
 
@@ -134,7 +134,7 @@ func Fit(buf []byte, o ImageOptions) (Image, error) {
 		fitHeight = &o.Height
 		fitWidth = &o.Width
 	} else {
-		// width/height will be switched with autorotation
+		// width/height will be switched with auto rotation
 		originWidth = dims.Height
 		originHeight = dims.Width
 		fitWidth = &o.Height
@@ -165,7 +165,7 @@ func Enlarge(buf []byte, o ImageOptions) (Image, error) {
 	opts := BimgOptions(o)
 	opts.Enlarge = true
 
-	if o.NoCrop == false {
+	if !o.NoCrop {
 		opts.Crop = true
 	}
 
@@ -303,7 +303,9 @@ func WatermarkImage(buf []byte, o ImageOptions) (Image, error) {
 	if err != nil {
 		return Image{}, NewError(fmt.Sprintf("Unable to retrieve watermark image. %s", o.Image), BadRequest)
 	}
-	defer response.Body.Close()
+	defer func() {
+		_ = response.Body.Close()
+	}()
 
 	bodyReader := io.LimitReader(response.Body, 1e6)
 
