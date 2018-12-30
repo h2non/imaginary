@@ -9,42 +9,43 @@ import (
 	"strings"
 )
 
-const ImageSourceTypeHttp ImageSourceType = "http"
+const ImageSourceTypeHTTP ImageSourceType = "http"
+const URLQueryKey = "url"
 
-type HttpImageSource struct {
+type HTTPImageSource struct {
 	Config *SourceConfig
 }
 
-func NewHttpImageSource(config *SourceConfig) ImageSource {
-	return &HttpImageSource{config}
+func NewHTTPImageSource(config *SourceConfig) ImageSource {
+	return &HTTPImageSource{config}
 }
 
-func (s *HttpImageSource) Matches(r *http.Request) bool {
-	return r.Method == "GET" && r.URL.Query().Get("url") != ""
+func (s *HTTPImageSource) Matches(r *http.Request) bool {
+	return r.Method == http.MethodGet && r.URL.Query().Get(URLQueryKey) != ""
 }
 
-func (s *HttpImageSource) GetImage(req *http.Request) ([]byte, error) {
+func (s *HTTPImageSource) GetImage(req *http.Request) ([]byte, error) {
 	url, err := parseURL(req)
 	if err != nil {
 		return nil, ErrInvalidImageURL
 	}
 	if shouldRestrictOrigin(url, s.Config.AllowedOrigins) {
-		return nil, fmt.Errorf("Not allowed remote URL origin: %s", url.Host)
+		return nil, fmt.Errorf("not allowed remote URL origin: %s", url.Host)
 	}
 	return s.fetchImage(url, req)
 }
 
-func (s *HttpImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, error) {
+func (s *HTTPImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, error) {
 	// Check remote image size by fetching HTTP Headers
 	if s.Config.MaxAllowedSize > 0 {
-		req := newHTTPRequest(s, ireq, "HEAD", url)
+		req := newHTTPRequest(s, ireq, http.MethodHead, url)
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
-			return nil, fmt.Errorf("Error fetching image http headers: %v", err)
+			return nil, fmt.Errorf("error fetching image http headers: %v", err)
 		}
 		res.Body.Close()
 		if res.StatusCode < 200 && res.StatusCode > 206 {
-			return nil, fmt.Errorf("Error fetching image http headers: (status=%d) (url=%s)", res.StatusCode, req.URL.String())
+			return nil, fmt.Errorf("error fetching image http headers: (status=%d) (url=%s)", res.StatusCode, req.URL.String())
 		}
 
 		contentLength, _ := strconv.Atoi(res.Header.Get("Content-Length"))
@@ -54,25 +55,25 @@ func (s *HttpImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, 
 	}
 
 	// Perform the request using the default client
-	req := newHTTPRequest(s, ireq, "GET", url)
+	req := newHTTPRequest(s, ireq, http.MethodGet, url)
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("Error downloading image: %v", err)
+		return nil, fmt.Errorf("error downloading image: %v", err)
 	}
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		return nil, fmt.Errorf("Error downloading image: (status=%d) (url=%s)", res.StatusCode, req.URL.String())
+		return nil, fmt.Errorf("error downloading image: (status=%d) (url=%s)", res.StatusCode, req.URL.String())
 	}
 
 	// Read the body
 	buf, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return nil, fmt.Errorf("Unable to create image from response body: %s (url=%s)", req.URL.String(), err)
+		return nil, fmt.Errorf("unable to create image from response body: %s (url=%s)", req.URL.String(), err)
 	}
 	return buf, nil
 }
 
-func (s *HttpImageSource) setAuthorizationHeader(req *http.Request, ireq *http.Request) {
+func (s *HTTPImageSource) setAuthorizationHeader(req *http.Request, ireq *http.Request) {
 	auth := s.Config.Authorization
 	if auth == "" {
 		auth = ireq.Header.Get("X-Forward-Authorization")
@@ -86,11 +87,10 @@ func (s *HttpImageSource) setAuthorizationHeader(req *http.Request, ireq *http.R
 }
 
 func parseURL(request *http.Request) (*url.URL, error) {
-	queryUrl := request.URL.Query().Get("url")
-	return url.Parse(queryUrl)
+	return url.Parse(request.URL.Query().Get(URLQueryKey))
 }
 
-func newHTTPRequest(s *HttpImageSource, ireq *http.Request, method string, url *url.URL) *http.Request {
+func newHTTPRequest(s *HTTPImageSource, ireq *http.Request, method string, url *url.URL) *http.Request {
 	req, _ := http.NewRequest(method, url.String(), nil)
 	req.Header.Set("User-Agent", "imaginary/"+Version)
 	req.URL = url
@@ -131,5 +131,5 @@ func shouldRestrictOrigin(url *url.URL, origins []*url.URL) bool {
 }
 
 func init() {
-	RegisterSource(ImageSourceTypeHttp, NewHttpImageSource)
+	RegisterSource(ImageSourceTypeHTTP, NewHTTPImageSource)
 }

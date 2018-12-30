@@ -121,7 +121,7 @@ func authorizeClient(next http.Handler, o ServerOptions) http.Handler {
 		}
 
 		if key != o.APIKey {
-			ErrorReply(r, w, ErrInvalidApiKey, o)
+			ErrorReply(r, w, ErrInvalidAPIKey, o)
 			return
 		}
 

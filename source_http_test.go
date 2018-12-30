@@ -21,7 +21,7 @@ func TestHttpImageSource(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	source := NewHttpImageSource(&SourceConfig{})
+	source := NewHTTPImageSource(&SourceConfig{})
 	fakeHandler := func(w http.ResponseWriter, r *http.Request) {
 		if !source.Matches(r) {
 			t.Fatal("Cannot match the request")
@@ -52,7 +52,7 @@ func TestHttpImageSourceAllowedOrigin(t *testing.T) {
 
 	origin, _ := url.Parse(ts.URL)
 	origins := []*url.URL{origin}
-	source := NewHttpImageSource(&SourceConfig{AllowedOrigins: origins})
+	source := NewHTTPImageSource(&SourceConfig{AllowedOrigins: origins})
 
 	fakeHandler := func(w http.ResponseWriter, r *http.Request) {
 		if !source.Matches(r) {
@@ -78,7 +78,7 @@ func TestHttpImageSourceAllowedOrigin(t *testing.T) {
 func TestHttpImageSourceNotAllowedOrigin(t *testing.T) {
 	origin, _ := url.Parse("http://foo")
 	origins := []*url.URL{origin}
-	source := NewHttpImageSource(&SourceConfig{AllowedOrigins: origins})
+	source := NewHTTPImageSource(&SourceConfig{AllowedOrigins: origins})
 
 	fakeHandler := func(w http.ResponseWriter, r *http.Request) {
 		if !source.Matches(r) {
@@ -90,7 +90,7 @@ func TestHttpImageSourceNotAllowedOrigin(t *testing.T) {
 			t.Fatal("Error cannot be empty")
 		}
 
-		if err.Error() != "Not allowed remote URL origin: bar.com" {
+		if err.Error() != "not allowed remote URL origin: bar.com" {
 			t.Fatalf("Invalid error message: %s", err)
 		}
 	}
@@ -110,7 +110,7 @@ func TestHttpImageSourceForwardAuthHeader(t *testing.T) {
 		r, _ := http.NewRequest("GET", "http://foo/bar?url=http://bar.com", nil)
 		r.Header.Set(header, "foobar")
 
-		source := &HttpImageSource{&SourceConfig{AuthForwarding: true}}
+		source := &HTTPImageSource{&SourceConfig{AuthForwarding: true}}
 		if !source.Matches(r) {
 			t.Fatal("Cannot match the request")
 		}
@@ -133,7 +133,7 @@ func TestHttpImageSourceError(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	source := NewHttpImageSource(&SourceConfig{})
+	source := NewHTTPImageSource(&SourceConfig{})
 	fakeHandler := func(w http.ResponseWriter, r *http.Request) {
 		if !source.Matches(r) {
 			t.Fatal("Cannot match the request")
@@ -160,7 +160,7 @@ func TestHttpImageSourceExceedsMaximumAllowedLength(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	source := NewHttpImageSource(&SourceConfig{
+	source := NewHTTPImageSource(&SourceConfig{
 		MaxAllowedSize: 1023,
 	})
 	fakeHandler := func(w http.ResponseWriter, r *http.Request) {
@@ -193,46 +193,46 @@ func TestShouldRestrictOrigin(t *testing.T) {
 	}
 
 	t.Run("Plain origin", func(t *testing.T) {
-		testUrl := createURL("https://example.org/logo.jpg", t)
+		testURL := createURL("https://example.org/logo.jpg", t)
 
-		if shouldRestrictOrigin(testUrl, plainOrigins) {
-			t.Errorf("Expected '%s' to be allowed with origins: %+v", testUrl, plainOrigins)
+		if shouldRestrictOrigin(testURL, plainOrigins) {
+			t.Errorf("Expected '%s' to be allowed with origins: %+v", testURL, plainOrigins)
 		}
 	})
 
 	t.Run("Wildcard origin, plain URL", func(t *testing.T) {
-		testUrl := createURL("https://example.org/logo.jpg", t)
+		testURL := createURL("https://example.org/logo.jpg", t)
 
-		if shouldRestrictOrigin(testUrl, wildCardOrigins) {
-			t.Errorf("Expected '%s' to be allowed with origins: %+v", testUrl, wildCardOrigins)
+		if shouldRestrictOrigin(testURL, wildCardOrigins) {
+			t.Errorf("Expected '%s' to be allowed with origins: %+v", testURL, wildCardOrigins)
 		}
 	})
 
 	t.Run("Wildcard origin, sub domain URL", func(t *testing.T) {
-		testUrl := createURL("https://node-42.example.org/logo.jpg", t)
+		testURL := createURL("https://node-42.example.org/logo.jpg", t)
 
-		if shouldRestrictOrigin(testUrl, wildCardOrigins) {
-			t.Errorf("Expected '%s' to be allowed with origins: %+v", testUrl, wildCardOrigins)
+		if shouldRestrictOrigin(testURL, wildCardOrigins) {
+			t.Errorf("Expected '%s' to be allowed with origins: %+v", testURL, wildCardOrigins)
 		}
 	})
 
 	t.Run("Wildcard origin, sub-sub domain URL", func(t *testing.T) {
-		testUrl := createURL("https://n.s3.bucket.on.aws.org/logo.jpg", t)
+		testURL := createURL("https://n.s3.bucket.on.aws.org/logo.jpg", t)
 
-		if shouldRestrictOrigin(testUrl, wildCardOrigins) {
-			t.Errorf("Expected '%s' to be allowed with origins: %+v", testUrl, wildCardOrigins)
+		if shouldRestrictOrigin(testURL, wildCardOrigins) {
+			t.Errorf("Expected '%s' to be allowed with origins: %+v", testURL, wildCardOrigins)
 		}
 	})
 
 	t.Run("Wildcard origin, incorrect domain URL", func(t *testing.T) {
-		testUrl := createURL("https://myexample.org/logo.jpg", t)
+		testURL := createURL("https://myexample.org/logo.jpg", t)
 
-		if !shouldRestrictOrigin(testUrl, plainOrigins) {
-			t.Errorf("Expected '%s' to not be allowed with plain origins: %+v", testUrl, plainOrigins)
+		if !shouldRestrictOrigin(testURL, plainOrigins) {
+			t.Errorf("Expected '%s' to not be allowed with plain origins: %+v", testURL, plainOrigins)
 		}
 
-		if !shouldRestrictOrigin(testUrl, wildCardOrigins) {
-			t.Errorf("Expected '%s' to not be allowed with wildcard origins: %+v", testUrl, wildCardOrigins)
+		if !shouldRestrictOrigin(testURL, wildCardOrigins) {
+			t.Errorf("Expected '%s' to not be allowed with wildcard origins: %+v", testURL, wildCardOrigins)
 		}
 	})
 }
