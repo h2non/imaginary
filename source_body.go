@@ -20,7 +20,7 @@ func NewBodyImageSource(config *SourceConfig) ImageSource {
 }
 
 func (s *BodyImageSource) Matches(r *http.Request) bool {
-	return r.Method == "POST" || r.Method == "PUT"
+	return r.Method == http.MethodPost || r.Method == http.MethodPut
 }
 
 func (s *BodyImageSource) GetImage(r *http.Request) ([]byte, error) {
@@ -40,7 +40,7 @@ func readFormBody(r *http.Request) ([]byte, error) {
 		return nil, err
 	}
 
-	file, _, err := r.FormFile("file")
+	file, _, err := r.FormFile(formFieldName)
 	if err != nil {
 		return nil, err
 	}
@@ -52,13 +52,6 @@ func readFormBody(r *http.Request) ([]byte, error) {
 	}
 
 	return buf, err
-}
-
-func formField(r *http.Request) string {
-	if field := r.URL.Query().Get("field"); field != "" {
-		return field
-	}
-	return formFieldName
 }
 
 func readRawBody(r *http.Request) ([]byte, error) {

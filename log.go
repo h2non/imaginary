@@ -10,7 +10,7 @@ import (
 
 const formatPattern = "%s - - [%s] \"%s\" %d %d %.4f\n"
 
-// LogRecords implements a Apache-compatible HTTP logging
+// LogRecord implements an Apache-compatible HTTP logging
 type LogRecord struct {
 	http.ResponseWriter
 	status                int
@@ -36,7 +36,7 @@ func (r *LogRecord) Write(p []byte) (int, error) {
 	return written, err
 }
 
-// WriteHeader
+// WriteHeader calls ResponseWriter.WriteHeader() and sets the status code
 func (r *LogRecord) WriteHeader(status int) {
 	r.status = status
 	r.ResponseWriter.WriteHeader(status)
@@ -48,12 +48,12 @@ type LogHandler struct {
 	io      io.Writer
 }
 
-// Creates a new logger
+// NewLog creates a new logger
 func NewLog(handler http.Handler, io io.Writer) http.Handler {
 	return &LogHandler{handler, io}
 }
 
-// Implementes the required method as standard HTTP handler, serving the request.
+// Implements the required method as standard HTTP handler, serving the request.
 func (h *LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	clientIP := r.RemoteAddr
 	if colon := strings.LastIndex(clientIP, ":"); colon != -1 {

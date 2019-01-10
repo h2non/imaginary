@@ -100,7 +100,7 @@ Options:
 `
 
 type URLSignature struct {
-	Key  string
+	Key string
 }
 
 func main() {
@@ -164,7 +164,7 @@ func main() {
 
 	// Validate HTTP cache param, if present
 	if *aHTTPCacheTTL != -1 {
-		checkHttpCacheTtl(*aHTTPCacheTTL)
+		checkHTTPCacheTTL(*aHTTPCacheTTL)
 	}
 
 	// Parse endpoint names to disabled, if present
@@ -246,7 +246,7 @@ func checkMountDirectory(path string) {
 	if err != nil {
 		exitWithError("error while mounting directory: %s", err)
 	}
-	if src.IsDir() == false {
+	if !src.IsDir() {
 		exitWithError("mount path is not a directory: %s", path)
 	}
 	if path == "/" {
@@ -254,8 +254,8 @@ func checkMountDirectory(path string) {
 	}
 }
 
-func checkHttpCacheTtl(ttl int) {
-	if ttl < -1 || ttl > 31556926 {
+func checkHTTPCacheTTL(ttl int) {
+	if ttl < 0 || ttl > 31556926 {
 		exitWithError("The -http-cache-ttl flag only accepts a value from 0 to 31556926")
 	}
 
@@ -265,7 +265,7 @@ func checkHttpCacheTtl(ttl int) {
 }
 
 func parseOrigins(origins string) []*url.URL {
-	urls := []*url.URL{}
+	var urls []*url.URL
 	if origins == "" {
 		return urls
 	}
@@ -280,7 +280,7 @@ func parseOrigins(origins string) []*url.URL {
 }
 
 func parseEndpoints(input string) Endpoints {
-	endpoints := Endpoints{}
+	var endpoints Endpoints
 	for _, endpoint := range strings.Split(input, ",") {
 		endpoint = strings.ToLower(strings.TrimSpace(endpoint))
 		if endpoint != "" {
@@ -301,7 +301,7 @@ func memoryRelease(interval int) {
 }
 
 func exitWithError(format string, args ...interface{}) {
-	fmt.Fprintf(os.Stderr, format+"\n", args)
+	_, _ = fmt.Fprintf(os.Stderr, format+"\n", args)
 	os.Exit(1)
 }
 

@@ -18,7 +18,7 @@ func NewFileSystemImageSource(config *SourceConfig) ImageSource {
 }
 
 func (s *FileSystemImageSource) Matches(r *http.Request) bool {
-	return r.Method == "GET" && s.getFileParam(r) != ""
+	return r.Method == http.MethodGet && s.getFileParam(r) != ""
 }
 
 func (s *FileSystemImageSource) GetImage(r *http.Request) ([]byte, error) {

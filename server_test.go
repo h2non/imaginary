@@ -191,7 +191,7 @@ func TestTypeAuto(t *testing.T) {
 		url := ts.URL + "?width=300&type=auto"
 		defer ts.Close()
 
-		req, _ := http.NewRequest("POST", url, buf)
+		req, _ := http.NewRequest(http.MethodPost, url, buf)
 		req.Header.Add("Content-Type", "image/jpeg")
 		req.Header.Add("Accept", test.acceptHeader)
 		res, err := http.DefaultClient.Do(req)

@@ -20,14 +20,14 @@ func indexController(w http.ResponseWriter, r *http.Request) {
 
 	body, _ := json.Marshal(CurrentVersions)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(body)
+	_, _ = w.Write(body)
 }
 
 func healthController(w http.ResponseWriter, r *http.Request) {
 	health := GetHealthStats()
 	body, _ := json.Marshal(health)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(body)
+	_, _ = w.Write(body)
 }
 
 func imageController(o ServerOptions, operation Operation) func(http.ResponseWriter, *http.Request) {
@@ -55,12 +55,12 @@ func imageController(o ServerOptions, operation Operation) func(http.ResponseWri
 
 func determineAcceptMimeType(accept string) string {
 	for _, v := range strings.Split(accept, ",") {
-		mediatype, _, _ := mime.ParseMediaType(v)
-		if mediatype == "image/webp" {
+		mediaType, _, _ := mime.ParseMediaType(v)
+		if mediaType == "image/webp" {
 			return "webp"
-		} else if mediatype == "image/png" {
+		} else if mediaType == "image/png" {
 			return "png"
-		} else if mediatype == "image/jpeg" {
+		} else if mediaType == "image/jpeg" {
 			return "jpeg"
 		}
 	}
@@ -69,7 +69,7 @@ func determineAcceptMimeType(accept string) string {
 }
 
 func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation Operation, o ServerOptions) {
-	// Infer the body MIME type via mimesniff algorithm
+	// Infer the body MIME type via mime sniff algorithm
 	mimeType := http.DetectContentType(buf)
 
 	// If cannot infer the type, infer it via magic numbers
@@ -115,7 +115,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation 
 	if vary != "" {
 		w.Header().Set("Vary", vary)
 	}
-	w.Write(image.Body)
+	_, _ = w.Write(image.Body)
 }
 
 func formController(w http.ResponseWriter, r *http.Request) {
@@ -157,5 +157,5 @@ func formController(w http.ResponseWriter, r *http.Request) {
 	html += "</body></html>"
 
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(html))
+	_, _ = w.Write([]byte(html))
 }

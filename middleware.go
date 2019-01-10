@@ -1,13 +1,13 @@
 package main
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"strings"
 	"time"
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/base64"
 
 	"github.com/rs/cors"
 	"gopkg.in/h2non/bimg.v1"
@@ -87,7 +87,7 @@ func throttle(next http.Handler, o ServerOptions) http.Handler {
 
 func validate(next http.Handler, o ServerOptions) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" && r.Method != "POST" {
+		if r.Method != http.MethodGet && r.Method != http.MethodPost {
 			ErrorReply(r, w, ErrMethodNotAllowed, o)
 			return
 		}
@@ -99,12 +99,12 @@ func validate(next http.Handler, o ServerOptions) http.Handler {
 func validateImage(next http.Handler, o ServerOptions) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := r.URL.Path
-		if r.Method == "GET" && isPublicPath(path) {
+		if r.Method == http.MethodGet && isPublicPath(path) {
 			next.ServeHTTP(w, r)
 			return
 		}
 
-		if r.Method == "GET" && o.Mount == "" && o.EnableURLSource == false {
+		if r.Method == http.MethodGet && o.Mount == "" && o.EnableURLSource == false {
 			ErrorReply(r, w, ErrMethodNotAllowed, o)
 			return
 		}
@@ -121,7 +121,7 @@ func authorizeClient(next http.Handler, o ServerOptions) http.Handler {
 		}
 
 		if key != o.APIKey {
-			ErrorReply(r, w, ErrInvalidApiKey, o)
+			ErrorReply(r, w, ErrInvalidAPIKey, o)
 			return
 		}
 
@@ -140,7 +140,7 @@ func setCacheHeaders(next http.Handler, ttl int) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer next.ServeHTTP(w, r)
 
-		if r.Method != "GET" || isPublicPath(r.URL.Path) {
+		if r.Method != http.MethodGet || isPublicPath(r.URL.Path) {
 			return
 		}
 
