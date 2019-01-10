@@ -93,7 +93,12 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation 
 		return
 	}
 
-	opts := readParams(r.URL.Query())
+	opts, err := buildParamsFromQuery(r.URL.Query())
+	if err != nil {
+		ErrorReply(r, w, NewError("Error while processing parameters, "+err.Error(), BadRequest), o)
+		return
+	}
+
 	vary := ""
 	if opts.Type == "auto" {
 		opts.Type = determineAcceptMimeType(r.Header.Get("Accept"))
