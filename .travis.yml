@@ -25,7 +25,7 @@ matrix:
     - env: LIBVIPS=8.2
     - env: LIBVIPS=8.3
     - env: LIBVIPS=master
-    - go: 1.8.x
+    - go: 1.9.x
 
 cache: apt
 
