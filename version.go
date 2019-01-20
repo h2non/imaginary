@@ -3,7 +3,7 @@ package main
 import "gopkg.in/h2non/bimg.v1"
 
 // Version stores the current package semantic version
-const Version = "1.0.15"
+const Version = "1.0.17"
 
 // Versions represents the used versions for several significant dependencies
 type Versions struct {
