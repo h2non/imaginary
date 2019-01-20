@@ -1,13 +1,14 @@
 package main
 
 import (
+	"math"
 	"net/url"
 	"testing"
 
 	"gopkg.in/h2non/bimg.v1"
 )
 
-const fixture = "fixtures/large.jpg"
+const epsilon = 0.0001
 
 func TestReadParams(t *testing.T) {
 	q := url.Values{}
@@ -18,7 +19,10 @@ func TestReadParams(t *testing.T) {
 	q.Add("text", "hello")
 	q.Add("background", "255,10,20")
 
-	params := readParams(q)
+	params, err := buildParamsFromQuery(q)
+	if err != nil {
+		t.Errorf("Failed reading params, %s", err)
+	}
 
 	assert := params.Width == 100 &&
 		params.Height == 80 &&
@@ -47,7 +51,7 @@ func TestParseParam(t *testing.T) {
 	}
 
 	for _, test := range intCases {
-		val := parseParam(test.value, "int")
+		val, _ := parseInt(test.value)
 		if val != test.expected {
 			t.Errorf("Invalid param: %s != %d", test.value, test.expected)
 		}
@@ -64,7 +68,7 @@ func TestParseParam(t *testing.T) {
 	}
 
 	for _, test := range floatCases {
-		val := parseParam(test.value, "float")
+		val, _ := parseFloat(test.value)
 		if val != test.expected {
 			t.Errorf("Invalid param: %#v != %#v", val, test.expected)
 		}
@@ -86,7 +90,7 @@ func TestParseParam(t *testing.T) {
 	}
 
 	for _, test := range boolCases {
-		val := parseParam(test.value, "bool")
+		val, _ := parseBool(test.value)
 		if val != test.expected {
 			t.Errorf("Invalid param: %#v != %#v", val, test.expected)
 		}
@@ -159,7 +163,7 @@ func TestGravity(t *testing.T) {
 	}
 
 	for _, td := range cases {
-		io := readParams(url.Values{"gravity": []string{td.gravityValue}})
+		io, _ := buildParamsFromQuery(url.Values{"gravity": []string{td.gravityValue}})
 		if (io.Gravity == bimg.GravitySmart) != td.smartCropValue {
 			t.Errorf("Expected %t to be %t, test data: %+v", io.Gravity == bimg.GravitySmart, td.smartCropValue, td)
 		}
@@ -192,7 +196,11 @@ func TestReadMapParams(t *testing.T) {
 	}
 
 	for _, test := range cases {
-		opts := readMapParams(test.params)
+		opts, err := buildParamsFromOperation(PipelineOperation{Params: test.params})
+		if err != nil {
+			t.Errorf("Error reading parameters %s", err)
+			t.FailNow()
+		}
 		if opts.Width != test.expected.Width {
 			t.Errorf("Invalid width: %d != %d", opts.Width, test.expected.Width)
 		}
@@ -212,4 +220,185 @@ func TestReadMapParams(t *testing.T) {
 			t.Errorf("Invalid color: %#v != %#v", opts.Color, test.expected.Color)
 		}
 	}
+}
+
+func TestParseFunctions(t *testing.T) {
+	t.Run("parseBool", func(t *testing.T) {
+		if r, err := parseBool("true"); r != true {
+			t.Errorf("Expected string true to result a native type true %s", err)
+		}
+
+		if r, err := parseBool("false"); r != false {
+			t.Errorf("Expected string false to result a native type false %s", err)
+		}
+
+		// A special case that we support
+		if _, err := parseBool(""); err != nil {
+			t.Errorf("Expected blank values to default to false, it didn't! %s", err)
+		}
+
+		if r, err := parseBool("foo"); err == nil {
+			t.Errorf("Expected malformed values to result in an error, it didn't! %+v", r)
+		}
+	})
+}
+
+func TestBuildParamsFromOperation(t *testing.T) {
+	op := PipelineOperation{
+		Params: map[string]interface{}{
+			"width":      200,
+			"opacity":    2.2,
+			"force":      true,
+			"stripmeta":  false,
+			"type":       "jpeg",
+			"background": "255,12,3",
+		},
+	}
+
+	options, err := buildParamsFromOperation(op)
+	if err != nil {
+		t.Errorf("Expected this to work! %s", err)
+	}
+
+	if input := op.Params["width"].(int); options.Width != 200 {
+		t.Errorf("Expected the Width to be coerced with the correct value of %d", input)
+	}
+
+	if input := op.Params["opacity"].(float64); math.Abs(input-float64(options.Opacity)) > epsilon {
+		t.Errorf("Expected the Opacity to be coerced with the correct value of %f", input)
+	}
+
+	if options.Force != true || options.StripMetadata != false {
+		t.Errorf("Expected boolean parameters to result in their respective value's\n%+v", options)
+	}
+
+	if input := op.Params["background"].(string); options.Background[0] != 255 {
+		t.Errorf("Expected color parameter to be coerced with the correct value of %s", input)
+	}
+}
+
+func TestCoerceTypeFns(t *testing.T) {
+	t.Run("coerceTypeInt", func(t *testing.T) {
+		cases := []struct {
+			Input  interface{}
+			Expect int
+			Err    error
+		}{
+			{Input: "200", Expect: 200},
+			{Input: int(200), Expect: 200},
+			{Input: float64(200), Expect: 200},
+			{Input: false, Expect: 0, Err: ErrUnsupportedValue},
+		}
+
+		for _, tc := range cases {
+
+			result, err := coerceTypeInt(tc.Input)
+			if err != nil && tc.Err == nil {
+				t.Errorf("Did not expect error %s\n%+v", err, tc)
+				t.FailNow()
+			}
+
+			if tc.Err != nil && tc.Err != err {
+				t.Errorf("Expected an error to be thrown\nExpected: %s\nReceived: %s", tc.Err, err)
+				t.FailNow()
+			}
+
+			if tc.Err == nil && result != tc.Expect {
+				t.Errorf("Expected proper coercion %s\n%+v\n%+v", err, result, tc)
+			}
+		}
+	})
+
+	t.Run("coerceTypeFloat", func(t *testing.T) {
+		cases := []struct {
+			Input  interface{}
+			Expect float64
+			Err    error
+		}{
+			{Input: "200", Expect: 200},
+			{Input: int(200), Expect: 200},
+			{Input: float64(200), Expect: 200},
+			{Input: false, Expect: 0, Err: ErrUnsupportedValue},
+		}
+
+		for _, tc := range cases {
+
+			result, err := coerceTypeFloat(tc.Input)
+			if err != nil && tc.Err == nil {
+				t.Errorf("Did not expect error %s\n%+v", err, tc)
+				t.FailNow()
+			}
+
+			if tc.Err != nil && tc.Err != err {
+				t.Errorf("Expected an error to be thrown\nExpected: %s\nReceived: %s", tc.Err, err)
+				t.FailNow()
+			}
+
+			if tc.Err == nil && math.Abs(result-tc.Expect) > epsilon {
+				t.Errorf("Expected proper coercion %s\n%+v\n%+v", err, result, tc)
+			}
+		}
+	})
+
+	t.Run("coerceTypeBool", func(t *testing.T) {
+		cases := []struct {
+			Input  interface{}
+			Expect bool
+			Err    error
+		}{
+			{Input: "true", Expect: true},
+			{Input: true, Expect: true},
+			{Input: "1", Expect: true},
+			{Input: "bubblegum", Expect: false, Err: ErrUnsupportedValue},
+		}
+
+		for _, tc := range cases {
+
+			result, err := coerceTypeBool(tc.Input)
+			if err != nil && tc.Err == nil {
+				t.Errorf("Did not expect error %s\n%+v", err, tc)
+				t.FailNow()
+			}
+
+			if tc.Err != nil && tc.Err != err {
+				t.Errorf("Expected an error to be thrown\nExpected: %s\nReceived: %s", tc.Err, err)
+				t.FailNow()
+			}
+
+			if tc.Err == nil && result != tc.Expect {
+				t.Errorf("Expected proper coercion %s\n%+v\n%+v", err, result, tc)
+			}
+		}
+	})
+
+	t.Run("coerceTypeString", func(t *testing.T) {
+		cases := []struct {
+			Input  interface{}
+			Expect string
+			Err    error
+		}{
+			{Input: "true", Expect: "true"},
+			{Input: false, Err: ErrUnsupportedValue},
+			{Input: 0.0, Err: ErrUnsupportedValue},
+			{Input: 0, Err: ErrUnsupportedValue},
+		}
+
+		for _, tc := range cases {
+
+			result, err := coerceTypeString(tc.Input)
+			if err != nil && tc.Err == nil {
+				t.Errorf("Did not expect error %s\n%+v", err, tc)
+				t.FailNow()
+			}
+
+			if tc.Err != nil && tc.Err != err {
+				t.Errorf("Expected an error to be thrown\nExpected: %s\nReceived: %s", tc.Err, err)
+				t.FailNow()
+			}
+
+			if tc.Err == nil && result != tc.Expect {
+				t.Errorf("Expected proper coercion %s\n%+v\n%+v", err, result, tc)
+			}
+		}
+	})
 }

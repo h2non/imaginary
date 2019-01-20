@@ -71,7 +71,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#co
 
 - [libvips](https://github.com/jcupitt/libvips) 8.3+ (8.5+ recommended)
 - C compatible compiler such as gcc 4.6+ or clang 3.0+
-- Go 1.6+
+- Go 1.10+
 
 ## Installation
 

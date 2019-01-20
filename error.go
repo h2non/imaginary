@@ -77,22 +77,38 @@ func NewError(err string, code uint8) Error {
 	return Error{err, code}
 }
 
-func replyWithPlaceholder(req *http.Request, w http.ResponseWriter, err Error, o ServerOptions) error {
-	// Resize placeholder to expected output
-	buf, _err := bimg.Resize(o.PlaceholderImage, bimg.Options{
+func sendErrorResponse(w http.ResponseWriter, httpStatusCode int, imaginaryErrorCode uint8, err error) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(httpStatusCode)
+	_, _ = w.Write([]byte(fmt.Sprintf("{\"error\":\"%s\", \"code\": %d}", err.Error(), imaginaryErrorCode)))
+}
+
+func replyWithPlaceholder(req *http.Request, w http.ResponseWriter, errCaller Error, o ServerOptions) error {
+	var err error
+	bimgOptions := bimg.Options{
 		Force:   true,
 		Crop:    true,
 		Enlarge: true,
-		Width:   parseInt(req.URL.Query().Get("width")),
-		Height:  parseInt(req.URL.Query().Get("height")),
 		Type:    ImageType(req.URL.Query().Get("type")),
-	})
+	}
 
-	if _err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		_, _ = w.Write([]byte(fmt.Sprintf("{\"error\":\"%s\", \"code\": %d}", _err.Error(), BadRequest)))
-		return _err
+	bimgOptions.Width, err = parseInt(req.URL.Query().Get("width"))
+	if err != nil {
+		sendErrorResponse(w, http.StatusBadRequest, BadRequest, err)
+		return err
+	}
+
+	bimgOptions.Height, err = parseInt(req.URL.Query().Get("height"))
+	if err != nil {
+		sendErrorResponse(w, http.StatusBadRequest, BadRequest, err)
+		return err
+	}
+
+	// Resize placeholder to expected output
+	buf, err := bimg.Resize(o.PlaceholderImage, bimgOptions)
+	if err != nil {
+		sendErrorResponse(w, http.StatusBadRequest, BadRequest, err)
+		return err
 	}
 
 	// Use final response body image
@@ -100,11 +116,11 @@ func replyWithPlaceholder(req *http.Request, w http.ResponseWriter, err Error, o
 
 	// Placeholder image response
 	w.Header().Set("Content-Type", GetImageMimeType(bimg.DetermineImageType(image)))
-	w.Header().Set("Error", string(err.JSON()))
-	w.WriteHeader(err.HTTPCode())
+	w.Header().Set("Error", string(errCaller.JSON()))
+	w.WriteHeader(errCaller.HTTPCode())
 	_, _ = w.Write(image)
 
-	return err
+	return errCaller
 }
 
 func ErrorReply(req *http.Request, w http.ResponseWriter, err Error, o ServerOptions) {
