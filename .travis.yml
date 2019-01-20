@@ -6,7 +6,6 @@ dist: trusty
 go:
   - "1.11.x"
   - "1.10.x"
-  - "1.9.x"
   - "tip"
 
 env:
@@ -25,7 +24,6 @@ matrix:
     - env: LIBVIPS=8.2
     - env: LIBVIPS=8.3
     - env: LIBVIPS=master
-    - go: 1.9.x
 
 cache: apt
 
