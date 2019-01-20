@@ -252,7 +252,6 @@ func TestBuildParamsFromOperation(t *testing.T) {
 			"stripmeta":  false,
 			"type":       "jpeg",
 			"background": "255,12,3",
-			//"operations": `[{"operation":"resize","params":{"quality":70,"noprofile":true,"stripmeta":true,"nocrop":true,"width":865}}]`,
 		},
 	}
 
@@ -261,16 +260,20 @@ func TestBuildParamsFromOperation(t *testing.T) {
 		t.Errorf("Expected this to work! %s", err)
 	}
 
-	if options.Width != 200 {
-		t.Errorf("Expected the Width to be coerced with the correct value of %d", 200)
+	if input := op.Params["width"].(int); options.Width != 200 {
+		t.Errorf("Expected the Width to be coerced with the correct value of %d", input)
 	}
 
-	if int(options.Opacity*10) != 22 {
-		t.Errorf("Expected the Opacity to be coerced with the correct value of %f", 2.2)
+	if input := op.Params["opacity"].(float64); math.Abs(input-float64(options.Opacity)) > epsilon {
+		t.Errorf("Expected the Opacity to be coerced with the correct value of %f", input)
 	}
 
 	if options.Force != true || options.StripMetadata != false {
 		t.Errorf("Expected boolean parameters to result in their respective value's\n%+v", options)
+	}
+
+	if input := op.Params["background"].(string); options.Background[0] != 255 {
+		t.Errorf("Expected color parameter to be coerced with the correct value of %s", input)
 	}
 }
 
