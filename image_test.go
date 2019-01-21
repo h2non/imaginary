@@ -71,3 +71,39 @@ func TestImagePipelineOperations(t *testing.T) {
 		t.Errorf("Invalid image size, expected: %dx%d", width, height)
 	}
 }
+
+func TestCalculateDestinationFitDimension(t *testing.T) {
+	cases := []struct {
+		// Image
+		imageWidth  int
+		imageHeight int
+
+		// User parameter
+		optionWidth  int
+		optionHeight int
+
+		// Expect
+		fitWidth  int
+		fitHeight int
+	}{
+
+		// Leading Width
+		{1280, 1000, 710, 9999, 710, 555},
+		{1279, 1000, 710, 9999, 710, 555},
+
+		// Leading height
+		{1299, 2000, 710, 999, 649, 999},
+		{1500, 2000, 710, 999, 710, 947},
+	}
+
+	for _, tc := range cases {
+		fitWidth, fitHeight := calculateDestinationFitDimension(tc.imageWidth, tc.imageHeight, tc.optionWidth, tc.optionHeight)
+		if fitWidth != tc.fitWidth || fitHeight != tc.fitHeight {
+			t.Errorf(
+				"Fit dimensions calculation failure\nExpected : %d/%d (width/height)\nActual   : %d/%d (width/height)\n%+v",
+				tc.fitWidth, tc.fitHeight, fitWidth, fitHeight, tc,
+			)
+		}
+	}
+
+}

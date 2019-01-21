@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"math"
 	"net/http"
 
 	"gopkg.in/h2non/bimg.v1"
@@ -141,20 +142,25 @@ func Fit(buf []byte, o ImageOptions) (Image, error) {
 		fitHeight = &o.Width
 	}
 
-	// if input ratio > output ratio
-	// (calculation multiplied through by denominators to avoid float division)
-	if originWidth*(*fitHeight) > (*fitWidth)*originHeight {
-		// constrained by width
-		*fitHeight = *fitWidth * originHeight / originWidth
-	} else {
-		// constrained by height
-		*fitWidth = *fitHeight * originWidth / originHeight
-	}
+	*fitHeight, *fitWidth = calculateDestinationFitDimension(originWidth, originHeight, *fitWidth, *fitHeight)
 
 	opts := BimgOptions(o)
 	opts.Embed = true
 
 	return Process(buf, opts)
+}
+
+// calculateDestinationFitDimension calculates the fit area based on the image and desired fit dimensions
+func calculateDestinationFitDimension(imageWidth, imageHeight, fitWidth, fitHeight int) (int, int) {
+	if imageWidth*fitHeight > fitWidth*imageHeight {
+		// constrained by width
+		fitHeight = int(math.Round(float64(fitWidth) * float64(imageHeight) / float64(imageWidth)))
+	} else {
+		// constrained by height
+		fitWidth = int(math.Round(float64(fitHeight) * float64(imageWidth) / float64(imageHeight)))
+	}
+
+	return fitWidth, fitHeight
 }
 
 func Enlarge(buf []byte, o ImageOptions) (Image, error) {
