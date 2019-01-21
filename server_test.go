@@ -253,7 +253,14 @@ func TestFit(t *testing.T) {
 		t.Fatalf("Empty response body")
 	}
 
-	err = assertSize(image, 300, 168)
+	original, _ := ioutil.ReadAll(buf)
+	err = assertSize(original, 1920, 1080)
+	if err != nil {
+		t.Errorf("Reference image expecations weren't met")
+	}
+
+	// The reference image has a ratio of 1.778, this should produce a height of 168.75
+	err = assertSize(image, 300, 169)
 	if err != nil {
 		t.Error(err)
 	}
