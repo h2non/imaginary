@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -231,12 +232,20 @@ func TestTypeAuto(t *testing.T) {
 }
 
 func TestFit(t *testing.T) {
-	ts := testServer(controller(Fit))
+	var err error
+
 	buf := readFile("large.jpg")
+	original, _ := ioutil.ReadAll(buf)
+	err = assertSize(original, 1920, 1080)
+	if err != nil {
+		t.Errorf("Reference image expecations weren't met")
+	}
+
+	ts := testServer(controller(Fit))
 	url := ts.URL + "?width=300&height=300"
 	defer ts.Close()
 
-	res, err := http.Post(url, "image/jpeg", buf)
+	res, err := http.Post(url, "image/jpeg", bytes.NewReader(original))
 	if err != nil {
 		t.Fatal("Cannot perform the request")
 	}
@@ -251,12 +260,6 @@ func TestFit(t *testing.T) {
 	}
 	if len(image) == 0 {
 		t.Fatalf("Empty response body")
-	}
-
-	original, _ := ioutil.ReadAll(buf)
-	err = assertSize(original, 1920, 1080)
-	if err != nil {
-		t.Errorf("Reference image expecations weren't met")
 	}
 
 	// The reference image has a ratio of 1.778, this should produce a height of 168.75

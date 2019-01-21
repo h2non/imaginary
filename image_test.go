@@ -32,8 +32,8 @@ func TestImageFit(t *testing.T) {
 	if img.Mime != "image/jpeg" {
 		t.Error("Invalid image MIME type")
 	}
-	// 550x740 -> 222x300
-	if assertSize(img.Body, 222, 300) != nil {
+	// 550x740 -> 222.9x300
+	if assertSize(img.Body, 223, 300) != nil {
 		t.Errorf("Invalid image size, expected: %dx%d", opts.Width, opts.Height)
 	}
 }

@@ -142,7 +142,7 @@ func Fit(buf []byte, o ImageOptions) (Image, error) {
 		fitHeight = &o.Width
 	}
 
-	*fitHeight, *fitWidth = calculateDestinationFitDimension(originWidth, originHeight, *fitWidth, *fitHeight)
+	*fitWidth, *fitHeight = calculateDestinationFitDimension(originWidth, originHeight, *fitWidth, *fitHeight)
 
 	opts := BimgOptions(o)
 	opts.Embed = true
