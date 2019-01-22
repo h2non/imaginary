@@ -90,6 +90,8 @@ func TestCalculateDestinationFitDimension(t *testing.T) {
 		// Leading Width
 		{1280, 1000, 710, 9999, 710, 555},
 		{1279, 1000, 710, 9999, 710, 555},
+		{900, 500, 312, 312, 312, 173}, // rounding down
+		{900, 500, 313, 313, 313, 174}, // rounding up
 
 		// Leading height
 		{1299, 2000, 710, 999, 649, 999},
