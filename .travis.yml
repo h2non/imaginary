@@ -1,6 +1,8 @@
 language: go
 
-sudo: required
+services:
+  - docker
+
 dist: trusty
 
 go:
@@ -9,63 +11,23 @@ go:
   - "tip"
 
 env:
-  - LIBVIPS=7.42
-  - LIBVIPS=8.2
-  - LIBVIPS=8.3
-  - LIBVIPS=8.4
-  - LIBVIPS=8.5
-  - LIBVIPS=8.6
-  - LIBVIPS=8.7
-  - LIBVIPS=master
+  global:
+    - IMAGINARY_VERSION=${TRAVIS_TAG:-"dev"}
+    - DCMD="docker run --rm -i -v ${TRAVIS_BUILD_DIR}:/go/src/github/h2non/imaginary -w /go/src/github/h2non/imaginary h2non/imaginary:build"
+  matrix:
+    - LIBVIPS=8.7.2
+    - LIBVIPS=master
 
 matrix:
   allow_failures:
-    - env: LIBVIPS=7.42
-    - env: LIBVIPS=8.2
-    - env: LIBVIPS=8.3
     - env: LIBVIPS=master
-
-cache: apt
-
-addons:
-  apt:
-    packages:
-      - gobject-introspection
-      - gtk-doc-tools
-      - libcfitsio3-dev
-      - libfftw3-dev
-      - libgif-dev
-      - libgs-dev
-      - libgsf-1-dev
-      - libmatio-dev
-      - libopenslide-dev
-      - liborc-0.4-dev
-      - libpango1.0-dev
-      - libpoppler-glib-dev
-      - libwebp-dev
+    - go: "tip"
 
 before_install:
-  - wget https://github.com/libvips/libvips/archive/$LIBVIPS.zip
-  - unzip $LIBVIPS
-  - cd libvips-$LIBVIPS
-  - test -f autogen.sh && ./autogen.sh || ./bootstrap.sh
-  - >
-    CXXFLAGS=-D_GLIBCXX_USE_CXX11_ABI=0
-    ./configure
-    --disable-debug
-    --disable-dependency-tracking
-    --disable-introspection
-    --disable-static
-    --enable-gtk-doc-html=no
-    --enable-gtk-doc=no
-    --enable-pyvips8=no
-    --without-orc
-    --without-python
-    $1
-  - make
-  - sudo make install
-  - sudo ldconfig
+  - true
+
+install:
+  - true
 
 script:
-  - cd ..
-  - go test -v -race -covermode=atomic
+  - echo "go test -v -race -covermode=atomic" | ${DCMD}

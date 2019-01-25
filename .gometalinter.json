@@ -1,0 +1,45 @@
+{
+  "Cyclo": 10,
+  "Deadline": "5m",
+  "Vendor": true,
+  "Test": true,
+  "EnableAll": false,
+  "Checkstyle": false,
+  "Errors": false,
+  "Enable": [
+    "deadcode",
+    "dupl",
+    "errcheck",
+    "gochecknoglobals",
+    "gochecknoinits",
+    "goconst",
+    "gofmt",
+    "gotypex",
+    "goimports",
+    "golint",
+    "gosec",
+    "ineffassign",
+    "interfacer",
+    "megacheck",
+    "misspell",
+    "nakedret",
+    "test",
+    "testify",
+    "unconvert",
+    "unparam",
+    "vetshadow",
+    "staticcheck"
+  ],
+  "Disable": [
+    "gochecknoglobals",
+    "gochecknoinits",
+    "dupl"
+  ],
+  "Exclude": [
+    "vendor/.*",
+    "by package bimg",
+    "Errors unhandled",
+    "Potential file inclusion via variable",
+    "should have comment"
+  ]
+}
