@@ -1,5 +1,5 @@
-ARG GOLANG="1.11.4"
-FROM golang:$GOLANG as builder
+ARG GOLANG="1.11.5"
+FROM golang:${GOLANG} as builder
 
 ARG IMAGINARY_VERSION="dev"
 ARG LIBVIPS_VERSION="8.7.4"
@@ -50,7 +50,7 @@ RUN GO111MODULE=off gometalinter github.com/h2non/imaginary
 
 # Compile imaginary
 RUN GO111MODULE=off go build -a \
-    -o $GOPATH/bin/imaginary \
+    -o ${GOPATH}/bin/imaginary \
     -ldflags="-s -w -h -X main.Version=${IMAGINARY_VERSION}" \
     github.com/h2non/imaginary
 
