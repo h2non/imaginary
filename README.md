@@ -528,7 +528,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **flip**        `bool`  - Transform the resultant image with flip operation. Default: `false`
 - **flop**        `bool`  - Transform the resultant image with flop operation. Default: `false`
 - **force**       `bool`  - Force image transformation size. Default: `false`
-- **nocrop**      `bool`  - Disable crop transformation enabled by default by some operations. Default: `false`
+- **nocrop**      `bool`  - Disable crop transformation. Defaults depend on the operation
 - **noreplicate** `bool`  - Disable text replication in watermark. Defaults to `false`
 - **norotation**  `bool`  - Disable auto rotation based on EXIF orientation. Defaults to `false`
 - **noprofile**   `bool`  - Disable adding ICC profile metadata. Defaults to `false`
@@ -686,6 +686,7 @@ Resize an image by width or height. Image aspect ratio is maintained
 - embed `bool`
 - force `bool`
 - rotate `int`
+- nocrop `bool` - Defaults to `true`
 - norotation `bool`
 - noprofile `bool`
 - stripmeta `bool`
@@ -713,6 +714,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - embed `bool`
 - force `bool`
 - rotate `int`
+- nocrop `bool` - Defaults to `false`
 - norotation `bool`
 - noprofile `bool`
 - stripmeta `bool`
@@ -772,6 +774,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - embed `bool`
 - force `bool`
 - rotate `int`
+- nocrop `bool` - Defaults to `true`
 - norotation `bool`
 - noprofile `bool`
 - stripmeta `bool`
