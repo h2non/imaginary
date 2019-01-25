@@ -32,8 +32,8 @@ func TestImageFit(t *testing.T) {
 	if img.Mime != "image/jpeg" {
 		t.Error("Invalid image MIME type")
 	}
-	// 550x740 -> 222x300
-	if assertSize(img.Body, 222, 300) != nil {
+	// 550x740 -> 222.9x300
+	if assertSize(img.Body, 223, 300) != nil {
 		t.Errorf("Invalid image size, expected: %dx%d", opts.Width, opts.Height)
 	}
 }
@@ -70,4 +70,42 @@ func TestImagePipelineOperations(t *testing.T) {
 	if assertSize(img.Body, width, height) != nil {
 		t.Errorf("Invalid image size, expected: %dx%d", width, height)
 	}
+}
+
+func TestCalculateDestinationFitDimension(t *testing.T) {
+	cases := []struct {
+		// Image
+		imageWidth  int
+		imageHeight int
+
+		// User parameter
+		optionWidth  int
+		optionHeight int
+
+		// Expect
+		fitWidth  int
+		fitHeight int
+	}{
+
+		// Leading Width
+		{1280, 1000, 710, 9999, 710, 555},
+		{1279, 1000, 710, 9999, 710, 555},
+		{900, 500, 312, 312, 312, 173}, // rounding down
+		{900, 500, 313, 313, 313, 174}, // rounding up
+
+		// Leading height
+		{1299, 2000, 710, 999, 649, 999},
+		{1500, 2000, 710, 999, 710, 947},
+	}
+
+	for _, tc := range cases {
+		fitWidth, fitHeight := calculateDestinationFitDimension(tc.imageWidth, tc.imageHeight, tc.optionWidth, tc.optionHeight)
+		if fitWidth != tc.fitWidth || fitHeight != tc.fitHeight {
+			t.Errorf(
+				"Fit dimensions calculation failure\nExpected : %d/%d (width/height)\nActual   : %d/%d (width/height)\n%+v",
+				tc.fitWidth, tc.fitHeight, fitWidth, fitHeight, tc,
+			)
+		}
+	}
+
 }
