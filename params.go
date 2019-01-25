@@ -190,46 +190,55 @@ func coerceOpacity(io *ImageOptions, param interface{}) (err error) {
 
 func coerceFlip(io *ImageOptions, param interface{}) (err error) {
 	io.Flip, err = coerceTypeBool(param)
+	io.IsDefinedField.Flip = true
 	return err
 }
 
 func coerceFlop(io *ImageOptions, param interface{}) (err error) {
 	io.Flop, err = coerceTypeBool(param)
+	io.IsDefinedField.Flop = true
 	return err
 }
 
 func coerceNoCrop(io *ImageOptions, param interface{}) (err error) {
 	io.NoCrop, err = coerceTypeBool(param)
+	io.IsDefinedField.NoCrop = true
 	return err
 }
 
 func coerceNoProfile(io *ImageOptions, param interface{}) (err error) {
 	io.NoProfile, err = coerceTypeBool(param)
+	io.IsDefinedField.NoProfile = true
 	return err
 }
 
 func coerceNoRotation(io *ImageOptions, param interface{}) (err error) {
 	io.NoRotation, err = coerceTypeBool(param)
+	io.IsDefinedField.NoRotation = true
 	return err
 }
 
 func coerceNoReplicate(io *ImageOptions, param interface{}) (err error) {
 	io.NoReplicate, err = coerceTypeBool(param)
+	io.IsDefinedField.NoReplicate = true
 	return err
 }
 
 func coerceForce(io *ImageOptions, param interface{}) (err error) {
 	io.Force, err = coerceTypeBool(param)
+	io.IsDefinedField.Force = true
 	return err
 }
 
 func coerceEmbed(io *ImageOptions, param interface{}) (err error) {
 	io.Embed, err = coerceTypeBool(param)
+	io.IsDefinedField.Embed = true
 	return err
 }
 
 func coerceStripMeta(io *ImageOptions, param interface{}) (err error) {
 	io.StripMetadata, err = coerceTypeBool(param)
+	io.IsDefinedField.StripMetadata = true
 	return err
 }
 
