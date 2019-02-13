@@ -1,8 +1,42 @@
-FROM h2non/imaginary:build as builder
+ARG GOLANG="1.11.5"
+FROM golang:${GOLANG}
 
 ARG IMAGINARY_VERSION="dev"
-ARG LIBVIPS_VERSION
+ARG LIBVIPS_VERSION="8.7.4"
 ARG GOLANG
+
+# Installs libvips + required libraries
+RUN DEBIAN_FRONTEND=noninteractive \
+  apt-get update && \
+  apt-get install --no-install-recommends -y \
+  ca-certificates \
+  automake build-essential curl \
+  gobject-introspection gtk-doc-tools libglib2.0-dev libjpeg62-turbo-dev libpng-dev \
+  libwebp-dev libtiff5-dev libgif-dev libexif-dev libxml2-dev libpoppler-glib-dev \
+  swig libmagickwand-dev libpango1.0-dev libmatio-dev libopenslide-dev libcfitsio-dev \
+  libgsf-1-dev fftw3-dev liborc-0.4-dev librsvg2-dev && \
+  apt-get autoremove -y && \
+  apt-get autoclean && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+  cd /tmp && \
+  curl -fsSLO https://github.com/libvips/libvips/releases/download/v${LIBVIPS_VERSION}/vips-${LIBVIPS_VERSION}.tar.gz && \
+  tar zvxf vips-${LIBVIPS_VERSION}.tar.gz && \
+  cd /tmp/vips-${LIBVIPS_VERSION} && \
+	CFLAGS="-g -O3" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -g -O3" \
+    ./configure \
+    --disable-debug \
+    --disable-dependency-tracking \
+    --disable-introspection \
+    --disable-static \
+    --enable-gtk-doc-html=no \
+    --enable-gtk-doc=no \
+    --enable-pyvips8=no && \
+  make && \
+  make install && \
+  ldconfig
+
+RUN GO111MODULE=off go get -u github.com/golang/dep/cmd/dep
 
 # Installing gometalinter
 WORKDIR /tmp
@@ -17,7 +51,7 @@ COPY . .
 RUN rm -rf vendor && dep ensure
 
 # Run quality control
-RUN GO111MODULE=off go test -test.v ./...
+RUN GO111MODULE=off go test -test.v -test.race -test.covermode=atomic ./...
 RUN GO111MODULE=off gometalinter github.com/h2non/imaginary
 
 # Compile imaginary
