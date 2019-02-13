@@ -24,7 +24,7 @@ matrix:
     - go: "tip"
 
 before_install:
-  - true
+  - docker pull h2non/imaginary:build || true
 
 install:
   - true
