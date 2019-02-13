@@ -1,5 +1,5 @@
 ARG GOLANG="1.11.5"
-FROM golang:${GOLANG}
+FROM golang:${GOLANG} as builder
 
 ARG IMAGINARY_VERSION="dev"
 ARG LIBVIPS_VERSION="8.7.4"
