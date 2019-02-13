@@ -15,10 +15,6 @@ RUN DEBIAN_FRONTEND=noninteractive \
   libwebp-dev libtiff5-dev libgif-dev libexif-dev libxml2-dev libpoppler-glib-dev \
   swig libmagickwand-dev libpango1.0-dev libmatio-dev libopenslide-dev libcfitsio-dev \
   libgsf-1-dev fftw3-dev liborc-0.4-dev librsvg2-dev && \
-  apt-get autoremove -y && \
-  apt-get autoclean && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
   cd /tmp && \
   curl -fsSLO https://github.com/libvips/libvips/releases/download/v${LIBVIPS_VERSION}/vips-${LIBVIPS_VERSION}.tar.gz && \
   tar zvxf vips-${LIBVIPS_VERSION}.tar.gz && \
@@ -34,9 +30,8 @@ RUN DEBIAN_FRONTEND=noninteractive \
     --enable-pyvips8=no && \
   make && \
   make install && \
-  ldconfig
-
-RUN GO111MODULE=off go get -u github.com/golang/dep/cmd/dep
+  ldconfig && \
+  GO111MODULE=off go get -u github.com/golang/dep/cmd/dep
 
 # Installing gometalinter
 WORKDIR /tmp
