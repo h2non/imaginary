@@ -31,3 +31,16 @@ install:
 
 script:
   - echo "go test -v -race -covermode=atomic" | ${DCMD}
+  - docker build --pull --cache-from h2non/imaginary:build --build-arg IMAGINARY_VERSION="${IMAGINARY_VERSION#v}" --tag h2non/imaginary:${IMAGINARY_VERSION} .
+
+before_deploy:
+#  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+
+deploy:
+#  provider: script
+#  script:
+#    - docker tag h2non/imaginary:${IMAGINARY_VERSION} latest
+#    - docker push h2non/imaginary:${IMAGINARY_VERSION}
+#    - docker push h2non/imaginary:latest
+#  on:
+#    condition: "${TRAVIS_TAG} =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$"
