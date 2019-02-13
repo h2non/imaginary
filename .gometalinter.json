@@ -20,7 +20,7 @@
     "gosec",
     "ineffassign",
     "interfacer",
-    "megacheck",
+    "staticcheck",
     "misspell",
     "nakedret",
     "test",
