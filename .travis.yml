@@ -12,7 +12,7 @@ go:
 
 env:
   global:
-    - IMAGINARY_VERSION=${TRAVIS_TAG:-"dev"}
+    - IMAGINARY_VERSION="${TRAVIS_TAG:-dev}"
     - DCMD="docker run --rm -i -v ${TRAVIS_BUILD_DIR}:/go/src/github/h2non/imaginary -w /go/src/github/h2non/imaginary h2non/imaginary:build"
   matrix:
     - LIBVIPS=8.7.2
