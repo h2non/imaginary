@@ -12,8 +12,7 @@ go:
 
 env:
   global:
-    - IMAGINARY_VERSION=${TRAVIS_TAG:-"dev"}
-    - DCMD="docker run --rm -i -v ${TRAVIS_BUILD_DIR}:/go/src/github/h2non/imaginary -w /go/src/github/h2non/imaginary h2non/imaginary:build"
+    - IMAGINARY_VERSION="${TRAVIS_TAG:-dev}"
   matrix:
     - LIBVIPS=8.7.2
     - LIBVIPS=master
@@ -24,10 +23,22 @@ matrix:
     - go: "tip"
 
 before_install:
-  - true
+  - docker pull h2non/imaginary:latest || true
 
 install:
   - true
 
 script:
-  - echo "go test -v -race -covermode=atomic" | ${DCMD}
+  - docker build --pull --cache-from h2non/imaginary:latest --build-arg LIBVIPS_VERSION="${LIBVIPS}" --build-arg IMAGINARY_VERSION="${IMAGINARY_VERSION#v}" --tag h2non/imaginary:${IMAGINARY_VERSION} .
+
+before_deploy:
+#  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+
+deploy:
+#  provider: script
+#  script:
+#    - docker tag h2non/imaginary:${IMAGINARY_VERSION} latest
+#    - docker push h2non/imaginary:${IMAGINARY_VERSION}
+#    - docker push h2non/imaginary:latest
+#  on:
+#    condition: "${TRAVIS_TAG} =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$"

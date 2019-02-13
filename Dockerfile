@@ -3,11 +3,12 @@ FROM golang:${GOLANG} as builder
 
 ARG IMAGINARY_VERSION="dev"
 ARG LIBVIPS_VERSION="8.7.4"
+ARG GOLANG
 
 # Installs libvips + required libraries
 RUN DEBIAN_FRONTEND=noninteractive \
   apt-get update && \
-  apt-get install -y \
+  apt-get install --no-install-recommends -y \
   ca-certificates \
   automake build-essential curl \
   gobject-introspection gtk-doc-tools libglib2.0-dev libjpeg62-turbo-dev libpng-dev \
@@ -45,7 +46,7 @@ COPY . .
 RUN rm -rf vendor && dep ensure
 
 # Run quality control
-RUN GO111MODULE=off go test -test.v ./...
+RUN GO111MODULE=off go test -test.v -test.race -test.covermode=atomic ./...
 RUN GO111MODULE=off gometalinter github.com/h2non/imaginary
 
 # Compile imaginary
