@@ -6,21 +6,24 @@ services:
 dist: trusty
 
 go:
-  - "1.11.x"
-  - "1.10.x"
-  - "tip"
+  - "latest"
 
 env:
   global:
     - IMAGINARY_VERSION="${TRAVIS_TAG:-dev}"
   matrix:
     - LIBVIPS=8.7.2
-    - LIBVIPS=master
+    - LIBVIPS=8.7.3
+    - LIBVIPS=8.7.4
 
 matrix:
+  include:
+    - env: GOLANG=rc
+    - env: GOLANG=latest
+    - env: GOLANG=1.10
   allow_failures:
-    - env: LIBVIPS=master
-    - go: "tip"
+    - env: LIBVIPS=8.7.2
+    - go: "rc"
 
 before_install:
   - docker pull h2non/imaginary:latest || true
