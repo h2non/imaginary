@@ -15,12 +15,11 @@ env:
     - LIBVIPS=8.7.2
     - LIBVIPS=8.7.3
     - LIBVIPS=8.7.4
+    - GOLANG=rc
+    - GOLANG=latest
+    - GOLANG=1.10
 
 matrix:
-  include:
-    - env: GOLANG=rc
-    - env: GOLANG=latest
-    - env: GOLANG=1.10
   allow_failures:
     - env: LIBVIPS=8.7.2
     - env: GOLANG=rc
