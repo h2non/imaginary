@@ -1,9 +1,9 @@
-ARG GOLANG="1.11.5"
-FROM golang:${GOLANG} as builder
+ARG GO_VERSION="1.11.5"
+FROM golang:${GO_VERSION} as builder
 
 ARG IMAGINARY_VERSION="dev"
 ARG LIBVIPS_VERSION="8.7.4"
-ARG GOLANG
+ARG GO_VERSION
 
 # Installs libvips + required libraries
 RUN DEBIAN_FRONTEND=noninteractive \
