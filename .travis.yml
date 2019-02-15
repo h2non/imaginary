@@ -12,17 +12,16 @@ env:
   global:
     - IMAGINARY_VERSION="${TRAVIS_TAG:-dev}"
   matrix:
-    - LIBVIPS=8.7.2
-    - LIBVIPS=8.7.3
-    - LIBVIPS=8.7.4
-    - GOLANG=rc
-    - GOLANG=latest
-    - GOLANG=1.10
+    - LIBVIPS=8.7.2 GOVER=latest
+    - LIBVIPS=8.7.3 GOVER=latest
+    - LIBVIPS=8.7.4 GOVER=latest
+    - LIBVIPS=8.7.4 GOVER=rc
+    - LIBVIPS=8.7.4 GOVER=1.10
 
 matrix:
   allow_failures:
     - env: LIBVIPS=8.7.2
-    - env: GOLANG=rc
+    - env: GOVER=rc
 
 before_install:
   - docker pull h2non/imaginary:latest || true
@@ -31,8 +30,9 @@ install:
   - true
 
 script:
-  - echo docker build --pull --cache-from h2non/imaginary:latest --build-arg GOLANG="${GOLANG}" --build-arg LIBVIPS_VERSION="${LIBVIPS}" --build-arg IMAGINARY_VERSION="${IMAGINARY_VERSION#v}" --tag h2non/imaginary:${IMAGINARY_VERSION} .
-  - docker build --pull --cache-from h2non/imaginary:latest --build-arg GOLANG="${GOLANG}" --build-arg LIBVIPS_VERSION="${LIBVIPS}" --build-arg IMAGINARY_VERSION="${IMAGINARY_VERSION#v}" --tag h2non/imaginary:${IMAGINARY_VERSION} .
+  - \set | grep "^[A-Z]"
+  - echo docker build --pull --cache-from h2non/imaginary:latest --build-arg GOLANG="${GOVER}" --build-arg LIBVIPS_VERSION="${LIBVIPS}" --build-arg IMAGINARY_VERSION="${IMAGINARY_VERSION#v}" --tag h2non/imaginary:${IMAGINARY_VERSION} .
+  - docker build --pull --cache-from h2non/imaginary:latest --build-arg GOLANG="${GOVER}" --build-arg LIBVIPS_VERSION="${LIBVIPS}" --build-arg IMAGINARY_VERSION="${IMAGINARY_VERSION#v}" --tag h2non/imaginary:${IMAGINARY_VERSION} .
 
 before_deploy:
 #  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
