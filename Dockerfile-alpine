@@ -81,7 +81,6 @@ RUN apk add \
     "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
     "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"
 RUN /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 "$LANG" || true
-RUN echo "export LANG=$LANG" > /etc/profile.d/locale.sh
 
 # Cleanup glibc
 RUN rm "/etc/apk/keys/sgerrand.rsa.pub"
@@ -96,18 +95,17 @@ RUN rm \
 # Build libvips
 RUN wget -O- https://github.com/libvips/libvips/releases/download/v${VIPS_VERSION}/vips-${VIPS_VERSION}.tar.gz | tar xzC /tmp
 RUN cd /tmp/vips-${VIPS_VERSION} && \
+    CFLAGS="-g -O3" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -g -O3" \
     ./configure \
         --prefix=${VIPS_DIR} \
+        --disable-debug \
         --disable-dependency-tracking \
-        --enable-debug=no \
-        --enable-fast-install \
-        --enable-gtk-doc-html \
-        --enable-introspection=no \
-        --enable-pyvips8 \
-        --enable-silent-rules \
-        --enable-static \
+        --disable-introspection \
+        --disable-static \
+        --enable-gtk-doc-html=no \
+        --enable-gtk-doc=no \
+        --enable-pyvips8=no \
     && make \
-    && make install \
     && make -s install-strip
 
 #-------------------------------------------------------------------------------
@@ -122,7 +120,7 @@ RUN cd ${GOPATH}/src/imaginary-${IMAGINARY_VERSION} && \
     go get -u gopkg.in/h2non/filetype.v1 && \
     go get -u github.com/throttled/throttled && \
     dep ensure && \
-    go build -o $GOPATH/bin/imaginary
+    go build -ldflags="-s -w" -o $GOPATH/bin/imaginary
 
 #-------------------------------------------------------------------------------
 
@@ -163,6 +161,6 @@ COPY --from=build /vips/lib/ /usr/local/lib
 COPY --from=build /go/bin/imaginary /usr/bin/imaginary
 
 ENV PORT 9000
-EXPOSE 9000
+EXPOSE $PORT
 
 ENTRYPOINT ["/usr/bin/imaginary"]
