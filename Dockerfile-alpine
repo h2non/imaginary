@@ -1,0 +1,19 @@
+# Start from a Debian image with the latest version of Go installed
+# and a workspace (GOPATH) configured at /go.
+FROM alpine:3.9 as builder
+
+ENV BUILD_DEPS alpine-sdk coreutils
+ENV PERSISTENT_DEPS
+ENV LIBVIPS_VERSION 8.7.0
+ENV GOLANG_VERSION 1.11.2
+ENV PORT 9000
+
+# Build libvips
+RUN cd /tmp
+RUN curl -OL https://github.com/libvips/libvips/releases/download/v${LIBVIPS_VERSION}/vips-${LIBVIPS_VERSION}.tar.gz
+RUN tar zvxf vips-${LIBVIPS_VERSION}.tar.gz
+RUN cd /tmp/vips-${LIBVIPS_VERSION}
+RUN ./configure --enable-debug=no --without-python $1
+RUN make
+RUN make install
+RUN ldconfig
