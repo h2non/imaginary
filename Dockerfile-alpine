@@ -1,19 +1,168 @@
-# Start from a Debian image with the latest version of Go installed
-# and a workspace (GOPATH) configured at /go.
-FROM alpine:3.9 as builder
+# References:
+# * https://github.com/felixbuenemann/vips-alpine
+# * https://hub.docker.com/r/frolvlad/alpine-glibc/dockerfile/
+# * https://github.com/sgerrand/alpine-pkg-glibc/releases
+# * http://kefblog.com/2017-07-04/Golang-ang-docker
 
-ENV BUILD_DEPS alpine-sdk coreutils
-ENV PERSISTENT_DEPS
-ENV LIBVIPS_VERSION 8.7.0
-ENV GOLANG_VERSION 1.11.2
-ENV PORT 9000
+FROM golang:1.11.5-alpine3.9 AS build
+
+ENV BUILD_DEPS \
+    alpine-sdk \
+    build-base \
+    ca-certificates \
+    expat-dev \
+    fftw-dev \
+    gawk \
+    giflib-dev \
+    glib-dev \
+    gobject-introspection-dev \
+    gtk-doc \
+    imagemagick-dev \
+    lcms2-dev \
+    libexif-dev \
+    libgsf-dev \
+    libimagequant-dev \
+    libintl \
+    libjpeg-turbo-dev \
+    libpng-dev \
+    librsvg-dev \
+    libwebp-dev \
+    libxml2-dev \
+    openexr-dev \
+    orc-dev \
+    pango-dev \
+    poppler-dev \
+    py-gobject3-dev \
+    tiff-dev \
+    wget \
+    zlib-dev
+ENV VIPS_DIR /vips
+
+# Versions
+ARG VIPS_VERSION=8.7.4
+ARG IMAGINARY_VERSION=1.0.18
+ARG ALPINE_GLIBC_PACKAGE_VERSION=2.29-r0
+
+ENV PKG_CONFIG_PATH "${VIPS_DIR}/lib/pkgconfig:$PKG_CONFIG_PATH"
+ENV LANG C.UTF-8
+
+#-------------------------------------------------------------------------------
+
+# https://github.com/sgerrand/alpine-pkg-glibc/releases
+ARG ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download"
+ARG ALPINE_GLIBC_BASE_PACKAGE_FILENAME="glibc-$ALPINE_GLIBC_PACKAGE_VERSION.apk"
+ARG ALPINE_GLIBC_BIN_PACKAGE_FILENAME="glibc-bin-$ALPINE_GLIBC_PACKAGE_VERSION.apk"
+ARG ALPINE_GLIBC_I18N_PACKAGE_FILENAME="glibc-i18n-$ALPINE_GLIBC_PACKAGE_VERSION.apk"
+
+# Add public key for Alpine glibc packages
+RUN echo \
+    "-----BEGIN PUBLIC KEY-----\
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApZ2u1KJKUu/fW4A25y9m\
+    y70AGEa/J3Wi5ibNVGNn1gT1r0VfgeWd0pUybS4UmcHdiNzxJPgoWQhV2SSW1JYu\
+    tOqKZF5QSN6X937PTUpNBjUvLtTQ1ve1fp39uf/lEXPpFpOPL88LKnDBgbh7wkCp\
+    m2KzLVGChf83MS0ShL6G9EQIAUxLm99VpgRjwqTQ/KfzGtpke1wqws4au0Ab4qPY\
+    KXvMLSPLUp7cfulWvhmZSegr5AdhNw5KNizPqCJT8ZrGvgHypXyiFvvAH5YRtSsc\
+    Zvo9GI2e2MaZyo9/lvb+LbLEJZKEQckqRj4P26gmASrZEPStwc+yqy1ShHLA0j6m\
+    1QIDAQAB\
+    -----END PUBLIC KEY-----" | sed 's/   */\n/g' > "/etc/apk/keys/sgerrand.rsa.pub"
+
+# Update existing packages, and install build dependencies
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN apk upgrade --update
+RUN apk add --virtual .build-deps $BUILD_DEPS
+
+# Download the glibc for Alpine .apks, and install
+RUN wget \
+    "$ALPINE_GLIBC_BASE_URL/$ALPINE_GLIBC_PACKAGE_VERSION/$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
+    "$ALPINE_GLIBC_BASE_URL/$ALPINE_GLIBC_PACKAGE_VERSION/$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
+    "$ALPINE_GLIBC_BASE_URL/$ALPINE_GLIBC_PACKAGE_VERSION/$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"
+RUN apk add \
+    "$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
+    "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
+    "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"
+RUN /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 "$LANG" || true
+RUN echo "export LANG=$LANG" > /etc/profile.d/locale.sh
+
+# Cleanup glibc
+RUN rm "/etc/apk/keys/sgerrand.rsa.pub"
+RUN rm "/root/.wget-hsts"
+RUN rm \
+    "$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
+    "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
+    "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"
+
+#-------------------------------------------------------------------------------
 
 # Build libvips
-RUN cd /tmp
-RUN curl -OL https://github.com/libvips/libvips/releases/download/v${LIBVIPS_VERSION}/vips-${LIBVIPS_VERSION}.tar.gz
-RUN tar zvxf vips-${LIBVIPS_VERSION}.tar.gz
-RUN cd /tmp/vips-${LIBVIPS_VERSION}
-RUN ./configure --enable-debug=no --without-python $1
-RUN make
-RUN make install
-RUN ldconfig
+RUN wget -O- https://github.com/libvips/libvips/releases/download/v${VIPS_VERSION}/vips-${VIPS_VERSION}.tar.gz | tar xzC /tmp
+RUN cd /tmp/vips-${VIPS_VERSION} && \
+    ./configure \
+        --prefix=${VIPS_DIR} \
+        --disable-dependency-tracking \
+        --enable-debug=no \
+        --enable-fast-install \
+        --enable-gtk-doc-html \
+        --enable-introspection=no \
+        --enable-pyvips8 \
+        --enable-silent-rules \
+        --enable-static \
+    && make \
+    && make install \
+    && make -s install-strip
+
+#-------------------------------------------------------------------------------
+
+# Build Imaginary
+RUN mkdir -p ${GOPATH}/src
+RUN wget -O- https://github.com/h2non/imaginary/archive/v${IMAGINARY_VERSION}.tar.gz | tar xzC ${GOPATH}/src
+RUN cd ${GOPATH}/src/imaginary-${IMAGINARY_VERSION} && \
+    go get -u golang.org/x/net/context && \
+    go get -u github.com/golang/dep/cmd/dep && \
+    go get -u github.com/rs/cors && \
+    go get -u gopkg.in/h2non/filetype.v1 && \
+    go get -u github.com/throttled/throttled && \
+    dep ensure && \
+    go build -o $GOPATH/bin/imaginary
+
+#-------------------------------------------------------------------------------
+
+FROM alpine:3.9
+
+ENV PERSISTENT_DEPS \
+    ca-certificates \
+    cairo \
+    expat \
+    fftw \
+    fontconfig \
+    giflib \
+    glib \
+    gobject-introspection \
+    imagemagick \
+    lcms2 \
+    libexif \
+    libgsf \
+    libintl \
+    libjpeg-turbo \
+    libpng \
+    librsvg \
+    libwebp \
+    openexr \
+    openssl \
+    orc \
+    pango \
+    poppler-glib \
+    tiff
+
+RUN apk upgrade --update
+RUN apk add --virtual .persistent-deps $PERSISTENT_DEPS
+RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN apk add libimagequant@testing
+RUN rm -rf /var/cache/apk/*
+
+COPY --from=build /vips/lib/ /usr/local/lib
+COPY --from=build /go/bin/imaginary /usr/bin/imaginary
+
+ENV PORT 9000
+EXPOSE 9000
+
+ENTRYPOINT ["/usr/bin/imaginary"]
