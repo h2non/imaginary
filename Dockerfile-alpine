@@ -34,7 +34,7 @@ ENV BUILD_DEPS \
     poppler-dev \
     py-gobject3-dev \
     tiff-dev \
-    wget \
+    upx \
     zlib-dev
 ENV VIPS_DIR /vips
 
@@ -81,14 +81,8 @@ RUN apk add \
     "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
     "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"
 RUN /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 "$LANG" || true
-
-# Cleanup glibc
-RUN rm "/etc/apk/keys/sgerrand.rsa.pub"
-RUN rm "/root/.wget-hsts"
-RUN rm \
-    "$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
-    "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
-    "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"
+RUN mkdir -p /tmp/glibc
+RUN mv ${GOPATH}/glibc*.apk /tmp/glibc/
 
 #-------------------------------------------------------------------------------
 
@@ -121,11 +115,13 @@ RUN cd ${GOPATH}/src/imaginary-${IMAGINARY_VERSION} && \
     go get -u github.com/throttled/throttled && \
     dep ensure && \
     go build -ldflags="-s -w" -o $GOPATH/bin/imaginary
+RUN upx --best -q $GOPATH/bin/imaginary
 
 #-------------------------------------------------------------------------------
 
 FROM alpine:3.9
 
+ENV LANG C.UTF-8
 ENV PERSISTENT_DEPS \
     ca-certificates \
     cairo \
@@ -151,14 +147,22 @@ ENV PERSISTENT_DEPS \
     poppler-glib \
     tiff
 
-RUN apk upgrade --update
-RUN apk add --virtual .persistent-deps $PERSISTENT_DEPS
-RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
-RUN apk add libimagequant@testing
-RUN rm -rf /var/cache/apk/*
+# glibc
+COPY --from=build /tmp/glibc /tmp/glibc
+COPY --from=build /etc/apk/keys/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 
+# Runtime dependencies
 COPY --from=build /vips/lib/ /usr/local/lib
 COPY --from=build /go/bin/imaginary /usr/bin/imaginary
+
+RUN apk upgrade --update && \
+    apk add --virtual .persistent-deps $PERSISTENT_DEPS && \
+    apk add --no-cache /tmp/glibc/*.apk && \
+    /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 "$LANG" || true && \
+    echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
+    apk add libimagequant@testing && \
+    rm -rf /var/cache/apk/* && \
+    rm -rf /tmp/glibc
 
 ENV PORT 9000
 EXPOSE $PORT
