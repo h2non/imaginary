@@ -154,7 +154,7 @@ func Fit(buf []byte, o ImageOptions) (Image, error) {
 func calculateDestinationFitDimension(imageWidth, imageHeight, fitWidth, fitHeight int) (int, int) {
 	if imageWidth*fitHeight > fitWidth*imageHeight {
 		// constrained by width
-		fitHeight = int(math.Ceil(float64(fitWidth) * float64(imageHeight) / float64(imageWidth)))
+		fitHeight = int(math.Round(float64(fitWidth) * float64(imageHeight) / float64(imageWidth)))
 	} else {
 		// constrained by height
 		fitWidth = int(math.Ceil(float64(fitHeight) * float64(imageWidth) / float64(imageHeight)))
