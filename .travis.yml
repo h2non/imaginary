@@ -31,7 +31,7 @@ install:
 
 script:
   - docker build --pull --cache-from h2non/imaginary:latest --build-arg GO_VERSION="${GO_VERSION}" --build-arg LIBVIPS_VERSION="${LIBVIPS}" --build-arg IMAGINARY_VERSION="${IMAGINARY_VERSION#v}" --tag h2non/imaginary:${IMAGINARY_VERSION} .
-  - docker run --rm -it h2non/imaginary:${IMAGINARY_VERSION} -v # Verifying new version numbers
+  - docker run --rm -it h2non/imaginary:${IMAGINARY_VERSION} -v || true # Verifying new version numbers
 
 before_deploy:
 #  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
