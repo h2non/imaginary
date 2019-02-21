@@ -237,7 +237,12 @@ func showUsage() {
 }
 
 func showVersion() {
-	fmt.Println(Version)
+	fmt.Printf("%+v", Versions{
+		VipsVersion:      bimg.VipsVersion,
+		BimgVersion:      bimg.Version,
+		ImaginaryVersion: Version,
+	})
+
 	os.Exit(1)
 }
 
