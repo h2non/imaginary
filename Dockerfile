@@ -80,7 +80,7 @@ RUN \
   libglib2.0-0 libjpeg-turbo8 libpng12-0 libopenexr22 \
   libwebp5 libtiff5 libgif7 libexif12 libxml2 libpoppler-glib8 \
   libmagickwand-6.q16-2 libpango1.0-0 libmatio2 libopenslide0 \
-  libgsf-1-114 fftw3 liborc-0.4 librsvg2-2 libcfitsio2 && \
+  libgsf-1-114 fftw3 liborc-0.4 librsvg2-2 libcfitsio2 curl && \
   # Clean up
   apt-get autoremove -y && \
   apt-get autoclean && \
@@ -94,6 +94,8 @@ COPY --from=builder /etc/ssl/certs /etc/ssl/certs
 
 # Server port to listen
 ENV PORT 9000
+
+HEALTHCHECK --retries=10 CMD curl --fail http://localhost:$PORT/health
 
 # Run the entrypoint command by default when the container starts.
 ENTRYPOINT ["bin/imaginary"]
