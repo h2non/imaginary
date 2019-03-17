@@ -311,7 +311,7 @@ Options:
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
-  -enable-url-source        Enable remote URL image fetching (then you can do GET request passing the url=http://server.com/image.jpg query param)
+  -enable-url-source        Enable remote HTTP URL image source processing (?url=http://..)
   -enable-placeholder       Enable image response placeholder to be used in case of error [default: false]
   -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
   -enable-url-signature     Enable URL signature (URL-safe Base64-encoded HMAC digest) [default: false]
