@@ -124,6 +124,30 @@ func TestHttpImageSourceForwardAuthHeader(t *testing.T) {
 	}
 }
 
+func TestHttpImageSourceCustomHeaders(t *testing.T) {
+	cases := []string{
+		"X-Custom",
+		"X-Token",
+	}
+
+	for _, header := range cases {
+		r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url=http://bar.com", nil)
+		r.Header.Set(header, "foobar")
+
+		source := &HTTPImageSource{&SourceConfig{CustomHeaders: cases}}
+		if !source.Matches(r) {
+			t.Fatal("Cannot match the request")
+		}
+
+		oreq := &http.Request{Header: make(http.Header)}
+		source.setCustomHeaders(oreq, r)
+
+		if oreq.Header.Get(header) != "foobar" {
+			t.Fatal("Missmatch custom header")
+		}
+	}
+}
+
 func TestHttpImageSourceError(t *testing.T) {
 	var err error
 
