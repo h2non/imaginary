@@ -315,7 +315,7 @@ Options:
   -enable-url-source        Enable remote HTTP URL image source processing (?url=http://..)
   -enable-placeholder       Enable image response placeholder to be used in case of error [default: false]
   -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
-  -forward-headers			    Forwards custom headers to the image source server. -enable-url-source flag must be defined.
+  -forward-headers          Forwards custom headers to the image source server. -enable-url-source flag must be defined.
   -enable-url-signature     Enable URL signature (URL-safe Base64-encoded HMAC digest) [default: false]
   -url-signature-key        The URL signature key (32 characters minimum)
   -allowed-origins <urls>   Restrict remote image source processing to certain origins (separated by commas)
