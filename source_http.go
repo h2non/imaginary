@@ -89,7 +89,7 @@ func (s *HTTPImageSource) setAuthorizationHeader(req *http.Request, ireq *http.R
 func (s *HTTPImageSource) setCustomHeaders(req *http.Request, ireq *http.Request) {
 	headers := s.Config.CustomHeaders
 	for _, header := range headers {
-		if header != "" {
+		if header != "" && ireq.Header.Get(header) != "" {
 			req.Header.Set(header, ireq.Header.Get(header))
 		}
 	}
@@ -104,13 +104,13 @@ func newHTTPRequest(s *HTTPImageSource, ireq *http.Request, method string, url *
 	req.Header.Set("User-Agent", "imaginary/"+Version)
 	req.URL = url
 
+	if len(s.Config.CustomHeaders) != 0 {
+		s.setCustomHeaders(req, ireq)
+	}
+
 	// Forward auth header to the target server, if necessary
 	if s.Config.AuthForwarding || s.Config.Authorization != "" {
 		s.setAuthorizationHeader(req, ireq)
-	}
-
-	if len(s.Config.CustomHeaders) != 0 {
-		s.setCustomHeaders(req, ireq)
 	}
 
 	return req

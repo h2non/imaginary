@@ -33,7 +33,7 @@ type ServerOptions struct {
 	KeyFile            string
 	Authorization      string
 	Placeholder        string
-	CustomHeaders	   []string
+	CustomHeaders      []string
 	PlaceholderImage   []byte
 	Endpoints          Endpoints
 	AllowedOrigins     []*url.URL

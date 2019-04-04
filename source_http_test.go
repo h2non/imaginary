@@ -124,7 +124,7 @@ func TestHttpImageSourceForwardAuthHeader(t *testing.T) {
 	}
 }
 
-func TestHttpImageSourceCustomHeaders(t *testing.T) {
+func TestHttpImageSourceForwardHeaders(t *testing.T) {
 	cases := []string{
 		"X-Custom",
 		"X-Token",
@@ -145,6 +145,99 @@ func TestHttpImageSourceCustomHeaders(t *testing.T) {
 		if oreq.Header.Get(header) != "foobar" {
 			t.Fatal("Missmatch custom header")
 		}
+	}
+}
+
+func TestHttpImageSourceNotForwardHeaders(t *testing.T) {
+	cases := []string{
+		"X-Custom",
+		"X-Token",
+	}
+
+	url := createURL("http://bar.com", t)
+
+	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+url.String(), nil)
+	r.Header.Set("Not-Forward", "foobar")
+
+	source := &HTTPImageSource{&SourceConfig{CustomHeaders: cases}}
+	if !source.Matches(r) {
+		t.Fatal("Cannot match the request")
+	}
+
+	oreq := newHTTPRequest(source, r, http.MethodGet, url)
+
+	if oreq.Header.Get("Not-Forward") != "" {
+		t.Fatal("Forwarded unspecified header")
+	}
+}
+
+func TestHttpImageSourceForwardedHeadersNotOverride(t *testing.T) {
+	cases := []string{
+		"Authorization",
+		"X-Custom",
+	}
+
+	url := createURL("http://bar.com", t)
+
+	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+url.String() , nil)
+	r.Header.Set("Authorization", "foobar")
+	
+	source := &HTTPImageSource{&SourceConfig{Authorization: "ValidAPIKey", CustomHeaders: cases}}
+	if !source.Matches(r) {
+		t.Fatal("Cannot match the request")
+	}
+
+	oreq := newHTTPRequest(source, r, http.MethodGet, url)
+
+	if oreq.Header.Get("Authorization") != "ValidAPIKey" {
+		t.Fatal("Authorization header override")
+	}
+}
+
+func TestHttpImageSourceCaseSensitivityInForwardedHeaders(t *testing.T) {
+	cases := []string{
+		"X-Custom",
+		"X-Token",
+	}
+
+	url := createURL("http://bar.com", t)
+
+	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+url.String(), nil)
+	r.Header.Set("x-custom", "foobar")
+
+	source := &HTTPImageSource{&SourceConfig{CustomHeaders: cases}}
+	if !source.Matches(r) {
+		t.Fatal("Cannot match the request")
+	}
+
+	oreq := newHTTPRequest(source, r, http.MethodGet, url)
+
+	if oreq.Header.Get("X-Custom") == "" {
+		t.Fatal("Case sensitive not working on forwarded headers")
+	}
+}
+
+func TestHttpImageSourceEmptyForwardedHeaders(t *testing.T) {
+	cases := []string{}
+
+	url := createURL("http://bar.com", t)
+
+	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+url.String(), nil)
+
+	source := &HTTPImageSource{&SourceConfig{CustomHeaders: cases}}
+	if !source.Matches(r) {
+		t.Fatal("Cannot match the request")
+	}
+
+	if len(source.Config.CustomHeaders) != 0 {
+		t.Log(source.Config.CustomHeaders)
+		t.Fatal("Setted empty custom header")
+	}
+
+	oreq := newHTTPRequest(source, r, http.MethodGet, url)
+
+	if oreq == nil {
+		t.Fatal("Error creating request using empty custom headers")
 	}
 }
 
