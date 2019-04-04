@@ -38,7 +38,7 @@ var (
 	aCertFile           = flag.String("certfile", "", "TLS certificate file path")
 	aKeyFile            = flag.String("keyfile", "", "TLS private key file path")
 	aAuthorization      = flag.String("authorization", "", "Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization")
-	aCustomHeaders      = flag.String("forward-headers", "", "Forwards custom headers to the image source server. -enable-url-source flag must be defined.")
+	aForwardHeaders     = flag.String("forward-headers", "", "Forwards custom headers to the image source server. -enable-url-source flag must be defined.")
 	aPlaceholder        = flag.String("placeholder", "", "Image path to image custom placeholder to be used in case of error. Recommended minimum image size is: 1200x1200")
 	aDisableEndpoints   = flag.String("disable-endpoints", "", "Comma separated endpoints to disable. E.g: form,crop,rotate,health")
 	aHTTPCacheTTL       = flag.Int("http-cache-ttl", -1, "The TTL in seconds")
@@ -146,7 +146,7 @@ func main() {
 		HTTPReadTimeout:    *aReadTimeout,
 		HTTPWriteTimeout:   *aWriteTimeout,
 		Authorization:      *aAuthorization,
-		CustomHeaders:      parseCustomHeaders(*aCustomHeaders),
+		ForwardHeaders:     parseForwardHeaders(*aForwardHeaders),
 		AllowedOrigins:     parseOrigins(*aAllowedOrigins),
 		MaxAllowedSize:     *aMaxAllowedSize,
 	}
@@ -268,14 +268,14 @@ func checkHTTPCacheTTL(ttl int) {
 	}
 }
 
-func parseCustomHeaders(customHeaders string) []string {
+func parseForwardHeaders(forwardHeaders string) []string {
 	var headers []string
-	if customHeaders == "" {
+	if forwardHeaders == "" {
 		return headers
 	}
-	for _, header := range strings.Split(customHeaders, ",") {
+	for _, header := range strings.Split(forwardHeaders, ",") {
 		if header != "" {
-			headers = append(headers, header)
+			headers = append(headers, strings.TrimSpace(header))
 		}
 	}
 	return headers

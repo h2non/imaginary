@@ -13,7 +13,7 @@ type SourceConfig struct {
 	Authorization  string
 	MountPath      string
 	Type           ImageSourceType
-	CustomHeaders  []string
+	ForwardHeaders []string
 	AllowedOrigins []*url.URL
 	MaxAllowedSize int
 }
@@ -39,7 +39,7 @@ func LoadSources(o ServerOptions) {
 			Authorization:  o.Authorization,
 			AllowedOrigins: o.AllowedOrigins,
 			MaxAllowedSize: o.MaxAllowedSize,
-			CustomHeaders:  o.CustomHeaders,
+			ForwardHeaders: o.ForwardHeaders,
 		})
 	}
 }

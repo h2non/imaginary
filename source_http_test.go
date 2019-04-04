@@ -134,13 +134,13 @@ func TestHttpImageSourceForwardHeaders(t *testing.T) {
 		r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url=http://bar.com", nil)
 		r.Header.Set(header, "foobar")
 
-		source := &HTTPImageSource{&SourceConfig{CustomHeaders: cases}}
+		source := &HTTPImageSource{&SourceConfig{ForwardHeaders: cases}}
 		if !source.Matches(r) {
 			t.Fatal("Cannot match the request")
 		}
 
 		oreq := &http.Request{Header: make(http.Header)}
-		source.setCustomHeaders(oreq, r)
+		source.setForwardHeaders(oreq, r)
 
 		if oreq.Header.Get(header) != "foobar" {
 			t.Fatal("Missmatch custom header")
@@ -159,7 +159,7 @@ func TestHttpImageSourceNotForwardHeaders(t *testing.T) {
 	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+url.String(), nil)
 	r.Header.Set("Not-Forward", "foobar")
 
-	source := &HTTPImageSource{&SourceConfig{CustomHeaders: cases}}
+	source := &HTTPImageSource{&SourceConfig{ForwardHeaders: cases}}
 	if !source.Matches(r) {
 		t.Fatal("Cannot match the request")
 	}
@@ -182,7 +182,7 @@ func TestHttpImageSourceForwardedHeadersNotOverride(t *testing.T) {
 	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+url.String() , nil)
 	r.Header.Set("Authorization", "foobar")
 	
-	source := &HTTPImageSource{&SourceConfig{Authorization: "ValidAPIKey", CustomHeaders: cases}}
+	source := &HTTPImageSource{&SourceConfig{Authorization: "ValidAPIKey", ForwardHeaders: cases}}
 	if !source.Matches(r) {
 		t.Fatal("Cannot match the request")
 	}
@@ -205,7 +205,7 @@ func TestHttpImageSourceCaseSensitivityInForwardedHeaders(t *testing.T) {
 	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+url.String(), nil)
 	r.Header.Set("x-custom", "foobar")
 
-	source := &HTTPImageSource{&SourceConfig{CustomHeaders: cases}}
+	source := &HTTPImageSource{&SourceConfig{ForwardHeaders: cases}}
 	if !source.Matches(r) {
 		t.Fatal("Cannot match the request")
 	}
@@ -224,13 +224,13 @@ func TestHttpImageSourceEmptyForwardedHeaders(t *testing.T) {
 
 	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+url.String(), nil)
 
-	source := &HTTPImageSource{&SourceConfig{CustomHeaders: cases}}
+	source := &HTTPImageSource{&SourceConfig{ForwardHeaders: cases}}
 	if !source.Matches(r) {
 		t.Fatal("Cannot match the request")
 	}
 
-	if len(source.Config.CustomHeaders) != 0 {
-		t.Log(source.Config.CustomHeaders)
+	if len(source.Config.ForwardHeaders) != 0 {
+		t.Log(source.Config.ForwardHeaders)
 		t.Fatal("Setted empty custom header")
 	}
 
