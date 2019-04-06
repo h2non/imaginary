@@ -33,9 +33,10 @@ RUN DEBIAN_FRONTEND=noninteractive \
   ldconfig && \
   GO111MODULE=off go get -u github.com/golang/dep/cmd/dep
 
-# Installing gometalinter
+# Installing golangci-lint
 WORKDIR /tmp
-RUN curl -fsSL https://git.io/vp6lP -o instgm.sh && chmod u+x instgm.sh && ./instgm.sh -b "${GOPATH}/bin"
+RUN curl -fsSL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "${GOPATH}/bin" v1.16.0
+
 
 WORKDIR ${GOPATH}/src/github.com/h2non/imaginary
 
@@ -47,7 +48,7 @@ RUN rm -rf vendor && dep ensure
 
 # Run quality control
 RUN GO111MODULE=off go test -test.v -test.race -test.covermode=atomic ./...
-RUN GO111MODULE=off gometalinter github.com/h2non/imaginary
+RUN GO111MODULE=off golangci-lint run ./...
 
 # Compile imaginary
 RUN GO111MODULE=off go build -a \
