@@ -14,12 +14,11 @@ env:
   global:
     - IMAGINARY_VERSION="${TRAVIS_TAG:-dev}"
   matrix:
-    - LIBVIPS=8.7.2
-    - LIBVIPS=master
+    - LIBVIPS=8.7.3
+    - LIBVIPS=8.7.4
 
 matrix:
   allow_failures:
-    - env: LIBVIPS=master
     - go: "tip"
 
 before_install:
