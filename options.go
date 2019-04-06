@@ -91,7 +91,7 @@ func BimgOptions(o ImageOptions) bimg.Options {
 	}
 
 	if len(o.Background) != 0 {
-		opts.Background = bimg.Color{o.Background[0], o.Background[1], o.Background[2]}
+		opts.Background = bimg.Color{R: o.Background[0], G: o.Background[1], B: o.Background[2]}
 	}
 
 	if o.Sigma > 0 || o.MinAmpl > 0 {

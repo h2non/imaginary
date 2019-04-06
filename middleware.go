@@ -39,9 +39,9 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 
 func ImageMiddleware(o ServerOptions) func(Operation) http.Handler {
 	return func(fn Operation) http.Handler {
-		handler := validateImage(Middleware(imageController(o, Operation(fn)), o), o)
+		handler := validateImage(Middleware(imageController(o, fn), o), o)
 
-		if o.EnableURLSignature == true {
+		if o.EnableURLSignature {
 			return validateURLSignature(handler, o)
 		}
 
@@ -71,7 +71,7 @@ func throttle(next http.Handler, o ServerOptions) http.Handler {
 		return throttleError(err)
 	}
 
-	quota := throttled.RateQuota{throttled.PerSec(o.Concurrency), o.Burst}
+	quota := throttled.RateQuota{MaxRate: throttled.PerSec(o.Concurrency), MaxBurst: o.Burst}
 	rateLimiter, err := throttled.NewGCRARateLimiter(store, quota)
 	if err != nil {
 		return throttleError(err)
@@ -104,7 +104,7 @@ func validateImage(next http.Handler, o ServerOptions) http.Handler {
 			return
 		}
 
-		if r.Method == http.MethodGet && o.Mount == "" && o.EnableURLSource == false {
+		if r.Method == http.MethodGet && o.Mount == "" && !o.EnableURLSource {
 			ErrorReply(r, w, ErrMethodNotAllowed, o)
 			return
 		}
@@ -182,7 +182,7 @@ func validateURLSignature(next http.Handler, o ServerOptions) http.Handler {
 			return
 		}
 
-		if hmac.Equal(urlSign, expectedSign) == false {
+		if !hmac.Equal(urlSign, expectedSign) {
 			ErrorReply(r, w, ErrURLSignatureMismatch, o)
 			return
 		}

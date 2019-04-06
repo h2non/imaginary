@@ -60,19 +60,20 @@ func imageController(o ServerOptions, operation Operation) func(http.ResponseWri
 func determineAcceptMimeType(accept string) string {
 	for _, v := range strings.Split(accept, ",") {
 		mediaType, _, _ := mime.ParseMediaType(v)
-		if mediaType == "image/webp" {
+		switch mediaType {
+		case "image/webp":
 			return "webp"
-		} else if mediaType == "image/png" {
+		case "image/png":
 			return "png"
-		} else if mediaType == "image/jpeg" {
+		case "image/jpeg":
 			return "jpeg"
 		}
 	}
-	// default
+
 	return ""
 }
 
-func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation Operation, o ServerOptions) {
+func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation Operation, o ServerOptions) {
 	// Infer the body MIME type via mime sniff algorithm
 	mimeType := http.DetectContentType(buf)
 
@@ -92,7 +93,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation 
 	}
 
 	// Finally check if image MIME type is supported
-	if IsImageMimeTypeSupported(mimeType) == false {
+	if !IsImageMimeTypeSupported(mimeType) {
 		ErrorReply(r, w, ErrUnsupportedMedia, o)
 		return
 	}
@@ -112,7 +113,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, Operation 
 		return
 	}
 
-	image, err := Operation.Run(buf, opts)
+	image, err := operation.Run(buf, opts)
 	if err != nil {
 		ErrorReply(r, w, NewError("Error while processing the image: "+err.Error(), BadRequest), o)
 		return
