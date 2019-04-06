@@ -78,7 +78,7 @@ func TestCrop(t *testing.T) {
 func TestResize(t *testing.T) {
 	ts := testServer(controller(Resize))
 	buf := readFile("large.jpg")
-	url := ts.URL + "?width=300"
+	url := ts.URL + "?width=300&nocrop=false"
 	defer ts.Close()
 
 	res, err := http.Post(url, "image/jpeg", buf)
@@ -426,7 +426,7 @@ func assertSize(buf []byte, width, height int) error {
 		return err
 	}
 	if size.Width != width || size.Height != height {
-		return fmt.Errorf("Invalid image size: %dx%d", size.Width, size.Height)
+		return fmt.Errorf("Invalid image size: %dx%d, expected: %dx%d", size.Width, size.Height, width, height)
 	}
 	return nil
 }

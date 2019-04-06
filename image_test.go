@@ -6,19 +6,74 @@ import (
 )
 
 func TestImageResize(t *testing.T) {
-	opts := ImageOptions{Width: 300, Height: 300}
-	buf, _ := ioutil.ReadAll(readFile("imaginary.jpg"))
+	t.Run("Width and Height defined", func(t *testing.T) {
+		opts := ImageOptions{Width: 300, Height: 300}
+		buf, _ := ioutil.ReadAll(readFile("imaginary.jpg"))
 
-	img, err := Resize(buf, opts)
-	if err != nil {
-		t.Errorf("Cannot process image: %s", err)
-	}
-	if img.Mime != "image/jpeg" {
-		t.Error("Invalid image MIME type")
-	}
-	if assertSize(img.Body, opts.Width, opts.Height) != nil {
-		t.Errorf("Invalid image size, expected: %dx%d", opts.Width, opts.Height)
-	}
+		img, err := Resize(buf, opts)
+		if err != nil {
+			t.Errorf("Cannot process image: %s", err)
+		}
+		if img.Mime != "image/jpeg" {
+			t.Error("Invalid image MIME type")
+		}
+		if assertSize(img.Body, opts.Width, opts.Height) != nil {
+			t.Errorf("Invalid image size, expected: %dx%d", opts.Width, opts.Height)
+		}
+	})
+
+	t.Run("Width defined", func(t *testing.T) {
+		opts := ImageOptions{Width: 300}
+		buf, _ := ioutil.ReadAll(readFile("imaginary.jpg"))
+
+		img, err := Resize(buf, opts)
+		if err != nil {
+			t.Errorf("Cannot process image: %s", err)
+		}
+		if img.Mime != "image/jpeg" {
+			t.Error("Invalid image MIME type")
+		}
+		if err := assertSize(img.Body, 300, 404); err != nil {
+			t.Error(err)
+		}
+	})
+
+	t.Run("Width defined with NoCrop=false", func(t *testing.T) {
+		opts := ImageOptions{Width: 300, NoCrop: false, IsDefinedField: IsDefinedField{NoCrop: true}}
+		buf, _ := ioutil.ReadAll(readFile("imaginary.jpg"))
+
+		img, err := Resize(buf, opts)
+		if err != nil {
+			t.Errorf("Cannot process image: %s", err)
+		}
+		if img.Mime != "image/jpeg" {
+			t.Error("Invalid image MIME type")
+		}
+
+		// The original image is 550x740
+		if err := assertSize(img.Body, 300, 740); err != nil {
+			t.Error(err)
+		}
+	})
+
+	t.Run("Width defined with NoCrop=true", func(t *testing.T) {
+		opts := ImageOptions{Width: 300, NoCrop: true, IsDefinedField: IsDefinedField{NoCrop: true}}
+		buf, _ := ioutil.ReadAll(readFile("imaginary.jpg"))
+
+		img, err := Resize(buf, opts)
+		if err != nil {
+			t.Errorf("Cannot process image: %s", err)
+		}
+		if img.Mime != "image/jpeg" {
+			t.Error("Invalid image MIME type")
+		}
+
+		// The original image is 550x740
+		if err := assertSize(img.Body, 300, 404); err != nil {
+			t.Error(err)
+		}
+	})
+
 }
 
 func TestImageFit(t *testing.T) {

@@ -4,6 +4,8 @@ import "gopkg.in/h2non/bimg.v1"
 
 // ImageOptions represent all the supported image transformation params as first level members
 type ImageOptions struct {
+	IsDefinedField
+
 	Width         int
 	Height        int
 	AreaWidth     int
@@ -39,6 +41,20 @@ type ImageOptions struct {
 	Gravity       bimg.Gravity
 	Colorspace    bimg.Interpretation
 	Operations    PipelineOperations
+}
+
+// IsDefinedField holds boolean ImageOptions fields. If true it means the field was specified in the request. This
+// metadata allows for sane usage of default (false) values.
+type IsDefinedField struct {
+	Flip          bool
+	Flop          bool
+	Force         bool
+	Embed         bool
+	NoCrop        bool
+	NoReplicate   bool
+	NoRotation    bool
+	NoProfile     bool
+	StripMetadata bool
 }
 
 // PipelineOperation represents the structure for an operation field.

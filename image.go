@@ -93,8 +93,8 @@ func Resize(buf []byte, o ImageOptions) (Image, error) {
 	opts := BimgOptions(o)
 	opts.Embed = true
 
-	if !o.NoCrop {
-		opts.Crop = true
+	if o.IsDefinedField.NoCrop {
+		opts.Crop = !o.NoCrop
 	}
 
 	return Process(buf, opts)
@@ -171,9 +171,8 @@ func Enlarge(buf []byte, o ImageOptions) (Image, error) {
 	opts := BimgOptions(o)
 	opts.Enlarge = true
 
-	if !o.NoCrop {
-		opts.Crop = true
-	}
+	// Since both width & height is required, we allow cropping by default.
+	opts.Crop = !o.NoCrop
 
 	return Process(buf, opts)
 }
@@ -259,8 +258,8 @@ func Zoom(buf []byte, o ImageOptions) (Image, error) {
 		opts.AreaWidth = o.AreaWidth
 		opts.AreaHeight = o.AreaHeight
 
-		if o.NoCrop == false {
-			opts.Crop = true
+		if o.IsDefinedField.NoCrop {
+			opts.Crop = !o.NoCrop
 		}
 	}
 

@@ -311,7 +311,7 @@ Options:
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
-  -enable-url-source        Restrict remote image source processing to certain origins (separated by commas)
+  -enable-url-source        Enable remote HTTP URL image source processing (?url=http://..)
   -enable-placeholder       Enable image response placeholder to be used in case of error [default: false]
   -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
   -enable-url-signature     Enable URL signature (URL-safe Base64-encoded HMAC digest) [default: false]
@@ -528,7 +528,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **flip**        `bool`  - Transform the resultant image with flip operation. Default: `false`
 - **flop**        `bool`  - Transform the resultant image with flop operation. Default: `false`
 - **force**       `bool`  - Force image transformation size. Default: `false`
-- **nocrop**      `bool`  - Disable crop transformation enabled by default by some operations. Default: `false`
+- **nocrop**      `bool`  - Disable crop transformation. Defaults depend on the operation
 - **noreplicate** `bool`  - Disable text replication in watermark. Defaults to `false`
 - **norotation**  `bool`  - Disable auto rotation based on EXIF orientation. Defaults to `false`
 - **noprofile**   `bool`  - Disable adding ICC profile metadata. Defaults to `false`
@@ -686,6 +686,7 @@ Resize an image by width or height. Image aspect ratio is maintained
 - embed `bool`
 - force `bool`
 - rotate `int`
+- nocrop `bool` - Defaults to `true`
 - norotation `bool`
 - noprofile `bool`
 - stripmeta `bool`
@@ -713,6 +714,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - embed `bool`
 - force `bool`
 - rotate `int`
+- nocrop `bool` - Defaults to `false`
 - norotation `bool`
 - noprofile `bool`
 - stripmeta `bool`
@@ -772,6 +774,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - embed `bool`
 - force `bool`
 - rotate `int`
+- nocrop `bool` - Defaults to `true`
 - norotation `bool`
 - noprofile `bool`
 - stripmeta `bool`
