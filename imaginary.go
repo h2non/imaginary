@@ -191,7 +191,7 @@ func main() {
 	}
 
 	// Check URL signature key, if required
-	if *aEnableURLSignature == true {
+	if *aEnableURLSignature {
 		if urlSignature.Key == "" {
 			exitWithError("URL signature key is required")
 		}

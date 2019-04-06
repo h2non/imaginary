@@ -1,6 +1,8 @@
 language: go
 
-sudo: required
+services:
+  - docker
+
 dist: trusty
 
 go:
@@ -9,63 +11,33 @@ go:
   - "tip"
 
 env:
-  - LIBVIPS=7.42
-  - LIBVIPS=8.2
-  - LIBVIPS=8.3
-  - LIBVIPS=8.4
-  - LIBVIPS=8.5
-  - LIBVIPS=8.6
-  - LIBVIPS=8.7
-  - LIBVIPS=master
+  global:
+    - IMAGINARY_VERSION="${TRAVIS_TAG:-dev}"
+  matrix:
+    - LIBVIPS=8.7.3
+    - LIBVIPS=8.7.4
 
 matrix:
   allow_failures:
-    - env: LIBVIPS=7.42
-    - env: LIBVIPS=8.2
-    - env: LIBVIPS=8.3
-    - env: LIBVIPS=master
-
-cache: apt
-
-addons:
-  apt:
-    packages:
-      - gobject-introspection
-      - gtk-doc-tools
-      - libcfitsio3-dev
-      - libfftw3-dev
-      - libgif-dev
-      - libgs-dev
-      - libgsf-1-dev
-      - libmatio-dev
-      - libopenslide-dev
-      - liborc-0.4-dev
-      - libpango1.0-dev
-      - libpoppler-glib-dev
-      - libwebp-dev
+    - go: "tip"
 
 before_install:
-  - wget https://github.com/libvips/libvips/archive/$LIBVIPS.zip
-  - unzip $LIBVIPS
-  - cd libvips-$LIBVIPS
-  - test -f autogen.sh && ./autogen.sh || ./bootstrap.sh
-  - >
-    CXXFLAGS=-D_GLIBCXX_USE_CXX11_ABI=0
-    ./configure
-    --disable-debug
-    --disable-dependency-tracking
-    --disable-introspection
-    --disable-static
-    --enable-gtk-doc-html=no
-    --enable-gtk-doc=no
-    --enable-pyvips8=no
-    --without-orc
-    --without-python
-    $1
-  - make
-  - sudo make install
-  - sudo ldconfig
+  - docker pull h2non/imaginary:latest || true
+
+install:
+  - true
 
 script:
-  - cd ..
-  - go test -v -race -covermode=atomic
+  - docker build --pull --cache-from h2non/imaginary:latest --build-arg LIBVIPS_VERSION="${LIBVIPS}" --build-arg IMAGINARY_VERSION="${IMAGINARY_VERSION#v}" --tag h2non/imaginary:${IMAGINARY_VERSION} .
+
+before_deploy:
+#  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+
+deploy:
+#  provider: script
+#  script:
+#    - docker tag h2non/imaginary:${IMAGINARY_VERSION} latest
+#    - docker push h2non/imaginary:${IMAGINARY_VERSION}
+#    - docker push h2non/imaginary:latest
+#  on:
+#    condition: "${TRAVIS_TAG} =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$"

@@ -294,7 +294,7 @@ func Watermark(buf []byte, o ImageOptions) (Image, error) {
 	opts.Watermark.NoReplicate = o.NoReplicate
 
 	if len(o.Color) > 2 {
-		opts.Watermark.Background = bimg.Color{o.Color[0], o.Color[1], o.Color[2]}
+		opts.Watermark.Background = bimg.Color{R: o.Color[0], G: o.Color[1], B: o.Color[2]}
 	}
 
 	return Process(buf, opts)

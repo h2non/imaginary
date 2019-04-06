@@ -1,0 +1,45 @@
+[run]
+    concurrency = 4
+    tests = false
+
+[linters-settings]
+    [linters-settings.gocyclo]
+        min-complexity = 20
+
+    [linters-settings.goconst]
+        min-len = 2
+        min-occurrences = 2
+
+    [linters-settings.misspell]
+        locale = "US"
+
+[linters]
+    # White-listing, to be more CI safe.
+    disable-all = true
+
+    # @see https://github.com/golangci/golangci-lint#enabled-by-default-linters
+    enable = [
+        "staticcheck",
+        "gosimple",
+        "ineffassign",
+        "typecheck",
+        "govet",
+#        "errcheck",
+        "unused",
+        "structcheck",
+        "varcheck",
+        "deadcode",
+
+        "stylecheck",
+        "gosec",
+        "interfacer",
+        "unconvert",
+#        "goconst",
+        "gocyclo",
+#        "maligned",
+        "depguard",
+        "misspell",
+        "unparam",
+        "scopelint", # Would like to ignore *_test.go files, but can't atm.
+        "gocritic",
+    ]
