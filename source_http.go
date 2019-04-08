@@ -89,7 +89,7 @@ func (s *HTTPImageSource) setAuthorizationHeader(req *http.Request, ireq *http.R
 func (s *HTTPImageSource) setForwardHeaders(req *http.Request, ireq *http.Request) {
 	headers := s.Config.ForwardHeaders
 	for _, header := range headers {
-		if header != "" && ireq.Header.Get(header) != "" && req.Header.Get(header) == "" {
+		if header != "" && len(ireq.Header[header]) > 0 {
 			req.Header.Set(header, ireq.Header.Get(header))
 		}
 	}

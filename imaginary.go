@@ -273,9 +273,10 @@ func parseForwardHeaders(forwardHeaders string) []string {
 	if forwardHeaders == "" {
 		return headers
 	}
+
 	for _, header := range strings.Split(forwardHeaders, ",") {
-		if header != "" {
-			headers = append(headers, strings.TrimSpace(header))
+		if norm := strings.TrimSpace(header); norm != "" {
+			headers = append(headers, norm)
 		}
 	}
 	return headers
