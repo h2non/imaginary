@@ -86,6 +86,15 @@ func (s *HTTPImageSource) setAuthorizationHeader(req *http.Request, ireq *http.R
 	}
 }
 
+func (s *HTTPImageSource) setForwardHeaders(req *http.Request, ireq *http.Request) {
+	headers := s.Config.ForwardHeaders
+	for _, header := range headers {
+		if _,ok := ireq.Header[header]; ok {
+			req.Header.Set(header, ireq.Header.Get(header))
+		}
+	}
+}
+
 func parseURL(request *http.Request) (*url.URL, error) {
 	return url.Parse(request.URL.Query().Get(URLQueryKey))
 }
@@ -94,6 +103,10 @@ func newHTTPRequest(s *HTTPImageSource, ireq *http.Request, method string, url *
 	req, _ := http.NewRequest(method, url.String(), nil)
 	req.Header.Set("User-Agent", "imaginary/"+Version)
 	req.URL = url
+
+	if len(s.Config.ForwardHeaders) != 0 {
+		s.setForwardHeaders(req, ireq)
+	}
 
 	// Forward auth header to the target server, if necessary
 	if s.Config.AuthForwarding || s.Config.Authorization != "" {
