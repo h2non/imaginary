@@ -41,6 +41,8 @@ To get started, take a look the [installation](#installation) steps, [usage](#co
   - [Form data](#form-data)
   - [Params](#params)
   - [Endpoints](#get-)
+- [Logging](#logging)
+  - [Fluentd log ingestion](#fluentd-log-ingestion)
 - [Authors](#authors)
 - [License](#license)
 
@@ -1125,6 +1127,31 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
+
+## Logging
+
+Imaginary uses an [apache compatible log format](/log.go).
+
+### Fluentd log ingestion
+
+You can ingest Imaginary logs with fluentd using the following fluentd config :
+
+```
+# use your own tag name (*.imaginary for this example)
+<filter *.imaginary>
+    @type parser
+    key_name log
+    reserve_data true
+
+    <parse>
+        @type regexp
+        expression /^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*) (?<response_time>[^ ]*)$/
+        types code:integer,size:integer,response_time:float
+        time_key time
+        time_format %d/%b/%Y %H:%M:%S
+    </parse>
+</filter>
+```
 
 ## Support
 
