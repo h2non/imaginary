@@ -794,8 +794,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
 ##### Allowed params
 
-- width `int`
-- height `int`
+- width `int` `required`
+- height `int` `required`
 - quality `int` (JPEG-only)
 - compression `int` (PNG-only)
 - type `string`
