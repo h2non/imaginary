@@ -31,7 +31,7 @@ var (
 	aEnablePlaceholder  = flag.Bool("enable-placeholder", false, "Enable image response placeholder to be used in case of error")
 	aEnableURLSignature = flag.Bool("enable-url-signature", false, "Enable URL signature (URL-safe Base64-encoded HMAC digest)")
 	aURLSignatureKey    = flag.String("url-signature-key", "", "The URL signature key (32 characters minimum)")
-	aAllowedOrigins     = flag.String("allowed-origins", "", "Restrict remote image source processing to certain origins (separated by commas)")
+	aAllowedOrigins     = flag.String("allowed-origins", "", "Restrict remote image source processing to certain origins (separated by commas). Note: Origins are validated against host *AND* path.")
 	aMaxAllowedSize     = flag.Int("max-allowed-size", 0, "Restrict maximum size of http image source (in bytes)")
 	aKey                = flag.String("key", "", "Define API key for authorization")
 	aMount              = flag.String("mount", "", "Mount server local directory")
