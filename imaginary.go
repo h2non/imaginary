@@ -292,6 +292,11 @@ func parseOrigins(origins string) []*url.URL {
 		if err != nil {
 			continue
 		}
+
+		if u.Path != "" && u.Path[len(u.Path)-1:] != "/" {
+			u.Path += "/"
+		}
+
 		urls = append(urls, u)
 	}
 	return urls
