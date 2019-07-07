@@ -318,7 +318,7 @@ Options:
   -forward-headers          Forwards custom headers to the image source server. -enable-url-source flag must be defined.
   -enable-url-signature     Enable URL signature (URL-safe Base64-encoded HMAC digest) [default: false]
   -url-signature-key        The URL signature key (32 characters minimum)
-  -allowed-origins <urls>   Restrict remote image source processing to certain origins (separated by commas)
+  -allowed-origins <urls>   Restrict remote image source processing to certain origins (separated by commas). Note: Origins are validated against host *AND* path. 
   -max-allowed-size <bytes> Restrict maximum size of http image source (in bytes)
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
@@ -440,6 +440,19 @@ curl -O "http://localhost:8088/crop?width=500&height=200&gravity=smart&url=https
 `imaginary` exposes an ugly HTML form for playground purposes in: [`http://localhost:8088/form`](http://localhost:8088/form)
 
 ## HTTP API
+
+### Allowed Origins
+
+imaginary can be configured to block all requests for images with a src URL this is not specified in the `allowed-origins` list. Imaginary will validate that the remote url matches the hostname and path of at least one origin in allowed list. Perhaps the easiest way to show how this works is to show some examples.
+
+| `allowed-origins` setting | image url | is valid |
+| ------------------------- | --------- | -------- |
+| `--allowed-origns s3.amazonaws.com/some-bucket/` | `s3.amazonaws.com/some-bucket/images/image.png` | VALID |
+| `--allowed-origns s3.amazonaws.com/some-bucket/` | `s3.amazonaws.com/images/image.png` | NOT VALID (no matching basepath) |
+| `--allowed-origns *.amazonaws.com/some-bucket/` | `anysubdomain.amazonaws.com/some-bucket/images/image.png` | VALID |
+| `--allowed-origns *.amazonaws.com` | `anysubdomain.amazonaws.comimages/image.png` | VALID |
+| `--allowed-origns *.amazonaws.com` | `www.notaws.comimages/image.png` | NOT VALID (no matching host) |
+| `--allowed-origns *.amazonaws.com, foo.amazonaws.com/some-bucket/` | `bar.amazonaws.com/some-other-bucket/image.png` | VALID (matches first condition but not second) |
 
 ### Authorization
 
