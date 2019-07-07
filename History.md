@@ -1,4 +1,44 @@
 
+v1.1.1 / 2019-07-07
+===================
+
+  * add validation to allowed-origins to include path (#265)
+  * Width and height are required in thumbnail request (#262)
+  * Merge pull request #258 from r-antonio/master
+  * Cleaned code to check for existence of headers
+  * Modified check for empty or undefined headers
+  * Merge pull request #259 from h2non/release/next
+  * Code Style changes
+  * Removing gometalinter in favor of golangci-lint
+  * Bumping libvips versions for building
+  * Merge branch 'master' into release/next
+  * Changed custom headers naming to forward headers
+  * Fixed spacing typo and headers checking
+  * Changed forwarded headers order, added tests and some fixes
+  * Added custom headers forwarding support
+  * Merge pull request #254 from nicolasmure/fix/readme
+  * apply @Dynom patch to fix cli help
+  * Update README.md
+  * fix enable-url-source param description in README
+  * Merge branch 'NextWithCIBase' into release/next
+  * Reverting and reordering
+  * ups
+  * Moving back to a single file, worst case we need to maintain two again.
+  * fixing a var
+  * Updating travis config, adding docker build and preparing for automated image building
+  * Megacheck has been removed in favor of staticcheck
+  * timing the pull separately, by putting it in a before_install
+  * Trying with a dev base image
+  * Adding .dockerignore and consistently guarding the variables
+  * Merging in changes by jbergstroem with some extra changes
+  * Merge pull request #229 from Dynom/uniformBuildRefactoring
+  * Improving gometalinter config
+  * First travis-ci config attempt
+  * Making sure vendor is not stale and that our deps are correctly configured
+  * gometalinter config
+  * Fixing Gopkg.toml
+  * Adding a newish Dockerfile
+
 v1.0.15 / 2018-03-15
 ====================
 
