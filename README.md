@@ -1144,14 +1144,43 @@ You can ingest Imaginary logs with fluentd using the following fluentd config :
     reserve_data true
 
     <parse>
-        @type regexp
-        expression /^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*) (?<response_time>[^ ]*)$/
-        types code:integer,size:integer,response_time:float
-        time_key time
-        time_format %d/%b/%Y %H:%M:%S
+        @type multi_format
+        # access logs parser
+        <pattern>
+            format regexp
+            expression /^[^ ]* [^ ]* [^ ]* \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*) (?<response_time>[^ ]*)$/
+            types code:integer,size:integer,response_time:float
+            time_key time
+            time_format %d/%b/%Y %H:%M:%S
+        </pattern>
+        # warnings / error logs parser
+        <pattern>
+            format none
+            message_key message
+        </pattern>
     </parse>
 </filter>
+
+<match *.imaginary>
+    @type rewrite_tag_filter
+
+    # Logs with code field are access logs, and logs without are error logs
+    <rule>
+        key code
+        pattern ^.+$
+        tag ${tag}.access
+    </rule>
+    <rule>
+        key code
+        pattern ^.+$
+        invert true
+        tag ${tag}.error
+    </rule>
+</match>
 ```
+
+In the end, access records are tagged with `*.imaginary.access`, and warning /
+error records are tagged with `*.imaginary.error`.
 
 ## Support
 
