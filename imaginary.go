@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	bimg "gopkg.in/h2non/bimg.v1"
+	"gopkg.in/h2non/bimg.v1"
 )
 
 var (
@@ -108,7 +108,7 @@ type URLSignature struct {
 
 func main() {
 	flag.Usage = func() {
-		fmt.Fprint(os.Stderr, fmt.Sprintf(usage, Version, runtime.NumCPU()))
+		_, _ = fmt.Fprint(os.Stderr, fmt.Sprintf(usage, Version, runtime.NumCPU()))
 	}
 	flag.Parse()
 

@@ -6,6 +6,7 @@ services:
 dist: trusty
 
 go:
+  - "1.12.x"
   - "1.11.x"
   - "1.10.x"
   - "tip"
@@ -16,6 +17,8 @@ env:
   matrix:
     - LIBVIPS=8.7.3
     - LIBVIPS=8.7.4
+    - LIBVIPS=8.8.0
+    - LIBVIPS=8.8.1
 
 matrix:
   allow_failures:

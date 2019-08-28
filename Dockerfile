@@ -1,8 +1,9 @@
-ARG GOLANG="1.11.5"
+ARG GOLANG="1.12.9"
 FROM golang:${GOLANG} as builder
 
 ARG IMAGINARY_VERSION="dev"
-ARG LIBVIPS_VERSION="8.7.4"
+ARG LIBVIPS_VERSION="8.8.1"
+ARG GOLANGCILINT_VERSION="1.17.1"
 ARG GOLANG
 
 # Installs libvips + required libraries
@@ -30,33 +31,36 @@ RUN DEBIAN_FRONTEND=noninteractive \
     --enable-pyvips8=no && \
   make && \
   make install && \
-  ldconfig && \
-  GO111MODULE=off go get -u github.com/golang/dep/cmd/dep
+  ldconfig
 
 # Installing golangci-lint
 WORKDIR /tmp
-RUN curl -fsSL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "${GOPATH}/bin" v1.16.0
-
+RUN curl -fsSL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "${GOPATH}/bin" v${GOLANGCILINT_VERSION}
 
 WORKDIR ${GOPATH}/src/github.com/h2non/imaginary
+
+# Cache go modules
+ENV GO111MODULE=on
+
+COPY go.mod .
+COPY go.sum .
+
+RUN go mod download
 
 # Copy imaginary sources
 COPY . .
 
-# Making sure all dependencies are up-to-date
-RUN rm -rf vendor && dep ensure
-
 # Run quality control
-RUN GO111MODULE=off go test -test.v -test.race -test.covermode=atomic ./...
-RUN GO111MODULE=off golangci-lint run ./...
+RUN go test -test.v -test.race -test.covermode=atomic ./...
+RUN golangci-lint run ./...
 
 # Compile imaginary
-RUN GO111MODULE=off go build -a \
+RUN go build -a \
     -o ${GOPATH}/bin/imaginary \
     -ldflags="-s -w -h -X main.Version=${IMAGINARY_VERSION}" \
     github.com/h2non/imaginary
 
-FROM debian:stretch-slim
+FROM debian:buster-slim
 
 ARG IMAGINARY_VERSION
 
@@ -75,10 +79,10 @@ COPY --from=builder /etc/ssl/certs /etc/ssl/certs
 RUN DEBIAN_FRONTEND=noninteractive \
   apt-get update && \
   apt-get install --no-install-recommends -y \
-  libglib2.0-0 libjpeg62-turbo libpng16-16 libopenexr22 \
-  libwebp6 libwebpmux2 libtiff5 libgif7 libexif12 libxml2 libpoppler-glib8 \
-  libmagickwand-6.q16-3 libpango1.0-0 libmatio4 libopenslide0 \
-  libgsf-1-114 fftw3 liborc-0.4 librsvg2-2 libcfitsio5 && \
+  libglib2.0-0 libjpeg62-turbo libpng16-16 libopenexr23 \
+  libwebp6 libwebpmux3 libwebpdemux2 libtiff5 libgif7 libexif12 libxml2 libpoppler-glib8 \
+  libmagickwand-6.q16-6 libpango1.0-0 libmatio4 libopenslide0 \
+  libgsf-1-114 fftw3 liborc-0.4-0 librsvg2-2 libcfitsio7 && \
   apt-get autoremove -y && \
   apt-get autoclean && \
   apt-get clean && \
