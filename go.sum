@@ -1,0 +1,14 @@
+github.com/garyburd/redigo v1.6.0 h1:0VruCpn7yAIIu7pWVClQC8wxCJEcG3nyzpMSHKi1PQc=
+github.com/garyburd/redigo v1.6.0/go.mod h1:NR3MbYisc3/PwhQ00EMzDiPmrwpPxAn5GI05/YaO1SY=
+github.com/hashicorp/golang-lru v0.0.0-20160813221303-0a025b7e63ad h1:eMxs9EL0PvIGS9TTtxg4R+JxuPGav82J8rA+GFnY7po=
+github.com/hashicorp/golang-lru v0.0.0-20160813221303-0a025b7e63ad/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ4Ao+sR/qLZy8=
+github.com/rs/cors v0.0.0-20170727213201-7af7a1e09ba3 h1:86ukAHRTa2CXdBnWJHcjjPPGTyLGEF488OFRsbBAuFs=
+github.com/rs/cors v0.0.0-20170727213201-7af7a1e09ba3/go.mod h1:gFx+x8UowdsKA9AchylcLynDq+nNFfI8FkUZdN/jGCU=
+gopkg.in/h2non/bimg.v1 v1.0.19 h1:Li7mgBrIvCHvShB4nyCcGJ2Z2rWR/95kgI/U2+U2eYw=
+gopkg.in/h2non/bimg.v1 v1.0.19/go.mod h1:PgsZL7dLwUbsGm1NYps320GxGgvQNTnecMCZqxV11So=
+gopkg.in/h2non/filetype.v0 v0.1.0 h1:dHAr5+j6pXvVGAUzPEcakSwUk4iN6wYK3ayaczI9/a0=
+gopkg.in/h2non/filetype.v0 v0.1.0/go.mod h1:x+TuV875+zjvYsL9AQ4XywX3gJhuFVfzIGWtOk7OBS4=
+gopkg.in/h2non/filetype.v1 v1.0.3 h1:EhZ9p3H8eDdFHiKljxJ59EeQ9Pu88wrgY7/B1WRK/VE=
+gopkg.in/h2non/filetype.v1 v1.0.3/go.mod h1:M0yem4rwSX5lLVrkEuRRp2/NinFMD5vgJ4DlAhZcfNo=
+gopkg.in/throttled/throttled.v2 v2.0.3 h1:PGm7nfjjexecEyI2knw1akeLcrjzqxuYSU9a04R8rfU=
+gopkg.in/throttled/throttled.v2 v2.0.3/go.mod h1:L4cTNZO77XKEXtn8HNFRCMNGZPtRRKAhyuJBSvK/T90=
