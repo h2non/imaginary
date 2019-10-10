@@ -18,6 +18,7 @@ func TestReadParams(t *testing.T) {
 	q.Add("opacity", "0.2")
 	q.Add("text", "hello")
 	q.Add("background", "255,10,20")
+	q.Add("interlace", "true")
 
 	params, err := buildParamsFromQuery(q)
 	if err != nil {
@@ -31,7 +32,8 @@ func TestReadParams(t *testing.T) {
 		params.Text == "hello" &&
 		params.Background[0] == 255 &&
 		params.Background[1] == 10 &&
-		params.Background[2] == 20
+		params.Background[2] == 20 &&
+		params.Interlace == true
 
 	if assert == false {
 		t.Error("Invalid params")
