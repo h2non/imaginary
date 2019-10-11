@@ -53,6 +53,7 @@ var paramTypeCoercions = map[string]Coercion{
 	"sigma":       coerceSigma,
 	"minampl":     coerceMinAmpl,
 	"operations":  coerceOperations,
+	"interlace":   coerceInterlace,
 }
 
 func coerceTypeInt(param interface{}) (int, error) {
@@ -328,6 +329,12 @@ func coerceOperations(io *ImageOptions, param interface{}) (err error) {
 	}
 
 	return ErrUnsupportedValue
+}
+
+func coerceInterlace(io *ImageOptions, param interface{}) (err error) {
+	io.Interlace, err = coerceTypeBool(param)
+	io.IsDefinedField.Interlace = true
+	return err
 }
 
 func buildParamsFromOperation(op PipelineOperation) (ImageOptions, error) {
