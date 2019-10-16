@@ -564,6 +564,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **minampl**     `float`  - Minimum amplitude of the gaussian filter to use when blurring an image. Default: Example: `0.5`
 - **operations**  `json`   - Pipeline of image operation transformations defined as URL safe encoded JSON array. See [pipeline](#get--post-pipeline) endpoints for more details.
 - **sign**        `string` - URL signature (URL-safe Base64-encoded HMAC digest)
+- **aspectratio** `string` - Apply aspect ratio by giving either image's height or width. Exampe: `16:9`
 
 #### GET /
 Content-Type: `application/json`
@@ -652,6 +653,7 @@ Crop the image by a given width or height. Image ratio is maintained
 - minampl `float`
 - gravity `string`
 - field `string` - Only POST and `multipart/form` payloads
+- aspectratio `string`
 
 
 #### GET | POST /smartcrop
@@ -683,6 +685,7 @@ Crop the image by a given width or height using the [libvips](https://github.com
 - minampl `float`
 - gravity `string`
 - field `string` - Only POST and `multipart/form` payloads
+- aspectratio `string`
 
 #### GET | POST /resize
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -713,6 +716,7 @@ Resize an image by width or height. Image aspect ratio is maintained
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- aspectratio `string`
 
 #### GET | POST /enlarge
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -772,6 +776,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- aspectratio `string`
 
 #### GET | POST /zoom
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -801,6 +806,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- aspectratio `string`
 
 #### GET | POST /thumbnail
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -828,6 +834,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- aspectratio `string`
 
 #### GET | POST /fit
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -858,6 +865,7 @@ The width and height specify a maximum bounding box for the image.
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- aspectratio `string`
 
 #### GET | POST /rotate
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -885,6 +893,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- aspectratio `string`
 
 #### GET | POST /flip
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -911,6 +920,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- aspectratio `string`
 
 #### GET | POST /flop
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -937,6 +947,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- aspectratio `string`
 
 #### GET | POST /convert
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -962,6 +973,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- aspectratio `string`
 
 #### GET | POST /pipeline
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -1138,6 +1150,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
+- aspectratio `string`
 
 ## Support
 
