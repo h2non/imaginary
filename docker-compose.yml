@@ -4,9 +4,9 @@ services:
   imaginary:
     image: milideluxe/s3-imaginary
     ports:
-      - "80:80"
+      - "3001:3001"
     environment:
-      - PORT=80
-    command: -enable-url-source
+      - PORT=3001
+    command: -cors -enable-url-source
     volumes:
-      - ${PWD}/credentials:/go/config/credentials
+      - ${PWD}/../estudy-core/auth/credentials:/go/config/credentials
