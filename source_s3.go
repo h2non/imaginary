@@ -3,19 +3,23 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"math/rand"
+	"net/http"
 	"os"
+	"strings"
+	"time"
 )
 
 const ImageSourceTypeS3 = "s3"
-const S3Key = "key"
+const S3Key = "s3key"
+const S3OutputKey = "outputKey"
 const S3Bucket = "bucket"
+const S3Region = "region"
 
 type S3ImageSource struct {
 	Config *SourceConfig
@@ -33,17 +37,15 @@ func (s *S3ImageSource) GetImage(req *http.Request) ([]byte, error) {
 
 	key := parseKey(req)
 	bucket := parseBucket(req)
-	fmt.Print("getImage S3 - key: " + key + " bucket: "+bucket)
+	region := parseS3Region(req)
 
-	// The session the S3 Downloader will use
-	//sess := session.Must(session.NewSession())
+	fmt.Print("getImage S3 - key: " + key + " bucket: "+bucket + " region: "+region)
 
-	sess := createSession()
-	// Create a downloader with the session and default options
+	sess := createSession(region)
+
 	downloader := s3manager.NewDownloader(sess)
-	//buf := []byte{}
-	//f := aws.NewWriteAtBuffer(buf)
-	filename := "/tmp/pic.png"
+	filename := "/tmp/" + randString() + ".png"
+
 	f, errFile := os.Create(filename)
 	if errFile != nil {
 		_ = fmt.Errorf("failed to create file, %v", errFile)
@@ -80,15 +82,10 @@ func (s *S3ImageSource) GetImage(req *http.Request) ([]byte, error) {
 	return buffer, err
 }
 
-func createSession() *session.Session{
-	region := "eu-central-1"
+func createSession(region string) *session.Session{
 	profile := "default"
-
 	path := "/go/config/credentials"
-	ioutil.WriteFile("/go/config/here_i_am", []byte("Hello"), 0755)
-	if _, err := os.Stat(path); err != nil {
-		fmt.Println("Credential File not found")
-	}
+
 	sess := session.Must(session.NewSession(&aws.Config{
 		Region:      &region,
 		Credentials: credentials.NewSharedCredentials(path, profile),
@@ -96,8 +93,8 @@ func createSession() *session.Session{
 	return sess
 }
 
-func uploadBufferToS3(buffer []byte, outputKey string, bucket string){
-	sess := createSession()
+func uploadBufferToS3(buffer []byte, outputKey string, bucket string, region string){
+	sess := createSession(region)
 	uploader := s3manager.NewUploader(sess)
 	// Upload the file to S3.
 	result, err := uploader.Upload(&s3manager.UploadInput{
@@ -106,9 +103,9 @@ func uploadBufferToS3(buffer []byte, outputKey string, bucket string){
 		Body:   bytes.NewReader(buffer),
 	})
 	if err != nil {
-		_ = fmt.Errorf("failed to upload file, %v", err)
+		_ = fmt.Errorf("failed to upload file, %v ", err)
 	}
-	fmt.Print("upload successful to "+result.Location)
+	fmt.Print("upload successful to "+result.Location + " ")
 }
 
 
@@ -121,6 +118,23 @@ func parseBucket(request *http.Request) (string) {
 	return request.URL.Query().Get(S3Bucket)
 }
 
+func parseS3Region(request *http.Request) (string) {
+	return request.URL.Query().Get(S3Region)
+}
+
 func init() {
 	RegisterSource(ImageSourceTypeS3, NewS3ImageSource)
+}
+
+func randString() string {
+	rand.Seed(time.Now().UnixNano())
+	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+		"abcdefghijklmnopqrstuvwxyz" +
+		"0123456789")
+	length := 8
+	var b strings.Builder
+	for i := 0; i < length; i++ {
+		b.WriteRune(chars[rand.Intn(len(chars))])
+	}
+	return b.String() // E.g. "ExcbsVQs"
 }

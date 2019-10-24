@@ -119,13 +119,20 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 		return
 	}
 
-	key := r.URL.Query().Get("key")
-	outputKey := r.URL.Query().Get("outputKey")
-	bucket := r.URL.Query().Get("bucket")
-	if len(key) != 0 && len(outputKey) != 0 {
+	key := r.URL.Query().Get(S3Key)
+	outputKey := r.URL.Query().Get(S3OutputKey)
+	bucket := r.URL.Query().Get(S3Bucket)
+	region := r.URL.Query().Get(S3Region)
+
+	if len(key) != 0 {
+		if len(outputKey) != 0 {
 			fmt.Print("write to s3")
-			uploadBufferToS3(image.Body, outputKey, bucket)
+			uploadBufferToS3(image.Body, outputKey, bucket, region)
 			w.WriteHeader(200)
+		} else {
+			fmt.Print("no outputkey given to write to S3")
+			w.WriteHeader(406)
+		}
 	} else {
 		fmt.Print("write response body")
 		// Expose Content-Length response header

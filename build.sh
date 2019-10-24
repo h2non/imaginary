@@ -1,5 +1,5 @@
 docker build -t milideluxe/s3-imaginary -f prod.Dockerfile .
-docker push milideluxe/s3-imaginary
+#docker push milideluxe/s3-imaginary
 rm -f imaginary.zip
 rm -rf deployment
 mkdir -p deployment/config
