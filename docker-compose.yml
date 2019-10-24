@@ -2,10 +2,11 @@ version: "3"
 
 services:
   imaginary:
-    image: h2non/imaginary
+    image: milideluxe/s3-imaginary
     ports:
-      - "8088:8088"
+      - "3001:3001"
     environment:
-      - PORT=8088
-    command: -concurrency 50 -enable-url-source
-
+      - PORT=3001
+    command: -cors -enable-url-source
+    volumes:
+      - ${PWD}/../estudy-core/auth/credentials:/go/config/credentials

@@ -1,0 +1,25 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "milideluxe/s3-imaginary",
+    "Update": "true"
+  },
+  "Environment": [
+    {
+      "PORT": "80"
+    }
+  ],
+  "Ports": [
+    {
+      "ContainerPort": "80"
+    }
+  ],
+  "Volumes": [
+    {
+      "HostDirectory": "/var/app/current/config",
+      "ContainerDirectory": "/go/config"
+    }
+  ],
+  "Entrypoint": "/go/bin/imaginary",
+  "Command": "-cors -enable-url-source"
+}

@@ -34,3 +34,12 @@ bin/
 
 imaginary
 bin/imaginary
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+vendor
+*.zip
+deployment
