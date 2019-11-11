@@ -25,7 +25,13 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 		next = throttle(next, o)
 	}
 	if o.CORS {
-		next = cors.AllowAll().Handler(next)
+		fmt.Println("enable cors");
+		next = cors.New(cors.Options{
+			AllowedOrigins: []string{"https://beta.estudy.artidis.com", "http://localhost:3000"},
+			AllowCredentials: true,
+			// Enable Debugging for testing, consider disabling in production
+			Debug: true,
+		}).Handler(next)
 	}
 	if o.APIKey != "" {
 		next = authorizeClient(next, o)
