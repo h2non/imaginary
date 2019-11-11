@@ -7,6 +7,14 @@ services:
       - "3001:3001"
     environment:
       - PORT=3001
-    command: -cors -enable-url-source
+    command: -cors -concurrency 1 -enable-url-source
     volumes:
       - ${PWD}/../estudy-core/auth/credentials:/go/config/credentials
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 8000M
+        reservations:
+          cpus: '0.25'
+          memory: 2000M
