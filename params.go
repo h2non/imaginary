@@ -53,6 +53,7 @@ var paramTypeCoercions = map[string]Coercion{
 	"sigma":       coerceSigma,
 	"minampl":     coerceMinAmpl,
 	"operations":  coerceOperations,
+	"aspectratio": coerceAspectRatio,
 }
 
 func coerceTypeInt(param interface{}) (int, error) {
@@ -296,6 +297,11 @@ func coerceBackground(io *ImageOptions, param interface{}) error {
 	}
 
 	return ErrUnsupportedValue
+}
+
+func coerceAspectRatio(io *ImageOptions, param interface{}) (err error) {
+	io.AspectRatio, err = coerceTypeString(param)
+	return err
 }
 
 func coerceExtend(io *ImageOptions, param interface{}) error {
