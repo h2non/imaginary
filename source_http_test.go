@@ -311,6 +311,10 @@ func TestShouldRestrictOrigin(t *testing.T) {
 			"https://*.s3.bucket.on.aws.org/my/bucket/,https://no-leading-path-slash.example.org/assets",
 	)
 
+	with2Buckets := parseOrigins(
+		"https://some.s3.bucket.on.aws.org/my/bucket1/,https://some.s3.bucket.on.aws.org/my/bucket2/",
+	)
+
 	t.Run("Plain origin", func(t *testing.T) {
 		testURL := createURL("https://example.org/logo.jpg", t)
 
@@ -402,6 +406,23 @@ func TestShouldRestrictOrigin(t *testing.T) {
 			t.Errorf("Expected '%s' to be allowed with origins: %+v", testURL, withPathOrigins)
 		}
 	})
+
+	t.Run("2 buckets, bucket1", func(t *testing.T) {
+		testURL := createURL("https://some.s3.bucket.on.aws.org/my/bucket1/logo.jpg", t)
+
+		if shouldRestrictOrigin(testURL, with2Buckets) {
+			t.Errorf("Expected '%s' to be allowed with origins: %+v", testURL, with2Buckets)
+		}
+	})
+
+	t.Run("2 buckets, bucket2", func(t *testing.T) {
+		testURL := createURL("https://some.s3.bucket.on.aws.org/my/bucket2/logo.jpg", t)
+
+		if shouldRestrictOrigin(testURL, with2Buckets) {
+			t.Errorf("Expected '%s' to be allowed with origins: %+v", testURL, with2Buckets)
+		}
+	})
+
 }
 
 func TestParseOrigins(t *testing.T) {
