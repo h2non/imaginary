@@ -447,12 +447,12 @@ imaginary can be configured to block all requests for images with a src URL this
 
 | `allowed-origins` setting | image url | is valid |
 | ------------------------- | --------- | -------- |
-| `--allowed-origns s3.amazonaws.com/some-bucket/` | `s3.amazonaws.com/some-bucket/images/image.png` | VALID |
-| `--allowed-origns s3.amazonaws.com/some-bucket/` | `s3.amazonaws.com/images/image.png` | NOT VALID (no matching basepath) |
-| `--allowed-origns *.amazonaws.com/some-bucket/` | `anysubdomain.amazonaws.com/some-bucket/images/image.png` | VALID |
-| `--allowed-origns *.amazonaws.com` | `anysubdomain.amazonaws.comimages/image.png` | VALID |
-| `--allowed-origns *.amazonaws.com` | `www.notaws.comimages/image.png` | NOT VALID (no matching host) |
-| `--allowed-origns *.amazonaws.com, foo.amazonaws.com/some-bucket/` | `bar.amazonaws.com/some-other-bucket/image.png` | VALID (matches first condition but not second) |
+| `--allowed-origins s3.amazonaws.com/some-bucket/` | `s3.amazonaws.com/some-bucket/images/image.png` | VALID |
+| `--allowed-origins s3.amazonaws.com/some-bucket/` | `s3.amazonaws.com/images/image.png` | NOT VALID (no matching basepath) |
+| `--allowed-origins *.amazonaws.com/some-bucket/` | `anysubdomain.amazonaws.com/some-bucket/images/image.png` | VALID |
+| `--allowed-origins *.amazonaws.com` | `anysubdomain.amazonaws.comimages/image.png` | VALID |
+| `--allowed-origins *.amazonaws.com` | `www.notaws.comimages/image.png` | NOT VALID (no matching host) |
+| `--allowed-origins *.amazonaws.com, foo.amazonaws.com/some-bucket/` | `bar.amazonaws.com/some-other-bucket/image.png` | VALID (matches first condition but not second) |
 
 ### Authorization
 
