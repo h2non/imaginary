@@ -25,7 +25,7 @@ type LogRecord struct {
 func (r *LogRecord) Log(out io.Writer) {
 	timeFormat := r.time.Format("02/Jan/2006 15:04:05")
 	request := fmt.Sprintf("%s %s %s", r.method, r.uri, r.protocol)
-	fmt.Fprintf(out, formatPattern, r.ip, timeFormat, request, r.status, r.responseBytes, r.elapsedTime.Seconds())
+	_, _ = fmt.Fprintf(out, formatPattern, r.ip, timeFormat, request, r.status, r.responseBytes, r.elapsedTime.Seconds())
 }
 
 // Write acts like a proxy passing the given bytes buffer to the ResponseWritter
