@@ -315,6 +315,10 @@ func TestShouldRestrictOrigin(t *testing.T) {
 		"https://some.s3.bucket.on.aws.org/my/bucket1/,https://some.s3.bucket.on.aws.org/my/bucket2/",
 	)
 
+	pathWildCard := parseOrigins(
+		"https://some.s3.bucket.on.aws.org/my-bucket-name*",
+	)
+
 	t.Run("Plain origin", func(t *testing.T) {
 		testURL := createURL("https://example.org/logo.jpg", t)
 
@@ -420,6 +424,19 @@ func TestShouldRestrictOrigin(t *testing.T) {
 
 		if shouldRestrictOrigin(testURL, with2Buckets) {
 			t.Errorf("Expected '%s' to be allowed with origins: %+v", testURL, with2Buckets)
+		}
+	})
+
+	t.Run("Path wildcard", func(t *testing.T) {
+		testURL := createURL("https://some.s3.bucket.on.aws.org/my-bucket-name/logo.jpg", t)
+		testURLFail := createURL("https://some.s3.bucket.on.aws.org/my-other-bucket-name/logo.jpg", t)
+
+		if shouldRestrictOrigin(testURL, pathWildCard) {
+			t.Errorf("Expected '%s' to be allowed with origins: %+v", testURL, pathWildCard)
+		}
+
+		if !shouldRestrictOrigin(testURLFail, pathWildCard) {
+			t.Errorf("Expected '%s' to be restricted with origins: %+v", testURLFail, pathWildCard)
 		}
 	})
 

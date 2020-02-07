@@ -122,6 +122,7 @@ func shouldRestrictOrigin(url *url.URL, origins []*url.URL) bool {
 	}
 
 	for _, origin := range origins {
+
 		if origin.Host == url.Host {
 			if strings.HasPrefix(url.Path, origin.Path) {
 				return false
