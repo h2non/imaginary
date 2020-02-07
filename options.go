@@ -43,6 +43,7 @@ type ImageOptions struct {
 	AspectRatio   string
 	Color         []uint8
 	Background    []uint8
+	Interlace     bool
 	Extend        bimg.Extend
 	Gravity       bimg.Gravity
 	Colorspace    bimg.Interpretation
@@ -61,6 +62,7 @@ type IsDefinedField struct {
 	NoRotation    bool
 	NoProfile     bool
 	StripMetadata bool
+	Interlace     bool
 }
 
 // PipelineOperation represents the structure for an operation field.
@@ -139,6 +141,7 @@ func BimgOptions(o ImageOptions) bimg.Options {
 		StripMetadata:  o.StripMetadata,
 		Type:           ImageType(o.Type),
 		Rotate:         bimg.Angle(o.Rotate),
+		Interlace:      o.Interlace,
 	}
 
 	if len(o.Background) != 0 {
