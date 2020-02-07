@@ -449,6 +449,7 @@ imaginary can be configured to block all requests for images with a src URL this
 | ------------------------- | --------- | -------- |
 | `--allowed-origins s3.amazonaws.com/some-bucket/` | `s3.amazonaws.com/some-bucket/images/image.png` | VALID |
 | `--allowed-origins s3.amazonaws.com/some-bucket/` | `s3.amazonaws.com/images/image.png` | NOT VALID (no matching basepath) |
+| `--allowed-origins s3.amazonaws.com/some-*` | `s3.amazonaws.com/some-bucket/images/image.png` | VALID |
 | `--allowed-origins *.amazonaws.com/some-bucket/` | `anysubdomain.amazonaws.com/some-bucket/images/image.png` | VALID |
 | `--allowed-origins *.amazonaws.com` | `anysubdomain.amazonaws.comimages/image.png` | VALID |
 | `--allowed-origins *.amazonaws.com` | `www.notaws.comimages/image.png` | NOT VALID (no matching host) |
