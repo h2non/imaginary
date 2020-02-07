@@ -293,8 +293,13 @@ func parseOrigins(origins string) []*url.URL {
 			continue
 		}
 
-		if u.Path != "" && u.Path[len(u.Path)-1:] != "/" {
-			u.Path += "/"
+		if u.Path != "" {
+			var lastChar = u.Path[len(u.Path)-1:]
+			if (lastChar == "*") {
+				u.Path = strings.TrimSuffix(u.Path, "*")
+			} else if (lastChar != "/") {
+				u.Path += "/"
+			}
 		}
 
 		urls = append(urls, u)
