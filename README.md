@@ -41,6 +41,8 @@ To get started, take a look the [installation](#installation) steps, [usage](#co
   - [Form data](#form-data)
   - [Params](#params)
   - [Endpoints](#get-)
+- [Logging](#logging)
+  - [Fluentd log ingestion](#fluentd-log-ingestion)
 - [Authors](#authors)
 - [License](#license)
 
@@ -1167,6 +1169,60 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - field `string` - Only POST and `multipart/form` payloads
 - interlace `bool`
 - aspectratio `string`
+
+## Logging
+
+Imaginary uses an [apache compatible log format](/log.go).
+
+### Fluentd log ingestion
+
+You can ingest Imaginary logs with fluentd using the following fluentd config :
+
+```
+# use your own tag name (*.imaginary for this example)
+<filter *.imaginary>
+    @type parser
+    key_name log
+    reserve_data true
+
+    <parse>
+        @type multi_format
+        # access logs parser
+        <pattern>
+            format regexp
+            expression /^[^ ]* [^ ]* [^ ]* \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*) (?<response_time>[^ ]*)$/
+            types code:integer,size:integer,response_time:float
+            time_key time
+            time_format %d/%b/%Y %H:%M:%S
+        </pattern>
+        # warnings / error logs parser
+        <pattern>
+            format none
+            message_key message
+        </pattern>
+    </parse>
+</filter>
+
+<match *.imaginary>
+    @type rewrite_tag_filter
+
+    # Logs with code field are access logs, and logs without are error logs
+    <rule>
+        key code
+        pattern ^.+$
+        tag ${tag}.access
+    </rule>
+    <rule>
+        key code
+        pattern ^.+$
+        invert true
+        tag ${tag}.error
+    </rule>
+</match>
+```
+
+In the end, access records are tagged with `*.imaginary.access`, and warning /
+error records are tagged with `*.imaginary.error`.
 
 ## Support
 
