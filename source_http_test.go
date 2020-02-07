@@ -17,7 +17,7 @@ func TestHttpImageSource(t *testing.T) {
 
 	buf, _ := ioutil.ReadFile(fixtureImage)
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write(buf)
+		_, _ = w.Write(buf)
 	}))
 	defer ts.Close()
 
@@ -31,7 +31,7 @@ func TestHttpImageSource(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Error while reading the body: %s", err)
 		}
-		w.Write(body)
+		_, _ = w.Write(body)
 	}
 
 	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+ts.URL, nil)
@@ -46,7 +46,7 @@ func TestHttpImageSource(t *testing.T) {
 func TestHttpImageSourceAllowedOrigin(t *testing.T) {
 	buf, _ := ioutil.ReadFile(fixtureImage)
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write(buf)
+		_, _ = w.Write(buf)
 	}))
 	defer ts.Close()
 
@@ -63,7 +63,7 @@ func TestHttpImageSourceAllowedOrigin(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Error while reading the body: %s", err)
 		}
-		w.Write(body)
+		_, _ = w.Write(body)
 
 		if len(body) != len(buf) {
 			t.Error("Invalid response body length")
@@ -154,9 +154,9 @@ func TestHttpImageSourceNotForwardHeaders(t *testing.T) {
 		"X-Token",
 	}
 
-	url := createURL("http://bar.com", t)
+	testURL := createURL("http://bar.com", t)
 
-	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+url.String(), nil)
+	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+testURL.String(), nil)
 	r.Header.Set("Not-Forward", "foobar")
 
 	source := &HTTPImageSource{&SourceConfig{ForwardHeaders: cases}}
@@ -164,7 +164,7 @@ func TestHttpImageSourceNotForwardHeaders(t *testing.T) {
 		t.Fatal("Cannot match the request")
 	}
 
-	oreq := newHTTPRequest(source, r, http.MethodGet, url)
+	oreq := newHTTPRequest(source, r, http.MethodGet, testURL)
 
 	if oreq.Header.Get("Not-Forward") != "" {
 		t.Fatal("Forwarded unspecified header")
@@ -177,9 +177,9 @@ func TestHttpImageSourceForwardedHeadersNotOverride(t *testing.T) {
 		"X-Custom",
 	}
 
-	url := createURL("http://bar.com", t)
+	testURL := createURL("http://bar.com", t)
 
-	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+url.String(), nil)
+	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+testURL.String(), nil)
 	r.Header.Set("Authorization", "foobar")
 
 	source := &HTTPImageSource{&SourceConfig{Authorization: "ValidAPIKey", ForwardHeaders: cases}}
@@ -187,7 +187,7 @@ func TestHttpImageSourceForwardedHeadersNotOverride(t *testing.T) {
 		t.Fatal("Cannot match the request")
 	}
 
-	oreq := newHTTPRequest(source, r, http.MethodGet, url)
+	oreq := newHTTPRequest(source, r, http.MethodGet, testURL)
 
 	if oreq.Header.Get("Authorization") != "ValidAPIKey" {
 		t.Fatal("Authorization header override")
@@ -200,9 +200,9 @@ func TestHttpImageSourceCaseSensitivityInForwardedHeaders(t *testing.T) {
 		"X-Token",
 	}
 
-	url := createURL("http://bar.com", t)
+	testURL := createURL("http://bar.com", t)
 
-	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+url.String(), nil)
+	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+testURL.String(), nil)
 	r.Header.Set("x-custom", "foobar")
 
 	source := &HTTPImageSource{&SourceConfig{ForwardHeaders: cases}}
@@ -210,7 +210,7 @@ func TestHttpImageSourceCaseSensitivityInForwardedHeaders(t *testing.T) {
 		t.Fatal("Cannot match the request")
 	}
 
-	oreq := newHTTPRequest(source, r, http.MethodGet, url)
+	oreq := newHTTPRequest(source, r, http.MethodGet, testURL)
 
 	if oreq.Header.Get("X-Custom") == "" {
 		t.Fatal("Case sensitive not working on forwarded headers")
@@ -218,11 +218,11 @@ func TestHttpImageSourceCaseSensitivityInForwardedHeaders(t *testing.T) {
 }
 
 func TestHttpImageSourceEmptyForwardedHeaders(t *testing.T) {
-	cases := []string{}
+	var cases []string
 
-	url := createURL("http://bar.com", t)
+	testURL := createURL("http://bar.com", t)
 
-	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+url.String(), nil)
+	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+testURL.String(), nil)
 
 	source := &HTTPImageSource{&SourceConfig{ForwardHeaders: cases}}
 	if !source.Matches(r) {
@@ -234,7 +234,7 @@ func TestHttpImageSourceEmptyForwardedHeaders(t *testing.T) {
 		t.Fatal("Setted empty custom header")
 	}
 
-	oreq := newHTTPRequest(source, r, http.MethodGet, url)
+	oreq := newHTTPRequest(source, r, http.MethodGet, testURL)
 
 	if oreq == nil {
 		t.Fatal("Error creating request using empty custom headers")
@@ -246,7 +246,7 @@ func TestHttpImageSourceError(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
-		w.Write([]byte("Not found"))
+		_, _ = w.Write([]byte("Not found"))
 	}))
 	defer ts.Close()
 
@@ -273,7 +273,7 @@ func TestHttpImageSourceExceedsMaximumAllowedLength(t *testing.T) {
 
 	buf, _ := ioutil.ReadFile(fixture1024Bytes)
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write(buf)
+		_, _ = w.Write(buf)
 	}))
 	defer ts.Close()
 
@@ -289,7 +289,7 @@ func TestHttpImageSourceExceedsMaximumAllowedLength(t *testing.T) {
 		if err == nil {
 			t.Fatalf("It should not allow a request to image exceeding maximum allowed size: %s", err)
 		}
-		w.Write(body)
+		_, _ = w.Write(body)
 	}
 
 	r, _ := http.NewRequest(http.MethodGet, "http://foo/bar?url="+ts.URL, nil)
@@ -309,6 +309,14 @@ func TestShouldRestrictOrigin(t *testing.T) {
 	withPathOrigins := parseOrigins(
 		"https://localhost/foo/bar/,https://*.example.org/foo/,https://some.s3.bucket.on.aws.org/my/bucket/," +
 			"https://*.s3.bucket.on.aws.org/my/bucket/,https://no-leading-path-slash.example.org/assets",
+	)
+
+	with2Buckets := parseOrigins(
+		"https://some.s3.bucket.on.aws.org/my/bucket1/,https://some.s3.bucket.on.aws.org/my/bucket2/",
+	)
+
+	pathWildCard := parseOrigins(
+		"https://some.s3.bucket.on.aws.org/my-bucket-name*",
 	)
 
 	t.Run("Plain origin", func(t *testing.T) {
@@ -402,6 +410,36 @@ func TestShouldRestrictOrigin(t *testing.T) {
 			t.Errorf("Expected '%s' to be allowed with origins: %+v", testURL, withPathOrigins)
 		}
 	})
+
+	t.Run("2 buckets, bucket1", func(t *testing.T) {
+		testURL := createURL("https://some.s3.bucket.on.aws.org/my/bucket1/logo.jpg", t)
+
+		if shouldRestrictOrigin(testURL, with2Buckets) {
+			t.Errorf("Expected '%s' to be allowed with origins: %+v", testURL, with2Buckets)
+		}
+	})
+
+	t.Run("2 buckets, bucket2", func(t *testing.T) {
+		testURL := createURL("https://some.s3.bucket.on.aws.org/my/bucket2/logo.jpg", t)
+
+		if shouldRestrictOrigin(testURL, with2Buckets) {
+			t.Errorf("Expected '%s' to be allowed with origins: %+v", testURL, with2Buckets)
+		}
+	})
+
+	t.Run("Path wildcard", func(t *testing.T) {
+		testURL := createURL("https://some.s3.bucket.on.aws.org/my-bucket-name/logo.jpg", t)
+		testURLFail := createURL("https://some.s3.bucket.on.aws.org/my-other-bucket-name/logo.jpg", t)
+
+		if shouldRestrictOrigin(testURL, pathWildCard) {
+			t.Errorf("Expected '%s' to be allowed with origins: %+v", testURL, pathWildCard)
+		}
+
+		if !shouldRestrictOrigin(testURLFail, pathWildCard) {
+			t.Errorf("Expected '%s' to be restricted with origins: %+v", testURLFail, pathWildCard)
+		}
+	})
+
 }
 
 func TestParseOrigins(t *testing.T) {
