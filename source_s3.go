@@ -41,11 +41,11 @@ func NewS3ImageSource(config *SourceConfig) ImageSource {
 }
 
 func (s *S3ImageSource) Matches(r *http.Request) bool {
-	return r.Method == http.MethodGet && parseKey(r) != ""
+	return r.Method == http.MethodGet && parseS3Key(r) != ""
 }
 
 func (s *S3ImageSource) GetImage(req *http.Request) ([]byte, error) {
-	key, bucket, region := parseKey(req), parseBucket(req), parseS3Region(req)
+	key, bucket, region := parseS3Key(req), parseS3Bucket(req), parseS3Region(req)
 
 	fmt.Printf(
 		"getImage S3 - key: %s, bucket: %s, region: %s\n",
@@ -86,15 +86,15 @@ func uploadBufferToS3(buffer []byte, outputKey, bucket, region string) error {
 	return nil
 }
 
-func parseKey(request *http.Request) string {
+func parseS3Key(request *http.Request) string {
 	return request.URL.Query().Get("s3key")
 }
 
-func parseOutputKey(request *http.Request) string {
+func parseS3OutputKey(request *http.Request) string {
 	return request.URL.Query().Get("outputKey")
 }
 
-func parseBucket(request *http.Request) string {
+func parseS3Bucket(request *http.Request) string {
 	return request.URL.Query().Get("bucket")
 }
 

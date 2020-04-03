@@ -119,9 +119,9 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 		return
 	}
 
-	key := parseKey(r)
-	outputKey := parseOutputKey(r)
-	bucket := parseBucket(r)
+	key := parseS3Key(r)
+	outputKey := parseS3OutputKey(r)
+	bucket := parseS3Bucket(r)
 	region := parseS3Region(r)
 
 	if len(key) != 0 {
