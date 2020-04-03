@@ -35,7 +35,7 @@ func TestBodyImageSource(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Error while reading the body: %s", err)
 		}
-		w.Write(body)
+		_, _ = w.Write(body)
 	}
 
 	file, _ := os.Open(fixtureFile)
@@ -63,7 +63,7 @@ func testReadBody(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Error while reading the body: %s", err)
 		}
-		w.Write(body)
+		_, _ = w.Write(body)
 	}
 
 	file, _ := os.Open(fixtureFile)

@@ -280,7 +280,7 @@ func TestRemoteHTTPSource(t *testing.T) {
 
 	tsImage := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		buf, _ := ioutil.ReadFile("testdata/large.jpg")
-		w.Write(buf)
+		_, _ = w.Write(buf)
 	}))
 	defer tsImage.Close()
 
@@ -426,7 +426,7 @@ func assertSize(buf []byte, width, height int) error {
 		return err
 	}
 	if size.Width != width || size.Height != height {
-		return fmt.Errorf("Invalid image size: %dx%d, expected: %dx%d", size.Width, size.Height, width, height)
+		return fmt.Errorf("invalid image size: %dx%d, expected: %dx%d", size.Width, size.Height, width, height)
 	}
 	return nil
 }

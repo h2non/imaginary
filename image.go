@@ -316,7 +316,13 @@ func WatermarkImage(buf []byte, o ImageOptions) (Image, error) {
 
 	imageBuf, err := ioutil.ReadAll(bodyReader)
 	if len(imageBuf) == 0 {
-		return Image{}, NewError(fmt.Sprintf("Unable to read watermark image. %s", err.Error()), BadRequest)
+		errMessage := "Unable to read watermark image"
+
+		if err != nil {
+			errMessage = fmt.Sprintf("%s. %s", errMessage, err.Error())
+		}
+
+		return Image{}, NewError(errMessage, BadRequest)
 	}
 
 	opts := BimgOptions(o)

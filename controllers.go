@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"gopkg.in/h2non/bimg.v1"
-	"gopkg.in/h2non/filetype.v0"
+	"gopkg.in/h2non/filetype.v1"
 )
 
 func indexController(w http.ResponseWriter, r *http.Request) {

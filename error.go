@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	bimg "gopkg.in/h2non/bimg.v1"
+	"gopkg.in/h2non/bimg.v1"
 )
 
 const (
