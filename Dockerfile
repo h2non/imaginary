@@ -90,6 +90,9 @@ RUN DEBIAN_FRONTEND=noninteractive \
 # Server port to listen
 ENV PORT 9000
 
+# Drop privileges for non-UID mapped environments
+USER nobody
+
 # Run the entrypoint command by default when the container starts.
 ENTRYPOINT ["/usr/local/bin/imaginary"]
 
