@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"gopkg.in/h2non/bimg.v1"
-	"gopkg.in/h2non/filetype.v1"
+	"github.com/h2non/bimg"
+	"github.com/h2non/filetype"
 )
 
 func indexController(w http.ResponseWriter, r *http.Request) {

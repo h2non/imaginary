@@ -9,7 +9,7 @@ import (
 	"math"
 	"net/http"
 
-	"gopkg.in/h2non/bimg.v1"
+	"github.com/h2non/bimg"
 )
 
 // OperationsMap defines the allowed image transformation operations listed by name.

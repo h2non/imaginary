@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/rs/cors"
-	"gopkg.in/h2non/bimg.v1"
+	"github.com/h2non/bimg"
 	"gopkg.in/throttled/throttled.v2"
 	"gopkg.in/throttled/throttled.v2/store/memstore"
 )
