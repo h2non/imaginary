@@ -126,7 +126,6 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 
 	if len(key) != 0 {
 		if err := uploadBufferToS3(image.Body, outputKey, bucket, region); err != nil {
-			fmt.Printf("write to s3 failed, %s", err)
 			ErrorReply(
 				r,
 				w,
@@ -139,12 +138,10 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 			return
 		}
 
-		fmt.Println("write to s3 success")
 		w.WriteHeader(http.StatusOK)
 		return
 	}
 
-	fmt.Println("write response body")
 	// Expose Content-Length response header
 	w.Header().Set("Content-Length", strconv.Itoa(len(image.Body)))
 	w.Header().Set("Content-Type", image.Mime)

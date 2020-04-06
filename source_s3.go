@@ -47,11 +47,6 @@ func (s *S3ImageSource) Matches(r *http.Request) bool {
 func (s *S3ImageSource) GetImage(req *http.Request) ([]byte, error) {
 	key, bucket, region := parseS3Key(req), parseS3Bucket(req), parseS3Region(req)
 
-	fmt.Printf(
-		"getImage S3 - key: %s, bucket: %s, region: %s\n",
-		key, bucket, region,
-	)
-
 	buffer := aws.NewWriteAtBuffer([]byte{})
 	buffer.GrowthCoeff = 1.5
 	if _, err := s3manager.NewDownloader(newS3Session(region)).
@@ -63,10 +58,6 @@ func (s *S3ImageSource) GetImage(req *http.Request) ([]byte, error) {
 			}); err != nil {
 		return nil, fmt.Errorf("failed to download file, %w", err)
 	}
-
-	fmt.Printf("file downloaded, %d bytes, array cap %d\n",
-		len(buffer.Bytes()), cap(buffer.Bytes()),
-	)
 
 	return buffer.Bytes(), nil
 }
