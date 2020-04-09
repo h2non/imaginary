@@ -26,10 +26,7 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 	}
 	if o.CORS {
 		next = cors.New(cors.Options{
-			AllowedOrigins: []string{
-				"https://beta.estudy.artidis.com",
-				"http://localhost:3000",
-			},
+			AllowedOrigins:   o.CORSURLs,
 			AllowCredentials: true,
 		}).Handler(next)
 	}
