@@ -151,12 +151,15 @@ Deploy imaginary in seconds close to your users in [Fly.io](https://fly.io) clou
   <img src="testdata/flyio-button.svg?raw=true" width="200">
 </a>
 
-Or alternatively you can follow the manual steps:
+#### About Fly.io
 
-Clone this repository:
-```
-git clone https://github.com/h2non/imaginary.git
-```
+Fly is a platform for applications that need to run globally. It runs your code close to users and scales compute in cities where your app is busiest. Write your code, package it into a Docker image, deploy it to Fly's platform and let that do all the work to keep your app snappy.
+
+You can [learn more](https://fly.io/docs/) about how Fly.io can reduce latency and provide a better experience by serving traffic close to your users location.
+
+#### Global image service tutorial
+
+[Learn more](https://fly.io/docs/app-guides/run-a-global-image-service/) about how to run a custom deployment of imaginary on the Fly.io cloud.
 
 ### CloudFoundry
 
