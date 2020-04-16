@@ -147,7 +147,7 @@ services:
 
 Deploy imaginary in seconds close to your users in [Fly.io](https://fly.io) cloud by clicking on the button below:
 
-[![Fly.io](testdata/flyio-button.svg?raw=true)](https://fly.io/launch/github/h2non/imaginary)
+[![Fly.io](testdata/flyio-button.svg?raw=true | width=200)](https://fly.io/launch/github/h2non/imaginary)
 
 Or alternatively you can follow the manual steps:
 
