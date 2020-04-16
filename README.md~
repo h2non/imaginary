@@ -1,4 +1,4 @@
-# imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Docker Registry](https://img.shields.io/docker/pulls/h2non/imaginary.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Go Report Card](http://goreportcard.com/badge/h2non/imaginary)](https://goreportcard.com/report/h2non/imaginary) [![Fly.io](https://img.shields.io/badge/deploy-fly.io-blue.svg)](https://fly.io/launch/github/h2non/imaginary)
+# imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Docker Registry](https://img.shields.io/docker/pulls/h2non/imaginary.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Go Report Card](http://goreportcard.com/badge/h2non/imaginary)](http://goreportcard.com/report/h2non/imaginary)
 
 **[Fast](#benchmarks) HTTP [microservice](http://microservices.io/patterns/microservices.html)** written in Go **for high-level image processing** backed by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). `imaginary` can be used as private or public HTTP service for massive image processing with first-class support for [Docker](#docker) & [Fly.io](#flyio).
 It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package without additional abstractions for better [performance](#performance).
@@ -147,19 +147,14 @@ services:
 
 Deploy imaginary in seconds close to your users in [Fly.io](https://fly.io) cloud by clicking on the button below:
 
-<a href="https://fly.io/launch/github/h2non/imaginary">
-  <img src="testdata/flyio-button.svg?raw=true" width="200">
-</a>
+[![Fly.io](testdata/flyio-button.svg?raw=true)](https://fly.io/launch/github/h2non/imaginary)
 
-#### About Fly.io
+Or alternatively you can follow the manual steps:
 
-Fly is a platform for applications that need to run globally. It runs your code close to users and scales compute in cities where your app is busiest. Write your code, package it into a Docker image, deploy it to Fly's platform and let that do all the work to keep your app snappy.
-
-You can [learn more](https://fly.io/docs/) about how Fly.io can reduce latency and provide a better experience by serving traffic close to your users location.
-
-#### Global image service tutorial
-
-[Learn more](https://fly.io/docs/app-guides/run-a-global-image-service/) about how to run a custom deployment of imaginary on the Fly.io cloud.
+Clone this repository:
+```
+git clone https://github.com/h2non/imaginary.git
+```
 
 ### CloudFoundry
 
