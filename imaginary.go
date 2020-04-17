@@ -48,6 +48,7 @@ var (
 	aBurst              = flag.Int("burst", 100, "Throttle burst max cache size")
 	aMRelease           = flag.Int("mrelease", 30, "OS memory release interval in seconds")
 	aCpus               = flag.Int("cpus", runtime.GOMAXPROCS(-1), "Number of cpu cores to use")
+	aLogLevel           = flag.String("log-level", "info", "Define log level for http-server. E.g: info,warning,error")
 )
 
 const usage = `imaginary %s
@@ -100,6 +101,8 @@ Options:
   -mrelease <num>           OS memory release interval in seconds [default: 30]
   -cpus <num>               Number of used cpu cores.
                             (default for current machine is %d cores)
+  -log-level                Set log level for http-server. E.g: info,warning,error [default: info].
+                            Or can use the environment variable GOLANG_LOG=info.
 `
 
 type URLSignature struct {
@@ -149,6 +152,7 @@ func main() {
 		ForwardHeaders:     parseForwardHeaders(*aForwardHeaders),
 		AllowedOrigins:     parseOrigins(*aAllowedOrigins),
 		MaxAllowedSize:     *aMaxAllowedSize,
+		LogLevel:           getLogLevel(*aLogLevel),
 	}
 
 	// Show warning if gzip flag is passed
@@ -233,6 +237,13 @@ func getURLSignature(key string) URLSignature {
 	}
 
 	return URLSignature{key}
+}
+
+func getLogLevel(logLevel string) string {
+	if logLevelEnv := os.Getenv("GOLANG_LOG"); logLevelEnv != "" {
+		logLevel = logLevelEnv
+	}
+	return logLevel
 }
 
 func showUsage() {

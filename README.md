@@ -219,7 +219,7 @@ Assuming that you want to provide a high availability to deal efficiently with, 
         |==============|
         |   Balancer   |
         |==============|
-           |       |   
+           |       |
           /         \
          /           \
         /             \
@@ -305,7 +305,7 @@ Options:
   -forward-headers          Forwards custom headers to the image source server. -enable-url-source flag must be defined.
   -enable-url-signature     Enable URL signature (URL-safe Base64-encoded HMAC digest) [default: false]
   -url-signature-key        The URL signature key (32 characters minimum)
-  -allowed-origins <urls>   Restrict remote image source processing to certain origins (separated by commas). Note: Origins are validated against host *AND* path. 
+  -allowed-origins <urls>   Restrict remote image source processing to certain origins (separated by commas). Note: Origins are validated against host *AND* path.
   -max-allowed-size <bytes> Restrict maximum size of http image source (in bytes)
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
@@ -316,6 +316,8 @@ Options:
   -mrelease <num>           OS memory release interval in seconds [default: 30]
   -cpus <num>               Number of used cpu cores.
                             (default for current machine is 8 cores)
+  -log-level                Set log level for http-server. E.g: info,warning,error [default: info].
+                            Or can use the environment variable GOLANG_LOG=info.
 ```
 
 Start the server in a custom port:
@@ -402,6 +404,11 @@ DEBUG=* imaginary -p 8080
 Or filter debug output by package:
 ```
 DEBUG=imaginary imaginary -p 8080
+```
+
+Disable info logs:
+```
+GOLANG_LOG=error imaginary -p 8080
 ```
 
 #### Examples
