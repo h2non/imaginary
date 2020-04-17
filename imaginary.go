@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	bimg "gopkg.in/h2non/bimg.v1"
+	"gopkg.in/h2non/bimg.v1"
 )
 
 var (
@@ -25,6 +25,7 @@ var (
 	aHelpl              = flag.Bool("help", false, "Show help")
 	aPathPrefix         = flag.String("path-prefix", "/", "Url path prefix to listen to")
 	aCors               = flag.Bool("cors", false, "Enable CORS support")
+	aCorsURLs           = flag.String("cors-urls", "", "Cors URL-s separated by comma")
 	aGzip               = flag.Bool("gzip", false, "Enable gzip compression (deprecated)")
 	aAuthForwarding     = flag.Bool("enable-auth-forwarding", false, "Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors")
 	aEnableURLSource    = flag.Bool("enable-url-source", false, "Enable remote HTTP URL image source processing")
@@ -108,7 +109,7 @@ type URLSignature struct {
 
 func main() {
 	flag.Usage = func() {
-		fmt.Fprint(os.Stderr, fmt.Sprintf(usage, Version, runtime.NumCPU()))
+		_, _ = fmt.Fprint(os.Stderr, fmt.Sprintf(usage, Version, runtime.NumCPU()))
 	}
 	flag.Parse()
 
@@ -129,6 +130,7 @@ func main() {
 		Port:               port,
 		Address:            *aAddr,
 		CORS:               *aCors,
+		CORSURLs:           strings.Split(*aCorsURLs, ","),
 		AuthForwarding:     *aAuthForwarding,
 		EnableURLSource:    *aEnableURLSource,
 		EnablePlaceholder:  *aEnablePlaceholder,
@@ -293,8 +295,13 @@ func parseOrigins(origins string) []*url.URL {
 			continue
 		}
 
-		if u.Path != "" && u.Path[len(u.Path)-1:] != "/" {
-			u.Path += "/"
+		if u.Path != "" {
+			var lastChar = u.Path[len(u.Path)-1:]
+			if lastChar == "*" {
+				u.Path = strings.TrimSuffix(u.Path, "*")
+			} else if lastChar != "/" {
+				u.Path += "/"
+			}
 		}
 
 		urls = append(urls, u)

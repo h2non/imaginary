@@ -25,12 +25,9 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 		next = throttle(next, o)
 	}
 	if o.CORS {
-		fmt.Println("enable cors");
 		next = cors.New(cors.Options{
-			AllowedOrigins: []string{"https://beta.estudy.artidis.com", "http://localhost:3000"},
+			AllowedOrigins:   o.CORSURLs,
 			AllowCredentials: true,
-			// Enable Debugging for testing, consider disabling in production
-			Debug: true,
 		}).Handler(next)
 	}
 	if o.APIKey != "" {
@@ -178,8 +175,8 @@ func validateURLSignature(next http.Handler, o ServerOptions) http.Handler {
 
 		// Compute expected URL signature
 		h := hmac.New(sha256.New, []byte(o.URLSignatureKey))
-		h.Write([]byte(r.URL.Path))
-		h.Write([]byte(query.Encode()))
+		_, _ = h.Write([]byte(r.URL.Path))
+		_, _ = h.Write([]byte(query.Encode()))
 		expectedSign := h.Sum(nil)
 
 		urlSign, err := base64.RawURLEncoding.DecodeString(sign)

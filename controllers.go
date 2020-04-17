@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"gopkg.in/h2non/bimg.v1"
-	"gopkg.in/h2non/filetype.v0"
+	"gopkg.in/h2non/filetype.v1"
 )
 
 func indexController(w http.ResponseWriter, r *http.Request) {
@@ -119,30 +119,36 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 		return
 	}
 
-	key := r.URL.Query().Get(S3Key)
-	outputKey := r.URL.Query().Get(S3OutputKey)
-	bucket := r.URL.Query().Get(S3Bucket)
-	region := r.URL.Query().Get(S3Region)
+	key := parseS3Key(r)
+	outputKey := parseS3OutputKey(r)
+	bucket := parseS3Bucket(r)
+	region := parseS3Region(r)
 
 	if len(key) != 0 {
-		if len(outputKey) != 0 {
-			fmt.Print("write to s3")
-			uploadBufferToS3(image.Body, outputKey, bucket, region)
-			w.WriteHeader(200)
-		} else {
-			fmt.Print("no outputkey given to write to S3")
-			w.WriteHeader(406)
+		if err := uploadBufferToS3(image.Body, outputKey, bucket, region); err != nil {
+			ErrorReply(
+				r,
+				w,
+				NewError(
+					fmt.Sprintf("Error while processing the image: %s", err),
+					InternalError,
+				),
+				o,
+			)
+			return
 		}
-	} else {
-		fmt.Print("write response body")
-		// Expose Content-Length response header
-		w.Header().Set("Content-Length", strconv.Itoa(len(image.Body)))
-		w.Header().Set("Content-Type", image.Mime)
-		if vary != "" {
-			w.Header().Set("Vary", vary)
-		}
-		_, _ = w.Write(image.Body)
+
+		w.WriteHeader(http.StatusOK)
+		return
 	}
+
+	// Expose Content-Length response header
+	w.Header().Set("Content-Length", strconv.Itoa(len(image.Body)))
+	w.Header().Set("Content-Type", image.Mime)
+	if vary != "" {
+		w.Header().Set("Vary", vary)
+	}
+	w.Write(image.Body)
 }
 
 func formController(w http.ResponseWriter, r *http.Request) {

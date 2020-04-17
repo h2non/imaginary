@@ -41,6 +41,8 @@ To get started, take a look the [installation](#installation) steps, [usage](#co
   - [Form data](#form-data)
   - [Params](#params)
   - [Endpoints](#get-)
+- [Logging](#logging)
+  - [Fluentd log ingestion](#fluentd-log-ingestion)
 - [Authors](#authors)
 - [License](#license)
 
@@ -71,7 +73,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#co
 
 - [libvips](https://github.com/jcupitt/libvips) 8.3+ (8.5+ recommended)
 - C compatible compiler such as gcc 4.6+ or clang 3.0+
-- Go 1.10+
+- Go 1.11+
 
 ## Installation
 
@@ -447,12 +449,13 @@ imaginary can be configured to block all requests for images with a src URL this
 
 | `allowed-origins` setting | image url | is valid |
 | ------------------------- | --------- | -------- |
-| `--allowed-origns s3.amazonaws.com/some-bucket/` | `s3.amazonaws.com/some-bucket/images/image.png` | VALID |
-| `--allowed-origns s3.amazonaws.com/some-bucket/` | `s3.amazonaws.com/images/image.png` | NOT VALID (no matching basepath) |
-| `--allowed-origns *.amazonaws.com/some-bucket/` | `anysubdomain.amazonaws.com/some-bucket/images/image.png` | VALID |
-| `--allowed-origns *.amazonaws.com` | `anysubdomain.amazonaws.comimages/image.png` | VALID |
-| `--allowed-origns *.amazonaws.com` | `www.notaws.comimages/image.png` | NOT VALID (no matching host) |
-| `--allowed-origns *.amazonaws.com, foo.amazonaws.com/some-bucket/` | `bar.amazonaws.com/some-other-bucket/image.png` | VALID (matches first condition but not second) |
+| `--allowed-origins s3.amazonaws.com/some-bucket/` | `s3.amazonaws.com/some-bucket/images/image.png` | VALID |
+| `--allowed-origins s3.amazonaws.com/some-bucket/` | `s3.amazonaws.com/images/image.png` | NOT VALID (no matching basepath) |
+| `--allowed-origins s3.amazonaws.com/some-*` | `s3.amazonaws.com/some-bucket/images/image.png` | VALID |
+| `--allowed-origins *.amazonaws.com/some-bucket/` | `anysubdomain.amazonaws.com/some-bucket/images/image.png` | VALID |
+| `--allowed-origins *.amazonaws.com` | `anysubdomain.amazonaws.comimages/image.png` | VALID |
+| `--allowed-origins *.amazonaws.com` | `www.notaws.comimages/image.png` | NOT VALID (no matching host) |
+| `--allowed-origins *.amazonaws.com, foo.amazonaws.com/some-bucket/` | `bar.amazonaws.com/some-other-bucket/image.png` | VALID (matches first condition but not second) |
 
 ### Authorization
 
@@ -564,6 +567,8 @@ Image measures are always in pixels, unless otherwise indicated.
 - **minampl**     `float`  - Minimum amplitude of the gaussian filter to use when blurring an image. Default: Example: `0.5`
 - **operations**  `json`   - Pipeline of image operation transformations defined as URL safe encoded JSON array. See [pipeline](#get--post-pipeline) endpoints for more details.
 - **sign**        `string` - URL signature (URL-safe Base64-encoded HMAC digest)
+- **interlace**   `bool`   - Use progressive / interlaced format of the image output. Defaults to `false`
+- **aspectratio** `string` - Apply aspect ratio by giving either image's height or width. Exampe: `16:9`
 
 #### GET /
 Content-Type: `application/json`
@@ -652,7 +657,8 @@ Crop the image by a given width or height. Image ratio is maintained
 - minampl `float`
 - gravity `string`
 - field `string` - Only POST and `multipart/form` payloads
-
+- interlace `bool`
+- aspectratio `string`
 
 #### GET | POST /smartcrop
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -683,6 +689,8 @@ Crop the image by a given width or height using the [libvips](https://github.com
 - minampl `float`
 - gravity `string`
 - field `string` - Only POST and `multipart/form` payloads
+- interlace `bool`
+- aspectratio `string`
 
 #### GET | POST /resize
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -713,6 +721,8 @@ Resize an image by width or height. Image aspect ratio is maintained
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- interlace `bool`
+- aspectratio `string`
 
 #### GET | POST /enlarge
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -741,6 +751,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- interlace `bool`
 
 #### GET | POST /extract
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -772,6 +783,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- interlace `bool`
+- aspectratio `string`
 
 #### GET | POST /zoom
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -801,6 +814,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- interlace `bool`
+- aspectratio `string`
 
 #### GET | POST /thumbnail
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -828,6 +843,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- interlace `bool`
+- aspectratio `string`
 
 #### GET | POST /fit
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -858,6 +875,8 @@ The width and height specify a maximum bounding box for the image.
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- interlace `bool`
+- aspectratio `string`
 
 #### GET | POST /rotate
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -885,6 +904,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- interlace `bool`
+- aspectratio `string`
 
 #### GET | POST /flip
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -911,6 +932,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- interlace `bool`
+- aspectratio `string`
 
 #### GET | POST /flop
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -937,6 +960,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- interlace `bool`
+- aspectratio `string`
 
 #### GET | POST /convert
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -962,6 +987,8 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- interlace `bool`
+- aspectratio `string`
 
 #### GET | POST /pipeline
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -1083,6 +1110,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- interlace `bool`
 
 #### GET | POST /watermarkimage
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -1112,6 +1140,7 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - sigma `float`
 - minampl `float`
 - field `string` - Only POST and `multipart/form` payloads
+- interlace `bool`
 
 #### GET | POST /blur
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
@@ -1138,6 +1167,62 @@ Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 - background `string` - Example: `?background=250,20,10`
 - colorspace `string`
 - field `string` - Only POST and `multipart/form` payloads
+- interlace `bool`
+- aspectratio `string`
+
+## Logging
+
+Imaginary uses an [apache compatible log format](/log.go).
+
+### Fluentd log ingestion
+
+You can ingest Imaginary logs with fluentd using the following fluentd config :
+
+```
+# use your own tag name (*.imaginary for this example)
+<filter *.imaginary>
+    @type parser
+    key_name log
+    reserve_data true
+
+    <parse>
+        @type multi_format
+        # access logs parser
+        <pattern>
+            format regexp
+            expression /^[^ ]* [^ ]* [^ ]* \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*) (?<response_time>[^ ]*)$/
+            types code:integer,size:integer,response_time:float
+            time_key time
+            time_format %d/%b/%Y %H:%M:%S
+        </pattern>
+        # warnings / error logs parser
+        <pattern>
+            format none
+            message_key message
+        </pattern>
+    </parse>
+</filter>
+
+<match *.imaginary>
+    @type rewrite_tag_filter
+
+    # Logs with code field are access logs, and logs without are error logs
+    <rule>
+        key code
+        pattern ^.+$
+        tag ${tag}.access
+    </rule>
+    <rule>
+        key code
+        pattern ^.+$
+        invert true
+        tag ${tag}.error
+    </rule>
+</match>
+```
+
+In the end, access records are tagged with `*.imaginary.access`, and warning /
+error records are tagged with `*.imaginary.error`.
 
 ## Support
 

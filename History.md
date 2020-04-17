@@ -1,4 +1,11 @@
 
+v1.1.3 / 2020-02-28
+===================
+
+  * Merge branch 'master' of https://github.com/h2non/imaginary
+  * refactor
+  * add fluentd config example to ingest imaginary logs (#260)
+
 v1.1.1 / 2019-07-07
 ===================
 
