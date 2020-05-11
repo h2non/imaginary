@@ -33,6 +33,7 @@ type ServerOptions struct {
 	KeyFile            string
 	Authorization      string
 	Placeholder        string
+	PlaceholderStatus  int
 	ForwardHeaders     []string
 	PlaceholderImage   []byte
 	Endpoints          Endpoints

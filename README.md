@@ -1295,7 +1295,6 @@ Become a sponsor and get your logo on our README on Github with a link to your s
 ## Authors
 
 - [Tomás Aparicio](https://github.com/h2non) - Original author and maintainer.
-- [Kirill Danshin](https://github.com/kirillDanshin) - Co-maintainer since April 2017.
 
 ## License
 
