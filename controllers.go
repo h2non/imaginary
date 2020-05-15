@@ -119,21 +119,51 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 		return
 	}
 
-	key := parseS3Key(r)
-	outputKey := parseS3OutputKey(r)
-	bucket := parseS3Bucket(r)
-	region := parseS3Region(r)
-
-	if len(key) != 0 {
-		if err := uploadBufferToS3(image.Body, outputKey, bucket, region); err != nil {
+	if len(parseS3Key(r)) != 0 {
+		if err := uploadBufferToS3(
+			image.Body,
+			parseS3OutputKey(r),
+			parseS3Bucket(r),
+			parseS3Region(r),
+		); err != nil {
 			ErrorReply(
-				r,
-				w,
+				r, w,
 				NewError(
-					fmt.Sprintf("Error while processing the image: %s", err),
+					fmt.Sprintf("Error while processing the s3 image: %s", err),
 					InternalError,
-				),
-				o,
+				), o,
+			)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		return
+	} else if len(parseAzureBlobKey(r)) != 0 {
+		if err := uploadBufferToAzure(
+			image.Body,
+			parseAzureBlobOutputKey(r),
+			parseAzureContainer(r),
+		); err != nil {
+			ErrorReply(
+				r, w,
+				NewError(
+					fmt.Sprintf("Error while processing the azure image: %s", err),
+					InternalError,
+				), o,
+			)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		return
+	} else if url := parseAzureSASBlobURL(r); len(url) != 0 {
+		if err := uploadBufferToAzureSAS(image.Body, url); err != nil {
+			ErrorReply(
+				r, w,
+				NewError(
+					fmt.Sprintf("Error while processing the azure sas image: %s", err),
+					InternalError,
+				), o,
 			)
 			return
 		}
