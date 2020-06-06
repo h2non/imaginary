@@ -38,6 +38,7 @@ type ServerOptions struct {
 	PlaceholderImage   []byte
 	Endpoints          Endpoints
 	AllowedOrigins     []*url.URL
+	LogLevel           string
 }
 
 // Endpoints represents a list of endpoint names to disable.
@@ -57,7 +58,7 @@ func (e Endpoints) IsValid(r *http.Request) bool {
 
 func Server(o ServerOptions) error {
 	addr := o.Address + ":" + strconv.Itoa(o.Port)
-	handler := NewLog(NewServerMux(o), os.Stdout)
+	handler := NewLog(NewServerMux(o), os.Stdout, o.LogLevel)
 
 	server := &http.Server{
 		Addr:           addr,
