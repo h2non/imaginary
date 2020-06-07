@@ -3,20 +3,18 @@ language: go
 services:
   - docker
 
-dist: trusty
+dist: focal
 
 go:
-  - 1.14.x
   - 1.13.x
+  - 1.14.x
 
 env:
   global:
     - GOLANG_VERSION="${TRAVIS_GO_VERSION}"
     - IMAGINARY_VERSION="${TRAVIS_TAG:-dev}"
   matrix:
-    # - LIBVIPS=8.7.4
-    - LIBVIPS=8.8.0
-    - LIBVIPS=8.8.1
+    - LIBVIPS=8.8.4
     - LIBVIPS=8.9.2
 
 before_install:
