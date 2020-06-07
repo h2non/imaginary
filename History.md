@@ -1,4 +1,18 @@
 
+v1.2.0 / 2020-06-07
+===================
+
+  * New release, minor features, bimg upgrade and several fixes (#311)
+  * watermarkImage must be in lowerCamelCase (#255)
+  * Pre-release HEIF / HEIC support (#297)
+  * [improvement/log-levels] Add support set log levels (#301)
+  * chore(license): update year
+  * chore(docs): delete not valid contributor
+  * Added PlaceholderStatus option (#304)
+  * Create FUNDING.yml
+  * Delete README.md~
+  * Add fly.io (#300)
+
 v1.1.3 / 2020-02-28
 ===================
 
