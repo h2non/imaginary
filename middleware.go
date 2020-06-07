@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/rs/cors"
 	"github.com/h2non/bimg"
+	"github.com/rs/cors"
 	"gopkg.in/throttled/throttled.v2"
 	"gopkg.in/throttled/throttled.v2/store/memstore"
 )
@@ -105,7 +105,7 @@ func validateImage(next http.Handler, o ServerOptions) http.Handler {
 		}
 
 		if r.Method == http.MethodGet && o.Mount == "" && !o.EnableURLSource {
-			ErrorReply(r, w, ErrMethodNotAllowed, o)
+			ErrorReply(r, w, ErrGetMethodNotAllowed, o)
 			return
 		}
 

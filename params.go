@@ -344,8 +344,10 @@ func coerceInterlace(io *ImageOptions, param interface{}) (err error) {
 }
 
 func buildParamsFromOperation(op PipelineOperation) (ImageOptions, error) {
-
 	var options ImageOptions
+
+	// Apply defaults
+	options.Extend = bimg.ExtendCopy
 
 	for key, value := range op.Params {
 		fn, ok := paramTypeCoercions[key]
@@ -365,6 +367,9 @@ func buildParamsFromOperation(op PipelineOperation) (ImageOptions, error) {
 // buildParamsFromQuery builds the ImageOptions type from untyped parameters
 func buildParamsFromQuery(query url.Values) (ImageOptions, error) {
 	var options ImageOptions
+
+	// Apply defaults
+	options.Extend = bimg.ExtendCopy
 
 	// Extract only known parameters
 	for key := range query {
@@ -448,8 +453,8 @@ func parseExtendMode(val string) bimg.Extend {
 	if val == "white" {
 		return bimg.ExtendWhite
 	}
-	if val == "copy" {
-		return bimg.ExtendCopy
+	if val == "black" {
+		return bimg.ExtendBlack
 	}
 	if val == "mirror" {
 		return bimg.ExtendMirror
@@ -457,7 +462,10 @@ func parseExtendMode(val string) bimg.Extend {
 	if val == "background" {
 		return bimg.ExtendBackground
 	}
-	return bimg.ExtendBlack
+	if val == "lastpixel" {
+		return bimg.ExtendLast
+	}
+	return bimg.ExtendCopy
 }
 
 func parseGravity(val string) bimg.Gravity {

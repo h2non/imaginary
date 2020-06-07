@@ -141,10 +141,11 @@ func TestParseExtend(t *testing.T) {
 		{"black", bimg.ExtendBlack},
 		{"copy", bimg.ExtendCopy},
 		{"mirror", bimg.ExtendMirror},
+		{"lastpixel", bimg.ExtendLast},
 		{"background", bimg.ExtendBackground},
 		{" BACKGROUND  ", bimg.ExtendBackground},
-		{"invalid", bimg.ExtendBlack},
-		{"", bimg.ExtendBlack},
+		{"invalid", bimg.ExtendCopy},
+		{"", bimg.ExtendCopy},
 	}
 
 	for _, extend := range cases {

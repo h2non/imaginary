@@ -1,8 +1,8 @@
-ARG GOLANG_VERSION=1.13.7
+ARG GOLANG_VERSION=1.14
 FROM golang:${GOLANG_VERSION} as builder
 
 ARG IMAGINARY_VERSION=dev
-ARG LIBVIPS_VERSION=8.9.1
+ARG LIBVIPS_VERSION=8.9.2
 ARG GOLANGCILINT_VERSION=1.23.3
 
 # Installs libvips + required libraries
@@ -50,8 +50,8 @@ RUN go mod download
 COPY . .
 
 # Run quality control
-RUN go test -test.v -test.race -test.covermode=atomic ./...
-RUN golangci-lint run ./...
+RUN go test -test.v -test.race -test.covermode=atomic .
+RUN golangci-lint run .
 
 # Compile imaginary
 RUN go build -a \
