@@ -6,8 +6,9 @@ services:
 dist: focal
 
 go:
+  - "1.12"
   - "1.13"
-  - "1.14"
+  # - "1.14"
 
 env:
   global:
@@ -16,10 +17,6 @@ env:
   matrix:
     - LIBVIPS=8.8.4
     - LIBVIPS=8.9.2
-
-matrix:
-  allow_failures:
-    - env: GOLANG_VERSION=1.14
 
 before_install:
   - docker pull h2non/imaginary:latest || true
