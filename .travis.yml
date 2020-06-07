@@ -6,8 +6,8 @@ services:
 dist: focal
 
 go:
-  - 1.13.x
-  - 1.14.x
+  - "1.13"
+  - "1.14"
 
 env:
   global:
@@ -16,6 +16,10 @@ env:
   matrix:
     - LIBVIPS=8.8.4
     - LIBVIPS=8.9.2
+
+matrix:
+  allow_failures:
+    - env: GOLANG_VERSION=1.14
 
 before_install:
   - docker pull h2non/imaginary:latest || true
@@ -26,14 +30,14 @@ install:
 script:
   - docker build --pull --cache-from h2non/imaginary:latest --build-arg GOLANG_VERSION="${GOLANG_VERSION%.x}" --build-arg LIBVIPS_VERSION="${LIBVIPS}" --build-arg IMAGINARY_VERSION="${IMAGINARY_VERSION#v}" --tag h2non/imaginary:${IMAGINARY_VERSION} .
 
-# before_deploy:
-#  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+before_deploy:
+ - docker login -u "$DOCKER_LOGIN" -p "$DOCKER_PWD"
 
-# deploy:
-#  provider: script
-#  script:
-#    - docker tag h2non/imaginary:${IMAGINARY_VERSION} latest
-#    - docker push h2non/imaginary:${IMAGINARY_VERSION}
-#    - docker push h2non/imaginary:latest
-#  on:
-#    condition: "${TRAVIS_TAG} =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$"
+deploy:
+ provider: script
+ script:
+   - docker tag h2non/imaginary:${IMAGINARY_VERSION} h2non/imaginary:latest
+   - docker push h2non/imaginary:${IMAGINARY_VERSION}
+   - docker push h2non/imaginary:latest
+ on:
+   condition: "${TRAVIS_TAG} =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$"
