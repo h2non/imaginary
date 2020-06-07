@@ -1,7 +1,7 @@
 language: go
 
 stages:
-  - build
+  - test
   - deploy
 
 services:
@@ -22,17 +22,17 @@ env:
     - LIBVIPS=8.8.4
     - LIBVIPS=8.9.2
 
+before_install:
+  - docker pull h2non/imaginary:latest || true
+
+install:
+  - "true"
+
+script:
+  - docker build --pull --cache-from h2non/imaginary:latest --build-arg GOLANG_VERSION="${GOLANG_VERSION%.x}" --build-arg LIBVIPS_VERSION="${LIBVIPS}" --build-arg IMAGINARY_VERSION="${IMAGINARY_VERSION#v}" --tag h2non/imaginary:${IMAGINARY_VERSION#v} .
+
 jobs:
   include:
-    # Build stage
-    - stage: build
-      before_install:
-        - docker pull h2non/imaginary:latest || true
-      install:
-        - "true"
-      script:
-        - docker build --pull --cache-from h2non/imaginary:latest --build-arg GOLANG_VERSION="${GOLANG_VERSION%.x}" --build-arg LIBVIPS_VERSION="${LIBVIPS}" --build-arg IMAGINARY_VERSION="${IMAGINARY_VERSION#v}" --tag h2non/imaginary:${IMAGINARY_VERSION#v} .
-
     # Deploy stage
     - stage: deploy
       script:
