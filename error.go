@@ -92,7 +92,11 @@ func replyWithPlaceholder(req *http.Request, w http.ResponseWriter, errCaller Er
 	// Placeholder image response
 	w.Header().Set("Content-Type", GetImageMimeType(bimg.DetermineImageType(image)))
 	w.Header().Set("Error", string(errCaller.JSON()))
-	w.WriteHeader(errCaller.HTTPCode())
+	if o.PlaceholderStatus != 0 {
+		w.WriteHeader(o.PlaceholderStatus)
+	} else {
+		w.WriteHeader(errCaller.HTTPCode())
+	}
 	_, _ = w.Write(image)
 
 	return errCaller

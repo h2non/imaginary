@@ -6,7 +6,7 @@ It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net
 Supports multiple [image operations](#supported-image-operations) exposed as a simple [HTTP API](#http-api),
 with additional optional features such as **API token authorization**, **URL signature protection**, **HTTP traffic throttle** strategy and **CORS support** for web clients.
 
-`imaginary` **can read** images **from HTTP POST payloads**, **server local path** or **remote HTTP servers**, supporting **JPEG**, **PNG**, **WEBP**, and optionally **TIFF**, **PDF**, **GIF** and **SVG** formats if `libvips@8.3+` is compiled with proper library bindings.
+`imaginary` **can read** images **from HTTP POST payloads**, **server local path** or **remote HTTP servers**, supporting **JPEG**, **PNG**, **WEBP**, **HEIF**, and optionally **TIFF**, **PDF**, **GIF** and **SVG** formats if `libvips@8.3+` is compiled with proper library bindings.
 
 `imaginary` is able to output images as JPEG, PNG and WEBP formats, including transparent conversion across them.
 
@@ -316,6 +316,8 @@ Options:
   -mrelease <num>           OS memory release interval in seconds [default: 30]
   -cpus <num>               Number of used cpu cores.
                             (default for current machine is 8 cores)
+  -log-level                Set log level for http-server. E.g: info,warning,error [default: info].
+                            Or can use the environment variable GOLANG_LOG=info.
 ```
 
 Start the server in a custom port:
@@ -402,6 +404,11 @@ DEBUG=* imaginary -p 8080
 Or filter debug output by package:
 ```
 DEBUG=imaginary imaginary -p 8080
+```
+
+Disable info logs:
+```
+GOLANG_LOG=error imaginary -p 8080
 ```
 
 #### Examples
@@ -1288,7 +1295,6 @@ Become a sponsor and get your logo on our README on Github with a link to your s
 ## Authors
 
 - [Tomás Aparicio](https://github.com/h2non) - Original author and maintainer.
-- [Kirill Danshin](https://github.com/kirillDanshin) - Co-maintainer since April 2017.
 
 ## License
 
