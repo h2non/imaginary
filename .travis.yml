@@ -25,7 +25,7 @@ install:
   - "true"
 
 script:
-  - docker build --pull --cache-from h2non/imaginary:latest --build-arg GOLANG_VERSION="${GOLANG_VERSION%.x}" --build-arg LIBVIPS_VERSION="${LIBVIPS}" --build-arg IMAGINARY_VERSION="${IMAGINARY_VERSION#v}" --tag h2non/imaginary:${IMAGINARY_VERSION} .
+  - docker build --pull --cache-from h2non/imaginary:latest --build-arg GOLANG_VERSION="${GOLANG_VERSION%.x}" --build-arg LIBVIPS_VERSION="${LIBVIPS}" --build-arg IMAGINARY_VERSION="${IMAGINARY_VERSION#v}" --tag h2non/imaginary:${IMAGINARY_VERSION#v} .
 
 before_deploy:
   - docker login -u "$DOCKER_LOGIN" -p "$DOCKER_PWD"
@@ -33,8 +33,8 @@ before_deploy:
 deploy:
   provider: script
   script:
-    - docker tag h2non/imaginary:${IMAGINARY_VERSION} h2non/imaginary:latest
-    - docker push h2non/imaginary:${IMAGINARY_VERSION}
+    - docker tag h2non/imaginary:${IMAGINARY_VERSION#v} h2non/imaginary:latest
+    - docker push h2non/imaginary:${IMAGINARY_VERSION#v}
     - docker push h2non/imaginary:latest
   on:
     condition: "${TRAVIS_TAG} =~ ^v([0-9]+).([0-9]+).([0-9]+)$ AND env(GOLANG_VERSION) = 1.13"
