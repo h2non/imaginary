@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"gopkg.in/h2non/bimg.v1"
+	"github.com/h2non/bimg"
 )
 
 var (
@@ -295,9 +295,9 @@ func parseOrigins(origins string) []*url.URL {
 
 		if u.Path != "" {
 			var lastChar = u.Path[len(u.Path)-1:]
-			if (lastChar == "*") {
+			if lastChar == "*" {
 				u.Path = strings.TrimSuffix(u.Path, "*")
-			} else if (lastChar != "/") {
+			} else if lastChar != "/" {
 				u.Path += "/"
 			}
 		}

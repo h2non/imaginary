@@ -1,4 +1,4 @@
-# imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.png)](https://travis-ci.org/h2non/imaginary) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Docker Registry](https://img.shields.io/docker/pulls/h2non/imaginary.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Go Report Card](http://goreportcard.com/badge/h2non/imaginary)](https://goreportcard.com/report/h2non/imaginary) [![Fly.io](https://img.shields.io/badge/deploy-fly.io-blue.svg)](https://fly.io/launch/github/h2non/imaginary)
+# imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.svg)](https://travis-ci.org/h2non/imaginary) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Docker Registry](https://img.shields.io/docker/pulls/h2non/imaginary.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Go Report Card](http://goreportcard.com/badge/h2non/imaginary)](https://goreportcard.com/report/h2non/imaginary) [![Fly.io](https://img.shields.io/badge/deploy-fly.io-blue.svg)](https://fly.io/launch/github/h2non/imaginary)
 
 **[Fast](#benchmarks) HTTP [microservice](http://microservices.io/patterns/microservices.html)** written in Go **for high-level image processing** backed by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). `imaginary` can be used as private or public HTTP service for massive image processing with first-class support for [Docker](#docker) & [Fly.io](#flyio).
 It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package without additional abstractions for better [performance](#performance).
@@ -83,7 +83,7 @@ go get -u github.com/h2non/imaginary
 
 Also, be sure you have the latest version of `bimg`:
 ```bash
-go get -u gopkg.in/h2non/bimg.v1
+go get -u github.com/h2non/bimg
 ```
 
 ### libvips
@@ -219,7 +219,7 @@ Assuming that you want to provide a high availability to deal efficiently with, 
         |==============|
         |   Balancer   |
         |==============|
-           |       |   
+           |       |
           /         \
          /           \
         /             \
@@ -305,7 +305,7 @@ Options:
   -forward-headers          Forwards custom headers to the image source server. -enable-url-source flag must be defined.
   -enable-url-signature     Enable URL signature (URL-safe Base64-encoded HMAC digest) [default: false]
   -url-signature-key        The URL signature key (32 characters minimum)
-  -allowed-origins <urls>   Restrict remote image source processing to certain origins (separated by commas). Note: Origins are validated against host *AND* path. 
+  -allowed-origins <urls>   Restrict remote image source processing to certain origins (separated by commas). Note: Origins are validated against host *AND* path.
   -max-allowed-size <bytes> Restrict maximum size of http image source (in bytes)
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
@@ -546,7 +546,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **url**         `string` - Fetch the image from a remote HTTP server. In order to use this you must pass the `-enable-url-source` flag.
 - **colorspace**  `string` - Use a custom color space for the output image. Allowed values are: `srgb` or `bw` (black&white)
 - **field**       `string` - Custom image form field name if using `multipart/form`. Defaults to: `file`
-- **extend**      `string` - Extend represents the image extend mode used when the edges of an image are extended. Allowed values are: `black`, `copy`, `mirror`, `white` and `background`. If `background` value is specified, you can define the desired extend RGB color via `background` param, such as `?extend=background&background=250,20,10`. For more info, see [libvips docs](http://www.vips.ecs.soton.ac.uk/supported/8.4/doc/html/libvips/libvips-conversion.html#VIPS-EXTEND-BACKGROUND:CAPS).
+- **extend**      `string` - Extend represents the image extend mode used when the edges of an image are extended. Defaults to `copy`. Allowed values are: `black`, `copy`, `mirror`, `white`, `lastpixel` and `background`. If `background` value is specified, you can define the desired extend RGB color via `background` param, such as `?extend=background&background=250,20,10`. For more info, see [libvips docs](http://www.vips.ecs.soton.ac.uk/supported/8.4/doc/html/libvips/libvips-conversion.html#VIPS-EXTEND-BACKGROUND:CAPS).
 - **background**  `string` - Background RGB decimal base color to use when flattening transparent PNGs. Example: `255,200,150`
 - **sigma**       `float`  - Size of the gaussian mask to use when blurring an image. Example: `15.0`
 - **minampl**     `float`  - Minimum amplitude of the gaussian filter to use when blurring an image. Default: Example: `0.5`

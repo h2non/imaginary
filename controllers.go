@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"gopkg.in/h2non/bimg.v1"
-	"gopkg.in/h2non/filetype.v1"
+	"github.com/h2non/bimg"
+	"github.com/h2non/filetype"
 )
 
 func indexController(w http.ResponseWriter, r *http.Request) {
@@ -44,7 +44,11 @@ func imageController(o ServerOptions, operation Operation) func(http.ResponseWri
 
 		buf, err := imageSource.GetImage(req)
 		if err != nil {
-			ErrorReply(req, w, NewError(err.Error(), BadRequest), o)
+			if xerr, ok := err.(Error); ok {
+				ErrorReply(req, w, xerr, o)
+			} else {
+				ErrorReply(req, w, NewError(err.Error(), http.StatusBadRequest), o)
+			}
 			return
 		}
 
@@ -100,7 +104,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 
 	opts, err := buildParamsFromQuery(r.URL.Query())
 	if err != nil {
-		ErrorReply(r, w, NewError("Error while processing parameters, "+err.Error(), BadRequest), o)
+		ErrorReply(r, w, NewError("Error while processing parameters, "+err.Error(), http.StatusBadRequest), o)
 		return
 	}
 
@@ -115,7 +119,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 
 	image, err := operation.Run(buf, opts)
 	if err != nil {
-		ErrorReply(r, w, NewError("Error while processing the image: "+err.Error(), BadRequest), o)
+		ErrorReply(r, w, NewError("Error while processing the image: "+err.Error(), http.StatusBadRequest), o)
 		return
 	}
 

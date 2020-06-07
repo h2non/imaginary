@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"gopkg.in/h2non/bimg.v1"
+	"github.com/h2non/bimg"
 )
 
 // ImageOptions represent all the supported image transformation params as first level members

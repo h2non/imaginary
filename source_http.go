@@ -41,11 +41,11 @@ func (s *HTTPImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, 
 		req := newHTTPRequest(s, ireq, http.MethodHead, url)
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
-			return nil, fmt.Errorf("error fetching image http headers: %v", err)
+			return nil, fmt.Errorf("error fetching remote http image headers: %v", err)
 		}
 		_ = res.Body.Close()
 		if res.StatusCode < 200 && res.StatusCode > 206 {
-			return nil, fmt.Errorf("error fetching image http headers: (status=%d) (url=%s)", res.StatusCode, req.URL.String())
+			return nil, NewError(fmt.Sprintf("error fetching remote http image headers: (status=%d) (url=%s)", res.StatusCode, req.URL.String()), res.StatusCode)
 		}
 
 		contentLength, _ := strconv.Atoi(res.Header.Get("Content-Length"))
@@ -58,11 +58,11 @@ func (s *HTTPImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, 
 	req := newHTTPRequest(s, ireq, http.MethodGet, url)
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("error downloading image: %v", err)
+		return nil, fmt.Errorf("error fetching remote http image: %v", err)
 	}
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		return nil, fmt.Errorf("error downloading image: (status=%d) (url=%s)", res.StatusCode, req.URL.String())
+		return nil, NewError(fmt.Sprintf("error fetching remote http image: (status=%d) (url=%s)", res.StatusCode, req.URL.String()), res.StatusCode)
 	}
 
 	// Read the body

@@ -6,18 +6,18 @@ services:
 dist: trusty
 
 go:
-  - 1.12.x
-  - 1.11.x
+  - 1.14.x
+  - 1.13.x
 
 env:
   global:
     - GOLANG_VERSION="${TRAVIS_GO_VERSION}"
     - IMAGINARY_VERSION="${TRAVIS_TAG:-dev}"
   matrix:
-    - LIBVIPS=8.7.3
-    - LIBVIPS=8.7.4
+    # - LIBVIPS=8.7.4
     - LIBVIPS=8.8.0
     - LIBVIPS=8.8.1
+    - LIBVIPS=8.9.2
 
 before_install:
   - docker pull h2non/imaginary:latest || true
