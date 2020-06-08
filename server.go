@@ -1,9 +1,13 @@
 package main
 
 import (
+	"context"
 	"net/http"
 	"net/url"
+	"log"
 	"os"
+	"os/signal"
+	"syscall"
 	"path"
 	"strconv"
 	"strings"
@@ -56,7 +60,7 @@ func (e Endpoints) IsValid(r *http.Request) bool {
 	return true
 }
 
-func Server(o ServerOptions) error {
+func Server(o ServerOptions) {
 	addr := o.Address + ":" + strconv.Itoa(o.Port)
 	handler := NewLog(NewServerMux(o), os.Stdout, o.LogLevel)
 
@@ -68,7 +72,27 @@ func Server(o ServerOptions) error {
 		WriteTimeout:   time.Duration(o.HTTPWriteTimeout) * time.Second,
 	}
 
-	return listenAndServe(server, o)
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		if err := listenAndServe(server, o); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+
+	<-done
+	log.Print("Graceful shutdown")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer func() {
+		// extra handling here
+		cancel()
+	}()
+
+	if err := server.Shutdown(ctx); err != nil {
+		log.Fatalf("Server Shutdown Failed:%+v", err)
+	}
 }
 
 func listenAndServe(s *http.Server, o ServerOptions) error {
