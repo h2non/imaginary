@@ -219,10 +219,7 @@ func main() {
 	LoadSources(opts)
 
 	// Start the server
-	err := Server(opts)
-	if err != nil {
-		exitWithError("cannot start the server: %s", err)
-	}
+	Server(opts)
 }
 
 func getPort(port int) int {
