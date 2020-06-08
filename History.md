@@ -1,8 +1,9 @@
 
-v1.1.1 / 2020-06-08
+v1.2.1 / 2020-06-08
 ===================
 
-  * fix
+  * feat(bimg): upgrade to v1.2.0
+  * feat(server-graceful-shutdown): add support of graceful shutdown #312
 
 v1.2.0 / 2020-06-07
 ===================
