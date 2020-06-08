@@ -205,6 +205,16 @@ You can enable it simply passing a flag to the binary:
 $ imaginary -concurrency 20
 ```
 
+### Graceful shutdown
+
+When you use a cluster, it is necessary to control how the deployment is executed, and it is very useful to finish the containers in a controlled.
+
+You can use the next command:
+
+```
+$ ps auxw | grep 'bin/imaginary' | awk 'NR>1{print buf}{buf = $2}' | xargs kill -TERM > /dev/null 2>&1
+```
+
 ### Scalability
 
 If you're looking for a large scale solution for massive image processing, you should scale `imaginary` horizontally, distributing the HTTP load across a pool of imaginary servers.
