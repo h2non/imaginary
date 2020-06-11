@@ -1,4 +1,9 @@
 
+v1.2.2 / 2020-06-11
+===================
+
+  * refactor(params): use mirror as default extend behavior
+
 v1.2.1 / 2020-06-08
 ===================
 
@@ -69,7 +74,7 @@ v1.1.1 / 2019-07-07
 v1.0.15 / 2018-03-15
 ====================
 
-  * fix(#188, #185): Install SSL CA certificates. 
+  * fix(#188, #185): Install SSL CA certificates.
   * chore(Dockerfile): upgrade libvips to v8.6.3
 
 
