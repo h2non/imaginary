@@ -456,8 +456,8 @@ func parseExtendMode(val string) bimg.Extend {
 	if val == "black" {
 		return bimg.ExtendBlack
 	}
-	if val == "mirror" {
-		return bimg.ExtendMirror
+	if val == "copy" {
+		return bimg.ExtendCopy
 	}
 	if val == "background" {
 		return bimg.ExtendBackground
@@ -465,7 +465,7 @@ func parseExtendMode(val string) bimg.Extend {
 	if val == "lastpixel" {
 		return bimg.ExtendLast
 	}
-	return bimg.ExtendCopy
+	return bimg.ExtendMirror
 }
 
 func parseGravity(val string) bimg.Gravity {
