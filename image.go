@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"strings"
 	"io/ioutil"
 	"math"
 	"net/http"
@@ -221,6 +222,31 @@ func Rotate(buf []byte, o ImageOptions) (Image, error) {
 	return Process(buf, opts)
 }
 
+func AutoRotate(buf []byte, o ImageOptions) (out Image, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			switch value := r.(type) {
+			case error:
+				err = value
+			case string:
+				err = errors.New(value)
+			default:
+				err = errors.New("libvips internal error")
+			}
+			out = Image{}
+		}
+	}()
+
+	// Resize image via bimg
+	ibuf, err := bimg.NewImage(buf).AutoRotate()
+	if err != nil {
+		return Image{}, err
+	}
+
+	mime := GetImageMimeType(bimg.DetermineImageType(ibuf))
+	return Image{Body: ibuf, Mime: mime}, nil
+}
+
 func Flip(buf []byte, o ImageOptions) (Image, error) {
 	opts := BimgOptions(o)
 	opts.Flip = true
@@ -406,11 +432,20 @@ func Process(buf []byte, opts bimg.Options) (out Image, err error) {
 		}
 	}()
 
-	buf, err = bimg.Resize(buf, opts)
+	// Resize image via bimg
+	ibuf, err := bimg.Resize(buf, opts)
+
+	// Handle specific type encode errors gracefully
+	if err != nil && strings.Contains(err.Error(), "encode") && (opts.Type == bimg.WEBP || opts.Type == bimg.HEIF) {
+		// Always fallback to JPEG
+		opts.Type = bimg.JPEG
+		ibuf, err = bimg.Resize(buf, opts)
+	}
+
 	if err != nil {
 		return Image{}, err
 	}
 
-	mime := GetImageMimeType(bimg.DetermineImageType(buf))
-	return Image{Body: buf, Mime: mime}, nil
+	mime := GetImageMimeType(bimg.DetermineImageType(ibuf))
+	return Image{Body: ibuf, Mime: mime}, nil
 }

@@ -93,6 +93,20 @@ func TestImageFit(t *testing.T) {
 	}
 }
 
+func TestImageAutoRotate(t *testing.T) {
+	buf, _ := ioutil.ReadAll(readFile("imaginary.jpg"))
+	img, err := AutoRotate(buf, ImageOptions{})
+	if err != nil {
+		t.Errorf("Cannot process image: %s", err)
+	}
+	if img.Mime != "image/jpeg" {
+		t.Error("Invalid image MIME type")
+	}
+	if assertSize(img.Body, 550, 740) != nil {
+		t.Errorf("Invalid image size, expected: %dx%d", 550, 740)
+	}
+}
+
 func TestImagePipelineOperations(t *testing.T) {
 	width, height := 300, 260
 

@@ -53,6 +53,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#co
 - Crop
 - SmartCrop (based on [libvips built-in algorithm](https://github.com/jcupitt/libvips/blob/master/libvips/conversion/smartcrop.c))
 - Rotate (with auto-rotate based on EXIF orientation)
+- AutoRotate with further image transformations (based on EXIF metadata orientation)
 - Flip (with auto-flip based on EXIF metadata)
 - Flop
 - Zoom
@@ -883,6 +884,14 @@ The width and height specify a maximum bounding box for the image.
 #### GET | POST /rotate
 Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
 
+
+#### GET | POST /autorotate
+Accepts: `image/*, multipart/form-data`. Content-Type: `image/*`
+
+Automatically rotate the image with no further image transformations based on EXIF orientation metadata.
+
+Returns a new image with the same size and format as the input image.
+
 ##### Allowed params
 
 - rotate `int` `required`
@@ -1036,6 +1045,7 @@ Self-documented JSON operation schema:
 - **enlarge** - Same as [`/enlarge`](#get--post-enlarge) endpoint.
 - **extract** - Same as [`/extract`](#get--post-extract) endpoint.
 - **rotate** - Same as [`/rotate`](#get--post-rotate) endpoint.
+- **autorotate** - Same as [`/autorotate`](#get--post-autorotate) endpoint.
 - **flip** - Same as [`/flip`](#get--post-flip) endpoint.
 - **flop** - Same as [`/flop`](#get--post-flop) endpoint.
 - **thumbnail** - Same as [`/thumbnail`](#get--post-thumbnail) endpoint.
