@@ -220,6 +220,14 @@ You can enable it simply passing a flag to the binary:
 $ imaginary -concurrency 20
 ```
 
+### Memory issues
+
+In case you are experiencing any persistent unreleased memory issues in your deployment, you can try passing this environemnt variables to `imaginary`:
+
+```
+MALLOC_ARENA_MAX=2 imaginary -p 9000 -enable-url-source
+```
+
 ### Graceful shutdown
 
 When you use a cluster, it is necessary to control how the deployment is executed, and it is very useful to finish the containers in a controlled.
