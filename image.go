@@ -21,6 +21,7 @@ var OperationsMap = map[string]Operation{
 	"enlarge":        Enlarge,
 	"extract":        Extract,
 	"rotate":         Rotate,
+	"autorotate":     AutoRotate,
 	"flip":           Flip,
 	"flop":           Flop,
 	"thumbnail":      Thumbnail,
