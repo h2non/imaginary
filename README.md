@@ -12,8 +12,8 @@ with additional optional features such as **API token authorization**, **URL sig
 
 `imaginary` also optionally **supports image placeholder fallback mechanism** in case of image processing error or server error of any nature, therefore an image will be always returned by the server in terms of HTTP response body and content MIME type, even in case of error, matching the expected image size and format transparently.
 
-It uses internally `libvips`, a powerful and efficient library written in C for image processing
-which requires a [low memory footprint](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use)
+`imaginary` uses internally `libvips`, a powerful and efficient library written in C for fast image processing
+which requires a [low memory footprint](https://github.com/libvips/libvips/wiki/Benchmarks)
 and it's typically 4x faster than using the quickest ImageMagick and GraphicsMagick
 settings or Go native `image` package, and in some cases it's even 8x faster processing JPEG images.
 
@@ -72,9 +72,9 @@ To get started, take a look the [installation](#installation) steps, [usage](#co
 
 ## Prerequisites
 
-- [libvips](https://github.com/jcupitt/libvips) 8.3+ (8.5+ recommended)
+- [libvips](https://github.com/jcupitt/libvips) 8.8+ (8.9+ recommended)
 - C compatible compiler such as gcc 4.6+ or clang 3.0+
-- Go 1.11+
+- Go 1.12+
 
 ## Installation
 
@@ -110,6 +110,16 @@ Start the container with optional flags (default listening on port 9000)
 docker run -p 9000:9000 h2non/imaginary -cors -gzip
 ```
 
+Start the container enabling remote URL source image processing via GET requests and `url` query param.
+```
+docker run -p 9000:9000 h2non/imaginary imaginary -p 9000 -enable-url-source
+```
+
+Start the container enabling local directory image process via GET requests and `file` query param.
+```
+docker run -p 9000:9000 h2non/imaginary imaginary -p 900 -mount /volume/images
+```
+
 Start the container in debug mode:
 ```
 docker run -p 9000:9000 -e "DEBUG=*" h2non/imaginary
@@ -125,9 +135,13 @@ Stop the container
 docker stop h2non/imaginary
 ```
 
-You can see all the Docker tags [here](https://hub.docker.com/r/h2non/imaginary/tags/).
+For more usage examples, see the [command line usage](#command-line-usage).
 
-Alternatively you may add imaginary to your `docker-compose.yml` file:
+All Docker images tags are available [here](https://hub.docker.com/r/h2non/imaginary/tags/).
+
+#### Docker Compose
+
+You can add `imaginary` to your `docker-compose.yml` file:
 
 ```yaml
 version: "3"
@@ -250,7 +264,7 @@ Feel free to send a PR if you created a client for other language.
 libvips is probably the faster open source solution for image processing.
 Here you can see some performance test comparisons for multiple scenarios:
 
-- [libvips speed and memory usage](http://www.vips.ecs.soton.ac.uk/index.php?title=Speed_and_Memory_Use)
+- [libvips speed and memory usage](https://github.com/libvips/libvips/wiki/Benchmarks)
 - [bimg](https://github.com/h2non/bimg#Performance) (Go library with C bindings to libvips)
 
 ## Benchmark
@@ -564,7 +578,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **url**         `string` - Fetch the image from a remote HTTP server. In order to use this you must pass the `-enable-url-source` flag.
 - **colorspace**  `string` - Use a custom color space for the output image. Allowed values are: `srgb` or `bw` (black&white)
 - **field**       `string` - Custom image form field name if using `multipart/form`. Defaults to: `file`
-- **extend**      `string` - Extend represents the image extend mode used when the edges of an image are extended. Defaults to `mirror`. Allowed values are: `black`, `copy`, `mirror`, `white`, `lastpixel` and `background`. If `background` value is specified, you can define the desired extend RGB color via `background` param, such as `?extend=background&background=250,20,10`. For more info, see [libvips docs](http://www.vips.ecs.soton.ac.uk/supported/8.4/doc/html/libvips/libvips-conversion.html#VIPS-EXTEND-BACKGROUND:CAPS).
+- **extend**      `string` - Extend represents the image extend mode used when the edges of an image are extended. Defaults to `mirror`. Allowed values are: `black`, `copy`, `mirror`, `white`, `lastpixel` and `background`. If `background` value is specified, you can define the desired extend RGB color via `background` param, such as `?extend=background&background=250,20,10`. For more info, see [libvips docs](https://libvips.github.io/libvips/API/current/libvips-conversion.html#VIPS-EXTEND-BACKGROUND:CAPS).
 - **background**  `string` - Background RGB decimal base color to use when flattening transparent PNGs. Example: `255,200,150`
 - **sigma**       `float`  - Size of the gaussian mask to use when blurring an image. Example: `15.0`
 - **minampl**     `float`  - Minimum amplitude of the gaussian filter to use when blurring an image. Default: Example: `0.5`
