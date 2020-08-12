@@ -2,6 +2,7 @@
 1.2.4 / 2020-08-12
 ==================
 
+  * upgrade: libvips to v8.10.0
   * fix(pipeline): add missing autorate (#326)
 
 v1.2.3 / 2020-08-04
