@@ -119,6 +119,10 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 
 	image, err := operation.Run(buf, opts)
 	if err != nil {
+		// Ensure the Vary header is set when an error occurs
+		if vary != "" {
+			w.Header().Set("Vary", vary)
+		}
 		ErrorReply(r, w, NewError("Error while processing the image: "+err.Error(), http.StatusBadRequest), o)
 		return
 	}
