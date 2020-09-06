@@ -112,12 +112,12 @@ docker run -p 9000:9000 h2non/imaginary -cors -gzip
 
 Start the container enabling remote URL source image processing via GET requests and `url` query param.
 ```
-docker run -p 9000:9000 h2non/imaginary imaginary -p 9000 -enable-url-source
+docker run -p 9000:9000 h2non/imaginary -p 9000 -enable-url-source
 ```
 
 Start the container enabling local directory image process via GET requests and `file` query param.
 ```
-docker run -p 9000:9000 h2non/imaginary imaginary -p 900 -mount /volume/images
+docker run -p 9000:9000 h2non/imaginary -p 900 -mount /volume/images
 ```
 
 Start the container in debug mode:
