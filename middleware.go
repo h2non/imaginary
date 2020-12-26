@@ -170,6 +170,7 @@ func validateURLSignature(next http.Handler, o ServerOptions) http.Handler {
 		sign := query.Get("sign")
 		query.Del("sign")
 
+		debug("Signing: %s%s using key %s", r.URL.Path, query.Encode(), o.URLSignatureKey)
 		// Compute expected URL signature
 		h := hmac.New(sha256.New, []byte(o.URLSignatureKey))
 		_, _ = h.Write([]byte(r.URL.Path))
@@ -183,6 +184,7 @@ func validateURLSignature(next http.Handler, o ServerOptions) http.Handler {
 		}
 
 		if !hmac.Equal(urlSign, expectedSign) {
+			debug("Mismatch signature got %s but expected %s", sign, base64.RawURLEncoding.EncodeToString(expectedSign))
 			ErrorReply(r, w, ErrURLSignatureMismatch, o)
 			return
 		}

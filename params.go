@@ -21,6 +21,7 @@ var paramTypeCoercions = map[string]Coercion{
 	"width":       coerceWidth,
 	"height":      coerceHeight,
 	"quality":     coerceQuality,
+	"speed":       coerceSpeed,
 	"top":         coerceTop,
 	"left":        coerceLeft,
 	"areawidth":   coerceAreaWidth,
@@ -131,6 +132,11 @@ func coerceWidth(io *ImageOptions, param interface{}) (err error) {
 
 func coerceQuality(io *ImageOptions, param interface{}) (err error) {
 	io.Quality, err = coerceTypeInt(param)
+	return err
+}
+
+func coerceSpeed(io *ImageOptions, param interface{}) (err error) {
+	io.Speed, err = coerceTypeInt(param)
 	return err
 }
 
