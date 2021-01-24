@@ -16,7 +16,8 @@ import (
 )
 
 func TestIndex(t *testing.T) {
-	ts := testServer(indexController)
+	opts := ServerOptions{PathPrefix: "/"}
+	ts := testServer(indexController(opts))
 	defer ts.Close()
 
 	res, err := http.Get(ts.URL)
