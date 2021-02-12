@@ -222,7 +222,7 @@ $ imaginary -concurrency 20
 
 ### Memory issues
 
-In case you are experiencing any persistent unreleased memory issues in your deployment, you can try passing this environemnt variables to `imaginary`:
+In case you are experiencing any persistent unreleased memory issues in your deployment, you can try passing this environment variables to `imaginary`:
 
 ```
 MALLOC_ARENA_MAX=2 imaginary -p 9000 -enable-url-source
@@ -419,7 +419,7 @@ This feature is particularly useful to protect against multiple image operations
 imaginary -p 8080 -enable-url-signature -url-signature-key 4f46feebafc4b5e988f131c4ff8b5997
 ```
 
-It is recommanded to pass key as environment variables:
+It is recommended to pass key as environment variables:
 ```
 URL_SIGNATURE_KEY=4f46feebafc4b5e988f131c4ff8b5997 imaginary -p 8080 -enable-url-signature
 ```
