@@ -264,6 +264,7 @@ Assuming that you want to provide a high availability to deal efficiently with, 
 ## Clients
 
 - [node.js](https://github.com/h2non/node-imaginary)
+- [ruby](https://gitlab.com/azolf/imaginary-ruby)
 
 Feel free to send a PR if you created a client for other language.
 
