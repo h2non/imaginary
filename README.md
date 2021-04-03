@@ -561,6 +561,7 @@ Image measures are always in pixels, unless otherwise indicated.
 - **areawidth**   `int`   - Height area to extract. Example: `300`
 - **areaheight**  `int`   - Width area to extract. Example: `300`
 - **quality**     `int`   - JPEG image quality between 1-100. Defaults to `80`
+- **speed**       `int`   - Defines the AVIF encoders CPU effort. Valid values are 0-8. Default `0`
 - **compression** `int`   - PNG compression level. Default: `6`
 - **rotate**      `int`   - Image rotation angle. Must be multiple of `90`. Example: `180`
 - **factor**      `int`   - Zoom factor level. Example: `2`
