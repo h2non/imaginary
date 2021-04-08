@@ -28,6 +28,7 @@ var (
 	aGzip               = flag.Bool("gzip", false, "Enable gzip compression (deprecated)")
 	aAuthForwarding     = flag.Bool("enable-auth-forwarding", false, "Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors")
 	aEnableURLSource    = flag.Bool("enable-url-source", false, "Enable remote HTTP URL image source processing")
+	aAllowInsecureSSL   = flag.Bool("insecure", false, "Allow connections to endpoints with insecure SSL certificates. -enable-url-source flag must be defined. Note: Should only be used in development.")
 	aEnablePlaceholder  = flag.Bool("enable-placeholder", false, "Enable image response placeholder to be used in case of error")
 	aEnableURLSignature = flag.Bool("enable-url-signature", false, "Enable URL signature (URL-safe Base64-encoded HMAC digest)")
 	aURLSignatureKey    = flag.String("url-signature-key", "", "The URL signature key (32 characters minimum)")
@@ -87,6 +88,9 @@ Options:
   -http-read-timeout <num>   HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num>  HTTP write timeout in seconds [default: 30]
   -enable-url-source         Enable remote HTTP URL image source processing
+  -insecure                  Allow connections to endpoints with insecure SSL certificates.
+                             -enable-url-source flag must be defined.
+                             Note: Should only be used in development.
   -enable-placeholder        Enable image response placeholder to be used in case of error [default: false]
   -enable-auth-forwarding    Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
   -forward-headers           Forwards custom headers to the image source server. -enable-url-source flag must be defined.
@@ -137,6 +141,7 @@ func main() {
 		CORS:               *aCors,
 		AuthForwarding:     *aAuthForwarding,
 		EnableURLSource:    *aEnableURLSource,
+		AllowInsecureSSL:   *aAllowInsecureSSL,
 		EnablePlaceholder:  *aEnablePlaceholder,
 		EnableURLSignature: *aEnableURLSignature,
 		URLSignatureKey:    urlSignature.Key,

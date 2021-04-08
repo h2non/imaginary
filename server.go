@@ -2,15 +2,15 @@ package main
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"net/url"
-	"log"
 	"os"
 	"os/signal"
-	"syscall"
 	"path"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -26,6 +26,7 @@ type ServerOptions struct {
 	Gzip               bool // deprecated
 	AuthForwarding     bool
 	EnableURLSource    bool
+	AllowInsecureSSL   bool
 	EnablePlaceholder  bool
 	EnableURLSignature bool
 	URLSignatureKey    string
