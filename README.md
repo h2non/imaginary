@@ -27,7 +27,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#co
   - [Docker](#docker)
   - [Fly.io](#flyio)
   - [Cloud Foundry](#cloudfoundry)
-  - [Google Cloud Run](#googlecloudrun)
+  - [Google Cloud Run](#google-cloud-run)
 - [Recommended resources](#recommended-resources)
 - [Production notes](#production-notes)
 - [Scalability](#scalability)
