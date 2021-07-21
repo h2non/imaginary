@@ -27,6 +27,7 @@ To get started, take a look the [installation](#installation) steps, [usage](#co
   - [Docker](#docker)
   - [Fly.io](#flyio)
   - [Cloud Foundry](#cloudfoundry)
+  - [Google Cloud Run](#google-cloud-run)
 - [Recommended resources](#recommended-resources)
 - [Production notes](#production-notes)
 - [Scalability](#scalability)
@@ -199,6 +200,12 @@ Start the application
 ```
 cf start imaginary-inst01
 ```
+
+### Google Cloud Run
+
+Click to deploy on Google Cloud Run:
+
+[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run)
 
 ### Recommended resources
 
