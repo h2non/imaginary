@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"mime"
-	"path"
 	"net/http"
+	"path"
 	"strconv"
 	"strings"
 
@@ -16,14 +16,14 @@ import (
 func indexController(o ServerOptions) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != path.Join(o.PathPrefix, "/") {
-				ErrorReply(r, w, ErrNotFound, ServerOptions{})
-				return
+			ErrorReply(r, w, ErrNotFound, ServerOptions{})
+			return
 		}
 
 		body, _ := json.Marshal(Versions{
-				Version,
-				bimg.Version,
-				bimg.VipsVersion,
+			Version,
+			bimg.Version,
+			bimg.VipsVersion,
 		})
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write(body)
@@ -92,6 +92,11 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 		}
 	}
 
+	// Use magick to process bmp image
+	if mimeType == "image/bmp" {
+		mimeType = "image/magick"
+	}
+
 	// Infer text/plain responses as potential SVG image
 	if strings.Contains(mimeType, "text/plain") && len(buf) > 8 {
 		if bimg.IsSVGImage(buf) {
@@ -142,34 +147,34 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 func formController(o ServerOptions) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		operations := []struct {
-				name   string
-				method string
-				args   string
+			name   string
+			method string
+			args   string
 		}{
-				{"Resize", "resize", "width=300&height=200&type=jpeg"},
-				{"Force resize", "resize", "width=300&height=200&force=true"},
-				{"Crop", "crop", "width=300&quality=95"},
-				{"SmartCrop", "crop", "width=300&height=260&quality=95&gravity=smart"},
-				{"Extract", "extract", "top=100&left=100&areawidth=300&areaheight=150"},
-				{"Enlarge", "enlarge", "width=1440&height=900&quality=95"},
-				{"Rotate", "rotate", "rotate=180"},
-				{"AutoRotate", "autorotate", "quality=90"},
-				{"Flip", "flip", ""},
-				{"Flop", "flop", ""},
-				{"Thumbnail", "thumbnail", "width=100"},
-				{"Zoom", "zoom", "factor=2&areawidth=300&top=80&left=80"},
-				{"Color space (black&white)", "resize", "width=400&height=300&colorspace=bw"},
-				{"Add watermark", "watermark", "textwidth=100&text=Hello&font=sans%2012&opacity=0.5&color=255,200,50"},
-				{"Convert format", "convert", "type=png"},
-				{"Image metadata", "info", ""},
-				{"Gaussian blur", "blur", "sigma=15.0&minampl=0.2"},
-				{"Pipeline (image reduction via multiple transformations)", "pipeline", "operations=%5B%7B%22operation%22:%20%22crop%22,%20%22params%22:%20%7B%22width%22:%20300,%20%22height%22:%20260%7D%7D,%20%7B%22operation%22:%20%22convert%22,%20%22params%22:%20%7B%22type%22:%20%22webp%22%7D%7D%5D"},
+			{"Resize", "resize", "width=300&height=200&type=jpeg"},
+			{"Force resize", "resize", "width=300&height=200&force=true"},
+			{"Crop", "crop", "width=300&quality=95"},
+			{"SmartCrop", "crop", "width=300&height=260&quality=95&gravity=smart"},
+			{"Extract", "extract", "top=100&left=100&areawidth=300&areaheight=150"},
+			{"Enlarge", "enlarge", "width=1440&height=900&quality=95"},
+			{"Rotate", "rotate", "rotate=180"},
+			{"AutoRotate", "autorotate", "quality=90"},
+			{"Flip", "flip", ""},
+			{"Flop", "flop", ""},
+			{"Thumbnail", "thumbnail", "width=100"},
+			{"Zoom", "zoom", "factor=2&areawidth=300&top=80&left=80"},
+			{"Color space (black&white)", "resize", "width=400&height=300&colorspace=bw"},
+			{"Add watermark", "watermark", "textwidth=100&text=Hello&font=sans%2012&opacity=0.5&color=255,200,50"},
+			{"Convert format", "convert", "type=png"},
+			{"Image metadata", "info", ""},
+			{"Gaussian blur", "blur", "sigma=15.0&minampl=0.2"},
+			{"Pipeline (image reduction via multiple transformations)", "pipeline", "operations=%5B%7B%22operation%22:%20%22crop%22,%20%22params%22:%20%7B%22width%22:%20300,%20%22height%22:%20260%7D%7D,%20%7B%22operation%22:%20%22convert%22,%20%22params%22:%20%7B%22type%22:%20%22webp%22%7D%7D%5D"},
 		}
 
 		html := "<html><body>"
 
 		for _, form := range operations {
-				html += fmt.Sprintf(`
+			html += fmt.Sprintf(`
 		<h1>%s</h1>
 		<form method="POST" action="%s?%s" enctype="multipart/form-data">
 		<input type="file" name="file" />
