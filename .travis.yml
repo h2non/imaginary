@@ -21,6 +21,7 @@ env:
     - LIBVIPS=8.8.4
     - LIBVIPS=8.9.2
     - LIBVIPS=8.10.0
+    - LIBVIPS=8.11.3
 
 before_install:
   - docker pull h2non/imaginary:latest || true
