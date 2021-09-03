@@ -35,10 +35,24 @@ func (s *HTTPImageSource) GetImage(req *http.Request) ([]byte, error) {
 	return s.fetchImage(u, req)
 }
 
-func (s *HTTPImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, error) {
+func (s *HTTPImageSource) fetchImage(murl *url.URL, ireq *http.Request) ([]byte, error) {
+
+	queryURL := murl.String()
+
+	if strings.Contains(queryURL, "%") {
+		var err error
+		queryURL, err = url.QueryUnescape(queryURL)
+		if err != nil {
+			fmt.Printf("failed to unesacpe url: %v", err)
+		}
+		fmt.Printf("queryURL unescape: %s\n", queryURL)
+
+		murl, _ = url.Parse(queryURL)
+	}
+
 	// Check remote image size by fetching HTTP Headers
 	if s.Config.MaxAllowedSize > 0 {
-		req := newHTTPRequest(s, ireq, http.MethodHead, url)
+		req := newHTTPRequest(s, ireq, http.MethodHead, murl)
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
 			return nil, fmt.Errorf("error fetching remote http image headers: %v", err)
@@ -55,7 +69,7 @@ func (s *HTTPImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, 
 	}
 
 	// Perform the request using the default client
-	req := newHTTPRequest(s, ireq, http.MethodGet, url)
+	req := newHTTPRequest(s, ireq, http.MethodGet, murl)
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching remote http image: %v", err)
@@ -96,17 +110,18 @@ func (s *HTTPImageSource) setForwardHeaders(req *http.Request, ireq *http.Reques
 }
 
 func parseURL(request *http.Request) (*url.URL, error) {
-	queryUrl := request.URL.Query().Get("url")
+	queryURL := request.URL.Query().Get("url")
 
-	if strings.Contains(queryUrl, "%") {
+	if strings.Contains(queryURL, "%") {
 		var err error
-		queryUrl, err = url.QueryUnescape(queryUrl)
+		queryURL, err = url.QueryUnescape(queryURL)
 		if err != nil {
-			log.Printf("failed to unesacpe url")
+			fmt.Printf("failed to unescape url: %v", err)
 		}
+		//fmt.Printf("queryURL unescape: %s\n", queryURL)
 	}
 
-	return url.Parse(queryUrl)
+	return url.Parse(queryURL)
 }
 
 func newHTTPRequest(s *HTTPImageSource, ireq *http.Request, method string, url *url.URL) *http.Request {
