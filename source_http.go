@@ -96,7 +96,17 @@ func (s *HTTPImageSource) setForwardHeaders(req *http.Request, ireq *http.Reques
 }
 
 func parseURL(request *http.Request) (*url.URL, error) {
-	return url.Parse(request.URL.Query().Get(URLQueryKey))
+	queryUrl := request.URL.Query().Get("url")
+
+	if strings.Contains(queryUrl, "%") {
+		var err error
+		queryUrl, err = url.QueryUnescape(queryUrl)
+		if err != nil {
+			log.Printf("failed to unesacpe url")
+		}
+	}
+
+	return url.Parse(queryUrl)
 }
 
 func newHTTPRequest(s *HTTPImageSource, ireq *http.Request, method string, url *url.URL) *http.Request {
