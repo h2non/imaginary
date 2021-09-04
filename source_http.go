@@ -43,11 +43,12 @@ func (s *HTTPImageSource) fetchImage(murl *url.URL, ireq *http.Request) ([]byte,
 		var err error
 		queryURL, err = url.QueryUnescape(queryURL)
 		if err != nil {
-			fmt.Printf("failed to unesacpe url: %v", err)
+			return nil, fmt.Errorf("failed to unescape url: %v", err)
 		}
-		fmt.Printf("queryURL unescape: %s\n", queryURL)
-
-		murl, _ = url.Parse(queryURL)
+		murl, err = url.Parse(queryURL)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse Url: %v", err)
+		}
 	}
 
 	// Check remote image size by fetching HTTP Headers
