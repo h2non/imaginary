@@ -1,5 +1,5 @@
-ARG GOLANG_VERSION=1.14
-FROM golang:${GOLANG_VERSION} as builder
+ARG GOLANG_VERSION=1.17
+FROM golang:${GOLANG_VERSION}-buster as builder
 
 ARG IMAGINARY_VERSION=dev
 ARG LIBVIPS_VERSION=8.10.0
@@ -50,7 +50,7 @@ RUN go mod download
 COPY . .
 
 # Run quality control
-RUN go test -test.v -test.race -test.covermode=atomic .
+RUN go test ./... -test.v -race -test.coverprofile=atomic .
 RUN golangci-lint run .
 
 # Compile imaginary
