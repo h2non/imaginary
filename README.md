@@ -10,7 +10,7 @@ with additional optional features such as **API token authorization**, **URL sig
 
 `imaginary` is able to output images as JPEG, PNG and WEBP formats, including transparent conversion across them.
 
-`imaginary` also optionally **supports image placeholder fallback mechanism** in case of image processing error or server error of any nature, therefore an image will be always returned by the server in terms of HTTP response body and content MIME type, even in case of error, matching the expected image size and format transparently.
+`imaginary` optionally **supports image placeholder fallback mechanism** in case of image processing error or server error of any nature, hence an image will be always returned by imaginary even in case of error, trying to match the requested image size and format type transparently. The error details will be provided in the response HTTP header `Error` field serialized as JSON.
 
 `imaginary` uses internally `libvips`, a powerful and efficient library written in C for fast image processing
 which requires a [low memory footprint](https://github.com/libvips/libvips/wiki/Benchmarks)
