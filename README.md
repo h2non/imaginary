@@ -163,7 +163,7 @@ services:
 
 Deploy imaginary in seconds close to your users in [Fly.io](https://fly.io) cloud by clicking on the button below:
 
-<a href="https://fly.io/launch/github/h2non/imaginary">
+<a href="https://fly.io/docs/app-guides/run-a-global-image-service/">
   <img src="testdata/flyio-button.svg?raw=true" width="200">
 </a>
 
