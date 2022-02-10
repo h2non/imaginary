@@ -63,6 +63,7 @@ type IsDefinedField struct {
 	NoProfile     bool
 	StripMetadata bool
 	Interlace     bool
+	Palette       bool
 }
 
 // PipelineOperation represents the structure for an operation field.
@@ -142,6 +143,7 @@ func BimgOptions(o ImageOptions) bimg.Options {
 		Type:           ImageType(o.Type),
 		Rotate:         bimg.Angle(o.Rotate),
 		Interlace:      o.Interlace,
+		Palette:        o.Palette,
 	}
 
 	if len(o.Background) != 0 {
