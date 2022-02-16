@@ -44,6 +44,7 @@ type ImageOptions struct {
 	Color         []uint8
 	Background    []uint8
 	Interlace     bool
+	Speed         int
 	Extend        bimg.Extend
 	Gravity       bimg.Gravity
 	Colorspace    bimg.Interpretation
@@ -144,6 +145,7 @@ func BimgOptions(o ImageOptions) bimg.Options {
 		Rotate:         bimg.Angle(o.Rotate),
 		Interlace:      o.Interlace,
 		Palette:        o.Palette,
+		Speed:          o.Speed,
 	}
 
 	if len(o.Background) != 0 {
