@@ -1,2 +1,6 @@
 **/*~
+.devcontainer
+.github
 .git
+Dockerfile
+docker-compose.yml
