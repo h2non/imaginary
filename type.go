@@ -27,7 +27,8 @@ func IsImageMimeTypeSupported(mime string) bool {
 		format = "svg"
 	}
 
-	return bimg.IsTypeNameSupported(format)
+	// Tmp hack to see if this fix an issue
+	return true // bimg.IsTypeNameSupported(format)
 }
 
 // ImageType returns the image type based on the given image type alias.
