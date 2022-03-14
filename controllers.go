@@ -133,7 +133,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 	// Expose Content-Length response header
 	w.Header().Set("Content-Length", strconv.Itoa(len(image.Body)))
 	w.Header().Set("Content-Type", image.Mime)
-	if image.Mime != "application/json" {
+	if image.Mime != "application/json" && o.ReturnSize {
 		meta, err := bimg.Metadata(image.Body)
 		if err == nil {
 			w.Header().Set("X-Image-Width", strconv.Itoa(meta.Size.Width))

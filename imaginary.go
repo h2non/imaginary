@@ -50,6 +50,7 @@ var (
 	aMRelease           = flag.Int("mrelease", 30, "OS memory release interval in seconds")
 	aCpus               = flag.Int("cpus", runtime.GOMAXPROCS(-1), "Number of cpu cores to use")
 	aLogLevel           = flag.String("log-level", "info", "Define log level for http-server. E.g: info,warning,error")
+	aReturnSize         = flag.Bool("return-size", false, "Return the image size in the HTTP headers")
 )
 
 const usage = `imaginary %s
@@ -106,6 +107,7 @@ Options:
                              (default for current machine is %d cores)
   -log-level                 Set log level for http-server. E.g: info,warning,error [default: info].
                              Or can use the environment variable GOLANG_LOG=info.
+  -return-size               Return the image size with X-Width and X-Height HTTP header. [default: disabled].
 `
 
 type URLSignature struct {
@@ -157,6 +159,7 @@ func main() {
 		AllowedOrigins:     parseOrigins(*aAllowedOrigins),
 		MaxAllowedSize:     *aMaxAllowedSize,
 		LogLevel:           getLogLevel(*aLogLevel),
+		ReturnSize:         *aReturnSize,
 	}
 
 	// Show warning if gzip flag is passed
