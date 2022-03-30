@@ -136,8 +136,8 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 	if image.Mime != "application/json" && o.ReturnSize {
 		meta, err := bimg.Metadata(image.Body)
 		if err == nil {
-			w.Header().Set("X-Image-Width", strconv.Itoa(meta.Size.Width))
-			w.Header().Set("X-Image-Height", strconv.Itoa(meta.Size.Height))
+			w.Header().Set("Image-Width", strconv.Itoa(meta.Size.Width))
+			w.Header().Set("Image-Height", strconv.Itoa(meta.Size.Height))
 		}
 	}
 	if vary != "" {
