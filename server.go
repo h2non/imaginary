@@ -43,6 +43,7 @@ type ServerOptions struct {
 	Endpoints          Endpoints
 	AllowedOrigins     []*url.URL
 	LogLevel           string
+	ReturnSize         bool
 }
 
 // Endpoints represents a list of endpoint names to disable.
