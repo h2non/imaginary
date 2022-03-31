@@ -51,6 +51,7 @@ var (
 	aCpus               = flag.Int("cpus", runtime.GOMAXPROCS(-1), "Number of cpu cores to use")
 	aLogLevel           = flag.String("log-level", "info", "Define log level for http-server. E.g: info,warning,error")
 	aReturnSize         = flag.Bool("return-size", false, "Return the image size in the HTTP headers")
+	aSetDefaultWidth    = flag.Bool("set-default-width", false, "Set width of original image as default.")
 )
 
 const usage = `imaginary %s
@@ -108,6 +109,7 @@ Options:
   -log-level                 Set log level for http-server. E.g: info,warning,error [default: info].
                              Or can use the environment variable GOLANG_LOG=info.
   -return-size               Return the image size with X-Width and X-Height HTTP header. [default: disabled].
+  -set-default-width         Set width of original image as default. [default: disabled].
 `
 
 type URLSignature struct {
@@ -160,6 +162,7 @@ func main() {
 		MaxAllowedSize:     *aMaxAllowedSize,
 		LogLevel:           getLogLevel(*aLogLevel),
 		ReturnSize:         *aReturnSize,
+		SetDefaultWidth:    *aSetDefaultWidth,
 	}
 
 	// Show warning if gzip flag is passed

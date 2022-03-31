@@ -2,15 +2,15 @@ package main
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"net/url"
-	"log"
 	"os"
 	"os/signal"
-	"syscall"
 	"path"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -44,6 +44,7 @@ type ServerOptions struct {
 	AllowedOrigins     []*url.URL
 	LogLevel           string
 	ReturnSize         bool
+	SetDefaultWidth    bool
 }
 
 // Endpoints represents a list of endpoint names to disable.
