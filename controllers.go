@@ -122,7 +122,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 
 	if opts.Width == 0 && opts.Height == 0 && o.SetDefaultWidth {
 		imageMeta, err := bimg.Metadata(buf)
-		if err == nil {
+		if err != nil {
 			ErrorReply(r, w, NewError("Error while processing the image: "+err.Error(), http.StatusBadRequest), o)
 			return
 		}

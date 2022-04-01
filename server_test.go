@@ -405,6 +405,47 @@ func TestMountInvalidPath(t *testing.T) {
 	}
 }
 
+func TestRemoteHTTPSourceDefaultWidth(t *testing.T) {
+	opts := ServerOptions{EnableURLSource: true, SetDefaultWidth: true}
+	fn := ImageMiddleware(opts)(Resize)
+	LoadSources(opts)
+
+	tsImage := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		buf, _ := ioutil.ReadFile("testdata/large.jpg")
+		_, _ = w.Write(buf)
+	}))
+	defer tsImage.Close()
+
+	ts := httptest.NewServer(fn)
+	url := ts.URL + "?&url=" + tsImage.URL
+	defer ts.Close()
+
+	res, err := http.Get(url)
+	if err != nil {
+		t.Fatal("Cannot perform the request")
+	}
+	if res.StatusCode != 200 {
+		t.Fatalf("Invalid response status: %d", res.StatusCode)
+	}
+
+	image, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(image) == 0 {
+		t.Fatalf("Empty response body")
+	}
+
+	err = assertSize(image, 1920, 1080)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if bimg.DetermineImageTypeName(image) != "jpeg" {
+		t.Fatalf("Invalid image type")
+	}
+}
+
 func controller(op Operation) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		buf, _ := ioutil.ReadAll(r.Body)
