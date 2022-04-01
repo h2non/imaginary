@@ -339,6 +339,7 @@ Options:
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 60]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 60]
+  -set-default-width        Set default width of the image for all the operation. [default: false]
   -enable-url-source        Enable remote HTTP URL image source processing (?url=http://..)
   -enable-placeholder       Enable image response placeholder to be used in case of error [default: false]
   -enable-auth-forwarding   Forwards X-Forward-Authorization or Authorization header to the image source server. -enable-url-source flag must be defined. Tip: secure your server from public access to prevent attack vectors
