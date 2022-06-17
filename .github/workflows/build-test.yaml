@@ -2,7 +2,7 @@ name: Feature Build Test
 on:
   push:
     branches:
-      - "!master"
+      - '!master'
 
 jobs:
   build-push:
