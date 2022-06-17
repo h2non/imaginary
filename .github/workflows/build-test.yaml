@@ -4,7 +4,7 @@ on:
     branches-ignore:
       - master
 env: 
-  ECR_REGISTRY: ${{ secrets.ECR_DEV }}
+  ECR_REGISTRY: "776836558103.dkr.ecr.ap-southeast-1.amazonaws.com"
   ECR_REPOSITORY: ${{ github.event.repository.name }}
   IMAGE_TAG: ${{ github.ref_name }}
 
