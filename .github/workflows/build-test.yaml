@@ -1,6 +1,6 @@
 name: Feature Build Test
 on:
-  pull_request:
+  push:
     branches:
       - "!master"
 
