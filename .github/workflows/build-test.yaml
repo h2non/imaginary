@@ -3,6 +3,12 @@ on:
   push:
     branches-ignore:
       - master
+env: 
+  ECR_REGISTRY: ${{ secrets.ECR_DEV }}
+  ECR_REPOSITORY: ${{ github.event.repository.name }}
+  IMAGE_TAG: ${{ github.ref_name }}
+
+
 jobs:
   build-test:
     runs-on: ubuntu-latest
