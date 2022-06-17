@@ -1,9 +1,8 @@
 name: Feature Build Test
 on:
   push:
-    branches:
-      - '!master'
-
+    branches-ignore:
+      - master
 jobs:
   build-push:
     runs-on: ubuntu-latest
