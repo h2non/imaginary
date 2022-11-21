@@ -347,6 +347,7 @@ Options:
   -url-signature-key        The URL signature key (32 characters minimum)
   -allowed-origins <urls>   Restrict remote image source processing to certain origins (separated by commas). Note: Origins are validated against host *AND* path.
   -max-allowed-size <bytes> Restrict maximum size of http image source (in bytes)
+  -max-allowed-resolution <megapixels> Restrict maximum resolution of the image [default: 18.0]
   -certfile <path>          TLS certificate file path
   -keyfile <path>           TLS private key file path
   -authorization <value>    Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization
