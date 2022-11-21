@@ -33,6 +33,7 @@ var (
 	aURLSignatureKey    = flag.String("url-signature-key", "", "The URL signature key (32 characters minimum)")
 	aAllowedOrigins     = flag.String("allowed-origins", "", "Restrict remote image source processing to certain origins (separated by commas). Note: Origins are validated against host *AND* path.")
 	aMaxAllowedSize     = flag.Int("max-allowed-size", 0, "Restrict maximum size of http image source (in bytes)")
+	aMaxAllowedPixels   = flag.Float64("max-allowed-resolution", 18.0, "Restrict maximum resolution of the image (in megapixels)")
 	aKey                = flag.String("key", "", "Define API key for authorization")
 	aMount              = flag.String("mount", "", "Mount server local directory")
 	aCertFile           = flag.String("certfile", "", "TLS certificate file path")
@@ -95,6 +96,7 @@ Options:
   -url-signature-key         The URL signature key (32 characters minimum)
   -allowed-origins <urls>    Restrict remote image source processing to certain origins (separated by commas)
   -max-allowed-size <bytes>  Restrict maximum size of http image source (in bytes)
+  -max-allowed-resolution <megapixels> Restrict maximum resolution of the image [default: 18.0]
   -certfile <path>           TLS certificate file path
   -keyfile <path>            TLS private key file path
   -authorization <value>     Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization
@@ -158,6 +160,7 @@ func main() {
 		ForwardHeaders:     parseForwardHeaders(*aForwardHeaders),
 		AllowedOrigins:     parseOrigins(*aAllowedOrigins),
 		MaxAllowedSize:     *aMaxAllowedSize,
+		MaxAllowedPixels:   *aMaxAllowedPixels,
 		LogLevel:           getLogLevel(*aLogLevel),
 		ReturnSize:         *aReturnSize,
 	}

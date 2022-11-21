@@ -44,9 +44,9 @@ func (r *LogRecord) WriteHeader(status int) {
 
 // LogHandler maps the HTTP handler with a custom io.Writer compatible stream
 type LogHandler struct {
-	handler    http.Handler
-	io         io.Writer
-	logLevel   string
+	handler  http.Handler
+	io       io.Writer
+	logLevel string
 }
 
 // NewLog creates a new logger
@@ -79,7 +79,7 @@ func (h *LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	record.time = finishTime.UTC()
 	record.elapsedTime = finishTime.Sub(startTime)
 
-	switch h.logLevel{
+	switch h.logLevel {
 	case "error":
 		if record.status >= http.StatusInternalServerError {
 			record.Log(h.io)
