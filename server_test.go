@@ -16,7 +16,7 @@ import (
 )
 
 func TestIndex(t *testing.T) {
-	opts := ServerOptions{PathPrefix: "/"}
+	opts := ServerOptions{PathPrefix: "/", MaxAllowedPixels: 18.0}
 	ts := testServer(indexController(opts))
 	defer ts.Close()
 
@@ -275,7 +275,7 @@ func TestFit(t *testing.T) {
 }
 
 func TestRemoteHTTPSource(t *testing.T) {
-	opts := ServerOptions{EnableURLSource: true}
+	opts := ServerOptions{EnableURLSource: true, MaxAllowedPixels: 18.0}
 	fn := ImageMiddleware(opts)(Crop)
 	LoadSources(opts)
 
@@ -316,7 +316,7 @@ func TestRemoteHTTPSource(t *testing.T) {
 }
 
 func TestInvalidRemoteHTTPSource(t *testing.T) {
-	opts := ServerOptions{EnableURLSource: true}
+	opts := ServerOptions{EnableURLSource: true, MaxAllowedPixels: 18.0}
 	fn := ImageMiddleware(opts)(Crop)
 	LoadSources(opts)
 
@@ -339,7 +339,7 @@ func TestInvalidRemoteHTTPSource(t *testing.T) {
 }
 
 func TestMountDirectory(t *testing.T) {
-	opts := ServerOptions{Mount: "testdata"}
+	opts := ServerOptions{Mount: "testdata", MaxAllowedPixels: 18.0}
 	fn := ImageMiddleware(opts)(Crop)
 	LoadSources(opts)
 
@@ -374,7 +374,7 @@ func TestMountDirectory(t *testing.T) {
 }
 
 func TestMountInvalidDirectory(t *testing.T) {
-	fn := ImageMiddleware(ServerOptions{Mount: "_invalid_"})(Crop)
+	fn := ImageMiddleware(ServerOptions{Mount: "_invalid_", MaxAllowedPixels: 18.0})(Crop)
 	ts := httptest.NewServer(fn)
 	url := ts.URL + "?top=100&left=100&areawidth=200&areaheight=120&file=large.jpg"
 	defer ts.Close()
@@ -408,7 +408,7 @@ func TestMountInvalidPath(t *testing.T) {
 func controller(op Operation) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		buf, _ := ioutil.ReadAll(r.Body)
-		imageHandler(w, r, buf, op, ServerOptions{})
+		imageHandler(w, r, buf, op, ServerOptions{MaxAllowedPixels: 18.0})
 	}
 }
 
