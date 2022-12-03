@@ -2,15 +2,15 @@ package main
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"net/url"
-	"log"
 	"os"
 	"os/signal"
-	"syscall"
 	"path"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -22,6 +22,7 @@ type ServerOptions struct {
 	HTTPReadTimeout    int
 	HTTPWriteTimeout   int
 	MaxAllowedSize     int
+	MaxAllowedPixels   float64
 	CORS               bool
 	Gzip               bool // deprecated
 	AuthForwarding     bool

@@ -5,10 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"strings"
 	"io/ioutil"
 	"math"
 	"net/http"
+	"strings"
 
 	"github.com/h2non/bimg"
 )

@@ -24,6 +24,7 @@ var (
 	ErrNotImplemented       = NewError("Not implemented endpoint", http.StatusNotImplemented)
 	ErrInvalidURLSignature  = NewError("Invalid URL signature", http.StatusBadRequest)
 	ErrURLSignatureMismatch = NewError("URL signature mismatch", http.StatusForbidden)
+	ErrResolutionTooBig     = NewError("Image resolution is too big", http.StatusUnprocessableEntity)
 )
 
 type Error struct {
