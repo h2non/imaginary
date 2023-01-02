@@ -119,7 +119,7 @@ func TestHttpImageSourceForwardAuthHeader(t *testing.T) {
 		source.setAuthorizationHeader(oreq, r)
 
 		if oreq.Header.Get("Authorization") != "foobar" {
-			t.Fatal("Missmatch Authorization header")
+			t.Fatal("Mismatch Authorization header")
 		}
 	}
 }
@@ -143,7 +143,7 @@ func TestHttpImageSourceForwardHeaders(t *testing.T) {
 		source.setForwardHeaders(oreq, r)
 
 		if oreq.Header.Get(header) != "foobar" {
-			t.Fatal("Missmatch custom header")
+			t.Fatal("Mismatch custom header")
 		}
 	}
 }
@@ -231,7 +231,7 @@ func TestHttpImageSourceEmptyForwardedHeaders(t *testing.T) {
 
 	if len(source.Config.ForwardHeaders) != 0 {
 		t.Log(source.Config.ForwardHeaders)
-		t.Fatal("Setted empty custom header")
+		t.Fatal("Set empty custom header")
 	}
 
 	oreq := newHTTPRequest(source, r, http.MethodGet, testURL)

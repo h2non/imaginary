@@ -392,7 +392,7 @@ v0.1.26 / 2016-09-06
   * feat(docs): update CLI usage and help
   * feat: forward authorization headers support
   * Fix description for URL source, and allowed origins server options (#83)
-  * fix(version): ups, editting from iPad
+  * fix(version): ups, editing from iPad
   * fix(version): unresolved conflict
   * merge: fix History conflicts
   * Merge branch 'develop'
@@ -750,7 +750,7 @@ v0.1.24 / 2016-04-21
 ==================
 
   * feat(#18): http docs
-  * fix(travis): another attemp
+  * fix(travis): another attempt
   * fix(travis)
   * fix(docs)
   * fix(travis)
