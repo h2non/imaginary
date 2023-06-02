@@ -52,7 +52,7 @@ func (s *FileSystemImageSource) read(file string) ([]byte, error) {
 }
 
 func (s *FileSystemImageSource) getFileParam(r *http.Request) string {
-	return r.URL.Query().Get("file")
+	return url.QueryUnescape(r.URL.Query().Get("file"))
 }
 
 func init() {
