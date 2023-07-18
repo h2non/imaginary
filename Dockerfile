@@ -36,7 +36,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
 WORKDIR /tmp
 RUN curl -fsSL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "${GOPATH}/bin" v${GOLANGCILINT_VERSION}
 
-WORKDIR ${GOPATH}/src/github.com/h2non/imaginary
+WORKDIR ${GOPATH}/src/github.com/tools-aoeur/imaginary
 
 # Cache go modules
 ENV GO111MODULE=on
@@ -57,7 +57,7 @@ RUN golangci-lint run .
 RUN go build -a \
     -o ${GOPATH}/bin/imaginary \
     -ldflags="-s -w -h -X main.Version=${IMAGINARY_VERSION}" \
-    github.com/h2non/imaginary
+    github.com/tools-aoeur/imaginary
 
 FROM debian:bullseye-slim
 
@@ -66,8 +66,8 @@ ARG IMAGINARY_VERSION
 LABEL maintainer="tomas@aparicio.me" \
       org.label-schema.description="Fast, simple, scalable HTTP microservice for high-level image processing with first-class Docker support" \
       org.label-schema.schema-version="1.0" \
-      org.label-schema.url="https://github.com/h2non/imaginary" \
-      org.label-schema.vcs-url="https://github.com/h2non/imaginary" \
+      org.label-schema.url="https://github.com/tools-aoeur/imaginary" \
+      org.label-schema.vcs-url="https://github.com/tools-aoeur/imaginary" \
       org.label-schema.version="${IMAGINARY_VERSION}"
 
 COPY --from=builder /usr/local/lib /usr/local/lib

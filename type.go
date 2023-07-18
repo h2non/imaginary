@@ -3,7 +3,7 @@ package main
 import (
 	"strings"
 
-	"github.com/h2non/bimg"
+	"github.com/tools-aoeur/bimg"
 )
 
 // ExtractImageTypeFromMime returns the MIME image type.

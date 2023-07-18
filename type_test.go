@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/h2non/bimg"
+	"github.com/tools-aoeur/bimg"
 )
 
 func TestExtractImageTypeFromMime(t *testing.T) {

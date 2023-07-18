@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/h2non/bimg"
+	"github.com/tools-aoeur/bimg"
 	"github.com/rs/cors"
 	"gopkg.in/throttled/throttled.v2"
 	"gopkg.in/throttled/throttled.v2/store/memstore"

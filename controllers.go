@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/h2non/bimg"
-	"github.com/h2non/filetype"
+	"github.com/tools-aoeur/bimg"
+	"github.com/tools-aoeur/filetype"
 )
 
 func indexController(o ServerOptions) func(w http.ResponseWriter, r *http.Request) {
