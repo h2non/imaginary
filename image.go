@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/tools-aoeur/bimg"
+	"github.com/h2non/bimg"
 )
 
 // OperationsMap defines the allowed image transformation operations listed by name.

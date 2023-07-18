@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/tools-aoeur/bimg"
+	"github.com/h2non/bimg"
 )
 
 func TestIndex(t *testing.T) {

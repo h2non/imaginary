@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tools-aoeur/bimg"
+	"github.com/h2non/bimg"
 	"github.com/rs/cors"
 	"gopkg.in/throttled/throttled.v2"
 	"gopkg.in/throttled/throttled.v2/store/memstore"
@@ -147,7 +147,7 @@ func setCacheHeaders(next http.Handler, ttl int) http.Handler {
 		ttlDiff := time.Duration(ttl) * time.Second
 		expires := time.Now().Add(ttlDiff)
 
-		w.Header().Add("Expires", strings.Replace(expires.Format(time.RFC1123), "UTC", "GMT", -1))
+		w.Header().Add("Expires", strings.ReplaceAll(expires.Format(time.RFC1123), "UTC", "GMT"))
 		w.Header().Add("Cache-Control", getCacheControl(ttl))
 	})
 }

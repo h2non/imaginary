@@ -13,6 +13,14 @@
     [linters-settings.misspell]
         locale = "US"
 
+    [linters-settings.depguard.rules.main]
+        allow = [
+            "$gostd",
+            "github.com/h2non/bimg",
+            "github.com/h2non/filetype",
+            "github.com/rs/cors"
+        ]
+
 [linters]
     # White-listing, to be more CI safe.
     disable-all = true
@@ -26,13 +34,9 @@
         "govet",
 #        "errcheck",
         "unused",
-        "structcheck",
-        "varcheck",
-        "deadcode",
 
         "stylecheck",
         "gosec",
-        "interfacer",
         "unconvert",
 #        "goconst",
         "gocyclo",
@@ -40,6 +44,6 @@
         "depguard",
         "misspell",
         "unparam",
-        "scopelint", # Would like to ignore *_test.go files, but can't atm.
+        "exportloopref", # Would like to ignore *_test.go files, but can't atm.
         "gocritic",
     ]

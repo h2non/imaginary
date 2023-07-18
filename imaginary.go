@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tools-aoeur/bimg"
+	"github.com/h2non/bimg"
 )
 
 var (

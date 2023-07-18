@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/tools-aoeur/bimg"
+	"github.com/h2non/bimg"
 )
 
 var (
@@ -49,7 +49,7 @@ func (e Error) HTTPCode() int {
 }
 
 func NewError(err string, code int) Error {
-	err = strings.Replace(err, "\n", "", -1)
+	err = strings.ReplaceAll(err, "\n", "")
 	return Error{Message: err, Code: code}
 }
 

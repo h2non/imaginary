@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/tools-aoeur/bimg"
+	"github.com/h2non/bimg"
 )
 
 const epsilon = 0.0001

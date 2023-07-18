@@ -2,7 +2,7 @@ version: "3"
 
 services:
   imaginary:
-    image: h2non/imaginary
+    image: pmo-tooling/imaginary
     ports:
       - "8088:8088"
     environment:

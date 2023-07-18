@@ -1,12 +1,8 @@
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.217.4/containers/go/.devcontainer/base.Dockerfile
-
-# [Choice] Go version (use -bullseye variants on local arm64/Apple Silicon): 1, 1.16, 1.17, 1-bullseye, 1.16-bullseye, 1.17-bullseye, 1-buster, 1.16-buster, 1.17-buster
-ARG VARIANT="1.17-bullseye"
-FROM mcr.microsoft.com/vscode/devcontainers/go:0-${VARIANT}
+ARG VARIANT="1.20-bullseye"
+FROM mcr.microsoft.com/devcontainers/go:0-${VARIANT}
 
 # Versions of libvips and golanci-lint
 ARG LIBVIPS_VERSION=8.12.2
-ARG GOLANGCILINT_VERSION=1.29.0
 
 # Install additional OS packages
 RUN DEBIAN_FRONTEND=noninteractive \
@@ -40,9 +36,6 @@ RUN DEBIAN_FRONTEND=noninteractive \
   make && \
   make install && \
   ldconfig
-
-# Installing golangci-lint
-RUN curl -fsSL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "${GOPATH}/bin" v${GOLANGCILINT_VERSION}
 
 # [Optional] Uncomment the next lines to use go get to install anything else you need
 # USER vscode
