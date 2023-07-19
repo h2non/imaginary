@@ -17,6 +17,7 @@ func indexController(o ServerOptions) func(w http.ResponseWriter, r *http.Reques
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != path.Join(o.PathPrefix, "/") {
 			ErrorReply(r, w, ErrNotFound, ServerOptions{})
+
 			return
 		}
 
@@ -30,7 +31,7 @@ func indexController(o ServerOptions) func(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-func healthController(w http.ResponseWriter, r *http.Request) {
+func healthController(w http.ResponseWriter, _ *http.Request) {
 	health := GetHealthStats()
 	body, _ := json.Marshal(health)
 	w.Header().Set("Content-Type", "application/json")
@@ -42,6 +43,7 @@ func imageController(o ServerOptions, operation Operation) func(http.ResponseWri
 		var imageSource = MatchSource(req)
 		if imageSource == nil {
 			ErrorReply(req, w, ErrMissingImageSource, o)
+
 			return
 		}
 
@@ -52,11 +54,13 @@ func imageController(o ServerOptions, operation Operation) func(http.ResponseWri
 			} else {
 				ErrorReply(req, w, NewError(err.Error(), http.StatusBadRequest), o)
 			}
+
 			return
 		}
 
 		if len(buf) == 0 {
 			ErrorReply(req, w, ErrEmptyBody, o)
+
 			return
 		}
 
@@ -102,12 +106,14 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 	// Finally check if image MIME type is supported
 	if !IsImageMimeTypeSupported(mimeType) {
 		ErrorReply(r, w, ErrUnsupportedMedia, o)
+
 		return
 	}
 
 	opts, err := buildParamsFromQuery(r.URL.Query())
 	if err != nil {
 		ErrorReply(r, w, NewError("Error while processing parameters, "+err.Error(), http.StatusBadRequest), o)
+
 		return
 	}
 
@@ -117,6 +123,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 		vary = "Accept" // Ensure caches behave correctly for negotiated content
 	} else if opts.Type != "" && ImageType(opts.Type) == 0 {
 		ErrorReply(r, w, ErrOutputFormat, o)
+
 		return
 	}
 
@@ -124,6 +131,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 
 	if err != nil {
 		ErrorReply(r, w, NewError("Error while processing the image: "+err.Error(), http.StatusBadRequest), o)
+
 		return
 	}
 
@@ -132,6 +140,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 
 	if (imgResolution / 1000000) > o.MaxAllowedPixels {
 		ErrorReply(r, w, ErrResolutionTooBig, o)
+
 		return
 	}
 
@@ -142,6 +151,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 			w.Header().Set("Vary", vary)
 		}
 		ErrorReply(r, w, NewError("Error while processing the image: "+err.Error(), http.StatusBadRequest), o)
+
 		return
 	}
 

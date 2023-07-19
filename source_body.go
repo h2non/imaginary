@@ -27,6 +27,7 @@ func (s *BodyImageSource) GetImage(r *http.Request) ([]byte, error) {
 	if isFormBody(r) {
 		return readFormBody(r)
 	}
+
 	return readRawBody(r)
 }
 

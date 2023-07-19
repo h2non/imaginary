@@ -60,7 +60,7 @@ type ImageInfo struct {
 	Orientation int    `json:"orientation"`
 }
 
-func Info(buf []byte, o ImageOptions) (Image, error) {
+func Info(buf []byte, _ ImageOptions) (Image, error) {
 	// We're not handling an image here, but we reused the struct.
 	// An interface will be definitively better here.
 	image := Image{Mime: "application/json"}
@@ -200,6 +200,7 @@ func Crop(buf []byte, o ImageOptions) (Image, error) {
 
 	opts := BimgOptions(o)
 	opts.Crop = true
+
 	return Process(buf, opts)
 }
 
@@ -211,6 +212,7 @@ func SmartCrop(buf []byte, o ImageOptions) (Image, error) {
 	opts := BimgOptions(o)
 	opts.Crop = true
 	opts.Gravity = bimg.GravitySmart
+
 	return Process(buf, opts)
 }
 
@@ -220,10 +222,11 @@ func Rotate(buf []byte, o ImageOptions) (Image, error) {
 	}
 
 	opts := BimgOptions(o)
+
 	return Process(buf, opts)
 }
 
-func AutoRotate(buf []byte, o ImageOptions) (out Image, err error) {
+func AutoRotate(buf []byte, _ ImageOptions) (out Image, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			switch value := r.(type) {
@@ -245,18 +248,21 @@ func AutoRotate(buf []byte, o ImageOptions) (out Image, err error) {
 	}
 
 	mime := GetImageMimeType(bimg.DetermineImageType(ibuf))
+
 	return Image{Body: ibuf, Mime: mime}, nil
 }
 
 func Flip(buf []byte, o ImageOptions) (Image, error) {
 	opts := BimgOptions(o)
 	opts.Flip = true
+
 	return Process(buf, opts)
 }
 
 func Flop(buf []byte, o ImageOptions) (Image, error) {
 	opts := BimgOptions(o)
 	opts.Flop = true
+
 	return Process(buf, opts)
 }
 
@@ -291,6 +297,7 @@ func Zoom(buf []byte, o ImageOptions) (Image, error) {
 	}
 
 	opts.Zoom = o.Factor
+
 	return Process(buf, opts)
 }
 
@@ -366,6 +373,7 @@ func GaussianBlur(buf []byte, o ImageOptions) (Image, error) {
 		return Image{}, NewError("Missing required param: sigma or minampl", http.StatusBadRequest)
 	}
 	opts := BimgOptions(o)
+
 	return Process(buf, opts)
 }
 
@@ -448,5 +456,6 @@ func Process(buf []byte, opts bimg.Options) (out Image, err error) {
 	}
 
 	mime := GetImageMimeType(bimg.DetermineImageType(ibuf))
+
 	return Image{Body: ibuf, Mime: mime}, nil
 }

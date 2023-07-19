@@ -50,5 +50,6 @@ func MatchSource(req *http.Request) ImageSource {
 			return source
 		}
 	}
+
 	return nil
 }

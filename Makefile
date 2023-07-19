@@ -1,6 +1,6 @@
 OK_COLOR=\033[32;01m
 NO_COLOR=\033[0m
-VERSION=1.2.4-23292R
+VERSION=latest
 
 build:
 	@echo "$(OK_COLOR)==> Compiling binary$(NO_COLOR)"

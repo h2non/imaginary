@@ -59,6 +59,7 @@ func (e Endpoints) IsValid(r *http.Request) bool {
 			return false
 		}
 	}
+
 	return true
 }
 
@@ -101,6 +102,7 @@ func listenAndServe(s *http.Server, o ServerOptions) error {
 	if o.CertFile != "" && o.KeyFile != "" {
 		return s.ListenAndServeTLS(o.CertFile, o.KeyFile)
 	}
+
 	return s.ListenAndServe()
 }
 

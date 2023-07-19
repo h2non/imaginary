@@ -40,6 +40,7 @@ func (s *FileSystemImageSource) buildPath(file string) (string, error) {
 	if !strings.HasPrefix(file, s.Config.MountPath) {
 		return "", ErrInvalidFilePath
 	}
+
 	return file, nil
 }
 
@@ -48,6 +49,7 @@ func (s *FileSystemImageSource) read(file string) ([]byte, error) {
 	if err != nil {
 		return nil, ErrInvalidFilePath
 	}
+
 	return buf, nil
 }
 

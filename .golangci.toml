@@ -35,6 +35,7 @@
 #        "errcheck",
         "unused",
 
+        "nlreturn",
         "stylecheck",
         "gosec",
         "unconvert",
@@ -43,6 +44,7 @@
 #        "maligned",
         "depguard",
         "misspell",
+        "revive",
         "unparam",
         "exportloopref", # Would like to ignore *_test.go files, but can't atm.
         "gocritic",

@@ -33,6 +33,7 @@ func (r *LogRecord) Log(out io.Writer) {
 func (r *LogRecord) Write(p []byte) (int, error) {
 	written, err := r.ResponseWriter.Write(p)
 	r.responseBytes += int64(written)
+
 	return written, err
 }
 

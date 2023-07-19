@@ -53,6 +53,7 @@ func filterEndpoint(next http.Handler, o ServerOptions) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if o.Endpoints.IsValid(r) {
 			next.ServeHTTP(w, r)
+
 			return
 		}
 		ErrorReply(r, w, ErrNotImplemented, o)
@@ -89,6 +90,7 @@ func validate(next http.Handler, o ServerOptions) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet && r.Method != http.MethodPost {
 			ErrorReply(r, w, ErrMethodNotAllowed, o)
+
 			return
 		}
 
@@ -101,11 +103,13 @@ func validateImage(next http.Handler, o ServerOptions) http.Handler {
 		path := r.URL.Path
 		if r.Method == http.MethodGet && isPublicPath(path) {
 			next.ServeHTTP(w, r)
+
 			return
 		}
 
 		if r.Method == http.MethodGet && o.Mount == "" && !o.EnableURLSource {
 			ErrorReply(r, w, ErrGetMethodNotAllowed, o)
+
 			return
 		}
 
@@ -122,6 +126,7 @@ func authorizeClient(next http.Handler, o ServerOptions) http.Handler {
 
 		if key != o.APIKey {
 			ErrorReply(r, w, ErrInvalidAPIKey, o)
+
 			return
 		}
 
@@ -156,6 +161,7 @@ func getCacheControl(ttl int) string {
 	if ttl == 0 {
 		return "private, no-cache, no-store, must-revalidate"
 	}
+
 	return fmt.Sprintf("public, s-maxage=%d, max-age=%d, no-transform", ttl, ttl)
 }
 
@@ -179,11 +185,13 @@ func validateURLSignature(next http.Handler, o ServerOptions) http.Handler {
 		urlSign, err := base64.RawURLEncoding.DecodeString(sign)
 		if err != nil {
 			ErrorReply(r, w, ErrInvalidURLSignature, o)
+
 			return
 		}
 
 		if !hmac.Equal(urlSign, expectedSign) {
 			ErrorReply(r, w, ErrURLSignatureMismatch, o)
+
 			return
 		}
 

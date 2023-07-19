@@ -14,6 +14,7 @@ func ExtractImageTypeFromMime(mime string) string {
 		return ""
 	}
 	name := strings.Split(parts[1], "+")[0]
+
 	return strings.ToLower(name)
 }
 

@@ -235,6 +235,7 @@ func getPort(port int) int {
 			port = newPort
 		}
 	}
+
 	return port
 }
 
@@ -250,6 +251,7 @@ func getLogLevel(logLevel string) string {
 	if logLevelEnv := os.Getenv("GOLANG_LOG"); logLevelEnv != "" {
 		logLevel = logLevelEnv
 	}
+
 	return logLevel
 }
 
@@ -297,6 +299,7 @@ func parseForwardHeaders(forwardHeaders string) []string {
 			headers = append(headers, norm)
 		}
 	}
+
 	return headers
 }
 
@@ -322,6 +325,7 @@ func parseOrigins(origins string) []*url.URL {
 
 		urls = append(urls, u)
 	}
+
 	return urls
 }
 
@@ -333,6 +337,7 @@ func parseEndpoints(input string) Endpoints {
 			endpoints = append(endpoints, endpoint)
 		}
 	}
+
 	return endpoints
 }
 

@@ -34,6 +34,7 @@ type Error struct {
 
 func (e Error) JSON() []byte {
 	buf, _ := json.Marshal(e)
+
 	return buf
 }
 
@@ -45,11 +46,13 @@ func (e Error) HTTPCode() int {
 	if e.Code >= 400 && e.Code <= 511 {
 		return e.Code
 	}
+
 	return http.StatusServiceUnavailable
 }
 
 func NewError(err string, code int) Error {
 	err = strings.ReplaceAll(err, "\n", "")
+
 	return Error{Message: err, Code: code}
 }
 
@@ -71,12 +74,14 @@ func replyWithPlaceholder(req *http.Request, w http.ResponseWriter, errCaller Er
 	bimgOptions.Width, err = parseInt(req.URL.Query().Get("width"))
 	if err != nil {
 		sendErrorResponse(w, http.StatusBadRequest, err)
+
 		return err
 	}
 
 	bimgOptions.Height, err = parseInt(req.URL.Query().Get("height"))
 	if err != nil {
 		sendErrorResponse(w, http.StatusBadRequest, err)
+
 		return err
 	}
 
@@ -84,6 +89,7 @@ func replyWithPlaceholder(req *http.Request, w http.ResponseWriter, errCaller Er
 	buf, err := bimg.Resize(o.PlaceholderImage, bimgOptions)
 	if err != nil {
 		sendErrorResponse(w, http.StatusBadRequest, err)
+
 		return err
 	}
 
@@ -107,6 +113,7 @@ func ErrorReply(req *http.Request, w http.ResponseWriter, err Error, o ServerOpt
 	// Reply with placeholder if required
 	if o.EnablePlaceholder || o.Placeholder != "" {
 		_ = replyWithPlaceholder(req, w, err, o)
+
 		return
 	}
 
