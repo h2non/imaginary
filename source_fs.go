@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -19,7 +20,11 @@ func NewFileSystemImageSource(config *SourceConfig) ImageSource {
 }
 
 func (s *FileSystemImageSource) Matches(r *http.Request) bool {
-	return r.Method == http.MethodGet && s.getFileParam(r) != ""
+	file, err := s.getFileParam(r)
+	if err != nil {
+		return false
+	}
+	return r.Method == http.MethodGet && file != ""
 }
 
 func (s *FileSystemImageSource) GetImage(r *http.Request) ([]byte, error) {
@@ -32,7 +37,7 @@ func (s *FileSystemImageSource) GetImage(r *http.Request) ([]byte, error) {
 		return nil, ErrMissingParamFile
 	}
 
-	file, err := s.buildPath(file)
+	file, err = s.buildPath(file)
 	if err != nil {
 		return nil, err
 	}
