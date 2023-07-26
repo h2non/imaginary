@@ -23,7 +23,11 @@ func (s *FileSystemImageSource) Matches(r *http.Request) bool {
 }
 
 func (s *FileSystemImageSource) GetImage(r *http.Request) ([]byte, error) {
-	file := s.getFileParam(r)
+	file, err := s.getFileParam(r)
+	if err != nil {
+		return nil, err
+	}
+	
 	if file == "" {
 		return nil, ErrMissingParamFile
 	}
@@ -52,8 +56,13 @@ func (s *FileSystemImageSource) read(file string) ([]byte, error) {
 	return buf, nil
 }
 
-func (s *FileSystemImageSource) getFileParam(r *http.Request) string {
-	return url.QueryUnescape(r.URL.Query().Get("file"))
+func (s *FileSystemImageSource) getFileParam(r *http.Request) (string, error) {
+	unescaped, err := url.QueryUnescape(r.URL.Query().Get("file"))
+	if err != nil{
+		nil, fmt.Errorf("failed to unescape file param: %w", err)
+	}
+
+	return unescaped, nil
 }
 
 func init() {
