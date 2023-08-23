@@ -1,0 +1,96 @@
+#!/usr/bin/env ruby
+
+ENV['THUMBNAIL_SERVICE_TOKEN'] = 'secret'
+ENV['THUMBNAIL_SERVICE_URL']   = '10.212.0.1:8088'
+
+if ARGV.include? '-version'
+  puts <<~VERSION_INFO
+    Version: imaginary 2023-08-23 https://github.com/tools-aoeur/imaginary
+    Copyright: (C) 1999-2023
+    License: https://github.com/tools-aoeur/imaginary/blob/main/LICENSE
+    Features: autorotate blur convert crop enlarge extract flip flop resize rotate smartcrop thumbnail watermark watermarkimage zoom
+    Delegates (built-in): libvips
+  VERSION_INFO
+  exit 0
+end
+
+require 'rest-client'
+require 'rails'
+
+# wraps access to the imaginary image processing microservice
+class ImageProcessor
+  def self.thumbnail(source, width, height, target)
+    base_url = ENV.fetch('THUMBNAIL_SERVICE_URL', nil)
+    raise 'Need URL to thumbnail service' if base_url.blank?
+
+    service_secret = ENV.fetch('THUMBNAIL_SERVICE_TOKEN', nil)
+    raise 'Need thumbnail service secret' if service_secret.blank?
+
+    file = File.new(source, 'rb')
+    url = "#{base_url}/fit?width=#{width}&height=#{height}"
+    raw_response = RestClient::Request.execute(
+      method: :post,
+      url: url,
+      headers: { 'API-Key' => service_secret },
+      payload: { file: file },
+      raw_response: true
+    )
+    File.open(raw_response.file, 'rb') do |input_stream|
+      File.open(target, 'wb') do |output_stream|
+        IO.copy_stream(input_stream, output_stream)
+      end
+    end
+  end
+end
+
+# redmine
+# ALLOWED_TYPES = %w(image/bmp image/gif image/jpeg image/png application/pdf)
+
+[
+  "flyio-button.svg",
+  "bmp_24.bmp",
+  "sample.pdf",
+  "occult.gif",
+  "imaginary.jpg",
+  "large.jpg",
+  "medium.jpg",
+  "smart-crop.jpg",
+  "test.png",
+  "test.webp"
+].each do |filepath|
+  targetpath = "result_#{filepath.gsub(/\..*$/, '.png')}"
+  targetpath_im = "result_#{filepath.gsub(/\..*$/, '_im.png')}"
+  puts "convert \"#{filepath}\" -thumbnail 160x160 \"#{targetpath_im}\""
+  ImageProcessor.thumbnail(filepath, 160, 160, targetpath)
+rescue
+  puts "Error on #{filepath}"
+end
+
+# def self.generate(source, target, size, is_pdf = false)
+#   return nil unless convert_available?
+#   return nil if is_pdf && !gs_available?
+
+#   unless File.exist?(target)
+#     # Make sure we only invoke Imagemagick if the file type is allowed
+#     mime_type = File.open(source) {|f| Marcel::MimeType.for(f)}
+#     return nil if !ALLOWED_TYPES.include? mime_type
+#     return nil if is_pdf && mime_type != "application/pdf"
+
+#     directory = File.dirname(target)
+#     unless File.exist?(directory)
+#       FileUtils.mkdir_p directory
+#     end
+#     size_option = "#{size}x#{size}>"
+
+#     if is_pdf
+#       cmd = "#{shell_quote CONVERT_BIN} #{shell_quote "#{source}[0]"} -thumbnail #{shell_quote size_option} #{shell_quote "png:#{target}"}"
+#     else
+#       cmd = "#{shell_quote CONVERT_BIN} #{shell_quote source} -auto-orient -thumbnail #{shell_quote size_option} #{shell_quote target}"
+#     end
+#     unless system(cmd)
+#       logger.error("Creating thumbnail failed (#{$?}):\nCommand: #{cmd}")
+#       return nil
+#     end
+#   end
+#   target
+# end
