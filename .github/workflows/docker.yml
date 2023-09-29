@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [linux/amd64, linux/aarch64]
+        architecture: [linux/amd64, linux/arm64, linux/aarch64]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
