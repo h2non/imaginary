@@ -1093,7 +1093,7 @@ Self-documented JSON operation schema:
 - **zoom** - Same as [`/zoom`](#get--post-zoom) endpoint.
 - **convert** - Same as [`/convert`](#get--post-convert) endpoint.
 - **watermark** - Same as [`/watermark`](#get--post-watermark) endpoint.
-- **watermarkimage** - Same as [`/watermarkimage`](#get--post-watermarkimage) endpoint.
+- **watermarkImage** - Same as [`/watermarkimage`](#get--post-watermarkimage) endpoint.
 - **blur** - Same as [`/blur`](#get--post-blur) endpoint.
 
 ###### Example
