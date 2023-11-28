@@ -89,12 +89,17 @@ func transformByAspectRatio(params map[string]interface{}) (width, height int) {
 	}
 
 	if width != 0 {
-		height = width / aspectRatio["width"] * aspectRatio["height"]
+		height = calculateFromAspectRatio(width, aspectRatio["height"], aspectRatio["width"])
 	} else {
-		width = height / aspectRatio["height"] * aspectRatio["width"]
+		width = calculateFromAspectRatio(height, aspectRatio["width"], aspectRatio["height"])
 	}
 
 	return
+}
+
+func calculateFromAspectRatio(x int, ratioA int, ratioB int) int {
+	res := float32(x) * (float32(ratioA) / float32(ratioB))
+	return int(res)
 }
 
 func parseAspectRatio(val string) map[string]int {
