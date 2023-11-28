@@ -237,7 +237,7 @@ MALLOC_ARENA_MAX=2 imaginary -p 9000 -enable-url-source
 
 ### Graceful shutdown
 
-When you use a cluster, it is necessary to control how the deployment is executed, and it is very useful to finish the containers in a controlled.
+When you use a cluster, it is necessary to control how the deployment is executed, and it is very useful to finish the containers in a controlled manner.
 
 You can use the next command:
 
