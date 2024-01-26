@@ -40,7 +40,7 @@ var (
 	aKeyFile            = flag.String("keyfile", "", "TLS private key file path")
 	aAuthorization      = flag.String("authorization", "", "Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization")
 	aForwardHeaders     = flag.String("forward-headers", "", "Forwards custom headers to the image source server. -enable-url-source flag must be defined.")
-	aSrcResponseHeaders = flag.String("source-response-headers", "", "Returns selected headers from the source image server response. Has precedence over -http-cache-ttl when cache-control is specified. -enable-url-source flag must be defined.")
+	aSrcResponseHeaders = flag.String("source-response-headers", "", "Returns selected headers from the source image server response. Has precedence over -http-cache-ttl when cache-control is specified and the source response has a cache-control header, otherwise falls back to -http-cache-ttl value if provided. Missing and/or unlisted response headers are ignored. -enable-url-source flag must be defined.")
 	aPlaceholder        = flag.String("placeholder", "", "Image path to image custom placeholder to be used in case of error. Recommended minimum image size is: 1200x1200")
 	aPlaceholderStatus  = flag.Int("placeholder-status", 0, "HTTP status returned when use -placeholder flag")
 	aDisableEndpoints   = flag.String("disable-endpoints", "", "Comma separated endpoints to disable. E.g: form,crop,rotate,health")
