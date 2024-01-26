@@ -442,9 +442,11 @@ func TestSrcResponseHeaderWithCacheControl(t *testing.T) {
 	if len(image) == 0 {
 		t.Fatalf("Empty response body")
 	}
+	// make sure the proper header values are passed through
 	if res.Header.Get("cache-control") != srcHeaderValue || res.Header.Get("x-yep") != srcHeaderValue {
 		t.Fatalf("Header response not passed through properly")
 	}
+	// make sure unspecified headers are dropped
 	if res.Header.Get("x-nope") == srcHeaderValue {
 		t.Fatalf("Header response passed through and should not be")
 	}
@@ -458,7 +460,6 @@ func TestSrcResponseHeaderWithoutSrcCacheControl(t *testing.T) {
 
 	tsImage := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("X-yep", srcHeaderValue)
-		w.Header().Set("X-Nope", srcHeaderValue)
 		buf, _ := os.ReadFile("testdata/large.jpg")
 		_, _ = w.Write(buf)
 	}))
@@ -487,7 +488,7 @@ func TestSrcResponseHeaderWithoutSrcCacheControl(t *testing.T) {
 	if len(image) == 0 {
 		t.Fatalf("Empty response body")
 	}
-	// should defer to HTTPCacheTTL value
+	// should defer to the provided HTTPCacheTTL value
 	if !strings.Contains(res.Header.Get("cache-control"), strconv.Itoa(ttl)) {
 		t.Fatalf("cache-control header doesn't contain expected value")
 	}
