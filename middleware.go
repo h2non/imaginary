@@ -31,7 +31,7 @@ func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) ht
 		next = authorizeClient(next, o)
 	}
 	if o.HTTPCacheTTL >= 0 {
-		next = setCacheHeaders(next, o.HTTPCacheTTL)
+		next = setCacheHeaders(next, o.HTTPCacheTTL, o.SrcResponseHeaders)
 	}
 
 	return validate(defaultHeaders(next), o)
@@ -72,12 +72,12 @@ func throttle(next http.Handler, o ServerOptions) http.Handler {
 	}
 
 	quota := throttled.RateQuota{MaxRate: throttled.PerSec(o.Concurrency), MaxBurst: o.Burst}
-	rateLimiter, err := throttled.NewGCRARateLimiter(store, quota)
+	rateLimiter, err := throttled.NewGCRARateLimiterCtx(throttled.WrapStoreWithContext(store), quota)
 	if err != nil {
 		return throttleError(err)
 	}
 
-	httpRateLimiter := throttled.HTTPRateLimiter{
+	httpRateLimiter := throttled.HTTPRateLimiterCtx{
 		RateLimiter: rateLimiter,
 		VaryBy:      &throttled.VaryBy{Method: true},
 	}
@@ -136,11 +136,24 @@ func defaultHeaders(next http.Handler) http.Handler {
 	})
 }
 
-func setCacheHeaders(next http.Handler, ttl int) http.Handler {
+func insensitiveArrayContains(haystack []string, needle string) bool {
+	for _, value := range haystack {
+		if strings.EqualFold(value, needle) {
+			return true
+		}
+	}
+	return false
+}
+
+func setCacheHeaders(next http.Handler, ttl int, srcResponseHeaders []string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer next.ServeHTTP(w, r)
 
 		if r.Method != http.MethodGet || isPublicPath(r.URL.Path) {
+			return
+		}
+		// ignore the http-cache-ttl value if it's being set by a source image response header
+		if insensitiveArrayContains(srcResponseHeaders, "cache-control") && len(w.Header().Get("cache-control")) > 0 {
 			return
 		}
 

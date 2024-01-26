@@ -40,6 +40,7 @@ type ServerOptions struct {
 	Placeholder        string
 	PlaceholderStatus  int
 	ForwardHeaders     []string
+	SrcResponseHeaders []string
 	PlaceholderImage   []byte
 	Endpoints          Endpoints
 	AllowedOrigins     []*url.URL

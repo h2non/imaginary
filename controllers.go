@@ -45,7 +45,7 @@ func imageController(o ServerOptions, operation Operation) func(http.ResponseWri
 			return
 		}
 
-		buf, err := imageSource.GetImage(req)
+		buf, srcResponseHeaders, err := imageSource.GetImage(req)
 		if err != nil {
 			if xerr, ok := err.(Error); ok {
 				ErrorReply(req, w, xerr, o)
@@ -60,8 +60,21 @@ func imageController(o ServerOptions, operation Operation) func(http.ResponseWri
 			return
 		}
 
+		if len(o.SrcResponseHeaders) > 0 {
+			setSrcResponseHeaders(w, srcResponseHeaders, o.SrcResponseHeaders)
+		}
 		imageHandler(w, req, buf, operation, o)
 	}
+}
+
+func setSrcResponseHeaders(w http.ResponseWriter, responseHeaders http.Header, wantedHeaders []string) {
+	for _, wanted := range wantedHeaders {
+		v := responseHeaders.Get(wanted)
+		if len(v) > 0 {
+			w.Header().Set(wanted, v)
+		}
+	}
+
 }
 
 func determineAcceptMimeType(accept string) string {
