@@ -72,12 +72,12 @@ func throttle(next http.Handler, o ServerOptions) http.Handler {
 	}
 
 	quota := throttled.RateQuota{MaxRate: throttled.PerSec(o.Concurrency), MaxBurst: o.Burst}
-	rateLimiter, err := throttled.NewGCRARateLimiter(store, quota)
+	rateLimiter, err := throttled.NewGCRARateLimiterCtx(throttled.WrapStoreWithContext(store), quota)
 	if err != nil {
 		return throttleError(err)
 	}
 
-	httpRateLimiter := throttled.HTTPRateLimiter{
+	httpRateLimiter := throttled.HTTPRateLimiterCtx{
 		RateLimiter: rateLimiter,
 		VaryBy:      &throttled.VaryBy{Method: true},
 	}
@@ -138,7 +138,7 @@ func defaultHeaders(next http.Handler) http.Handler {
 
 func insensitiveArrayContains(haystack []string, needle string) bool {
 	for _, value := range haystack {
-		if strings.ToLower(value) == strings.ToLower(needle) {
+		if strings.EqualFold(value, needle) {
 			return true
 		}
 	}
