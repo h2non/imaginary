@@ -19,7 +19,7 @@ func TestFileSystemImageSource(t *testing.T) {
 			t.Fatal("Cannot match the request")
 		}
 
-		body, err = source.GetImage(r)
+		body, _, err = source.GetImage(r)
 		if err != nil {
 			t.Fatalf("Error while reading the body: %s", err)
 		}
