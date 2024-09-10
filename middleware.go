@@ -18,6 +18,8 @@ import (
 func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) http.Handler {
 	next := http.Handler(http.HandlerFunc(fn))
 
+	next = metrics(next)
+
 	if len(o.Endpoints) > 0 {
 		next = filterEndpoint(next, o)
 	}
@@ -126,6 +128,19 @@ func authorizeClient(next http.Handler, o ServerOptions) http.Handler {
 		}
 
 		next.ServeHTTP(w, r)
+	})
+}
+
+func metrics(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		rw := NewMetricsResponseWriter(w)
+		next.ServeHTTP(rw, r)
+		lvs := []string{rw.Code, r.RequestURI, r.Method}
+		reqCount.WithLabelValues(lvs...).Inc()
+		reqDuration.WithLabelValues(lvs...).Observe(time.Since(start).Seconds())
+		reqSizeBytes.WithLabelValues(lvs...).Observe(calcRequestSize(r))
+		respSizeBytes.WithLabelValues(lvs...).Observe(float64(rw.Length))
 	})
 }
 
