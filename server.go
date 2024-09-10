@@ -12,6 +12,8 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type ServerOptions struct {
@@ -115,6 +117,7 @@ func NewServerMux(o ServerOptions) http.Handler {
 	mux.Handle(join(o, "/"), Middleware(indexController(o), o))
 	mux.Handle(join(o, "/form"), Middleware(formController(o), o))
 	mux.Handle(join(o, "/health"), Middleware(healthController, o))
+	mux.Handle(join(o, "/metrics"), promhttp.Handler())
 
 	image := ImageMiddleware(o)
 	mux.Handle(join(o, "/resize"), image(Resize))
