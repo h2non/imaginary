@@ -108,7 +108,7 @@ docker pull h2non/imaginary
 
 Start the container with optional flags (default listening on port 9000)
 ```
-docker run -p 9000:9000 h2non/imaginary -cors -gzip
+docker run -p 9000:9000 h2non/imaginary -cors
 ```
 
 Start the container enabling remote URL source image processing via GET requests and `url` query param.
