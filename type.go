@@ -39,6 +39,8 @@ func ImageType(name string) bimg.ImageType {
 		return bimg.PNG
 	case "webp":
 		return bimg.WEBP
+	case "avif":
+		return bimg.AVIF
 	case "tiff":
 		return bimg.TIFF
 	case "gif":
