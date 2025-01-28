@@ -50,7 +50,9 @@ RUN go mod download
 COPY . .
 
 # Run quality control
-RUN go test ./... -test.v -race -test.coverprofile=atomic .
+# RUN go test ./... -test.v -race -test.coverprofile=atomic .
+ARG TARGETPLATFORM
+RUN if [ "$TARGETPLATFORM" = "linux/arm64" ] ; then go test ./... -test.v -test.coverprofile=atomic . ; else go test ./... -test.v -race -test.coverprofile=atomic . ; fi
 RUN golangci-lint run .
 
 # Compile imaginary
