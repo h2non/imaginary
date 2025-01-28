@@ -27,22 +27,23 @@ func (s *FileSystemImageSource) Matches(r *http.Request) bool {
 	return r.Method == http.MethodGet && file != ""
 }
 
-func (s *FileSystemImageSource) GetImage(r *http.Request) ([]byte, error) {
+func (s *FileSystemImageSource) GetImage(r *http.Request) ([]byte, http.Header, error) {
+	var buf []byte
 	file, err := s.getFileParam(r)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	if file == "" {
-		return nil, ErrMissingParamFile
+		return nil, nil, ErrMissingParamFile
 	}
 
 	file, err = s.buildPath(file)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-
-	return s.read(file)
+	buf, err = s.read(file)
+	return buf, make(http.Header), err
 }
 
 func (s *FileSystemImageSource) buildPath(file string) (string, error) {
@@ -63,7 +64,7 @@ func (s *FileSystemImageSource) read(file string) ([]byte, error) {
 
 func (s *FileSystemImageSource) getFileParam(r *http.Request) (string, error) {
 	unescaped, err := url.QueryUnescape(r.URL.Query().Get("file"))
-	if err != nil{
+	if err != nil {
 		return "", fmt.Errorf("failed to unescape file param: %w", err)
 	}
 

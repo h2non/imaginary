@@ -23,11 +23,16 @@ func (s *BodyImageSource) Matches(r *http.Request) bool {
 	return r.Method == http.MethodPost || r.Method == http.MethodPut
 }
 
-func (s *BodyImageSource) GetImage(r *http.Request) ([]byte, error) {
+func (s *BodyImageSource) GetImage(r *http.Request) ([]byte, http.Header, error) {
+	var buf []byte
+	var err error
+
 	if isFormBody(r) {
-		return readFormBody(r)
+		buf, err = readFormBody(r)
+	} else {
+		buf, err = readRawBody(r)
 	}
-	return readRawBody(r)
+	return buf, make(http.Header), err
 }
 
 func isFormBody(r *http.Request) bool {

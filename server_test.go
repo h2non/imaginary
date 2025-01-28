@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -403,6 +404,95 @@ func TestMountInvalidPath(t *testing.T) {
 	if res.StatusCode != 400 {
 		t.Fatalf("Invalid response status: %s", res.Status)
 	}
+}
+
+func TestSrcResponseHeaderWithCacheControl(t *testing.T) {
+	opts := ServerOptions{EnableURLSource: true, SrcResponseHeaders: []string{"cache-control", "X-Yep"}, HTTPCacheTTL: 100, MaxAllowedPixels: 18.0}
+	LoadSources(opts)
+	srcHeaderValue := "original-header"
+	tsImage := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		w.Header().Set("Cache-Control", srcHeaderValue)
+		w.Header().Set("X-yep", srcHeaderValue)
+		w.Header().Set("X-Nope", srcHeaderValue)
+		buf, _ := os.ReadFile("testdata/large.jpg")
+		_, _ = w.Write(buf)
+	}))
+	defer tsImage.Close()
+
+	// need to put the middleware on a sub-path as "/" is treated as a Public path
+	// and HTTPCacheTTL logic skips applying the fallback cache-control header
+	mux := http.NewServeMux()
+	mux.Handle("/foo/", ImageMiddleware(opts)(Resize))
+	ts := httptest.NewServer(mux)
+	url := ts.URL + "/foo?width=200&url=" + tsImage.URL
+	defer ts.Close()
+
+	res, err := http.Get(url)
+	if err != nil {
+		t.Fatal("Cannot perform the request")
+	}
+	if res.StatusCode != 200 {
+		t.Fatalf("Invalid response status: %d", res.StatusCode)
+	}
+
+	image, err := io.ReadAll(res.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(image) == 0 {
+		t.Fatalf("Empty response body")
+	}
+	// make sure the proper header values are passed through
+	if res.Header.Get("cache-control") != srcHeaderValue || res.Header.Get("x-yep") != srcHeaderValue {
+		t.Fatalf("Header response not passed through properly")
+	}
+	// make sure unspecified headers are dropped
+	if res.Header.Get("x-nope") == srcHeaderValue {
+		t.Fatalf("Header response passed through and should not be")
+	}
+
+}
+func TestSrcResponseHeaderWithoutSrcCacheControl(t *testing.T) {
+	ttl := 1234567
+	opts := ServerOptions{EnableURLSource: true, SrcResponseHeaders: []string{"cache-control", "X-Yep"}, HTTPCacheTTL: ttl, MaxAllowedPixels: 18.0}
+	LoadSources(opts)
+	srcHeaderValue := "original-header"
+
+	tsImage := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		w.Header().Set("X-yep", srcHeaderValue)
+		buf, _ := os.ReadFile("testdata/large.jpg")
+		_, _ = w.Write(buf)
+	}))
+	defer tsImage.Close()
+
+	// need to put the middleware on a sub-path as "/" is treated as a Public path
+	// and HTTPCacheTTL logic skips applying the fallback cache-control header
+	mux := http.NewServeMux()
+	mux.Handle("/foo/", ImageMiddleware(opts)(Resize))
+	ts := httptest.NewServer(mux)
+	url := ts.URL + "/foo?width=200&url=" + tsImage.URL
+	defer ts.Close()
+
+	res, err := http.Get(url)
+	if err != nil {
+		t.Fatal("Cannot perform the request")
+	}
+	if res.StatusCode != 200 {
+		t.Fatalf("Invalid response status: %d", res.StatusCode)
+	}
+
+	image, err := io.ReadAll(res.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(image) == 0 {
+		t.Fatalf("Empty response body")
+	}
+	// should defer to the provided HTTPCacheTTL value
+	if !strings.Contains(res.Header.Get("cache-control"), strconv.Itoa(ttl)) {
+		t.Fatalf("cache-control header doesn't contain expected value")
+	}
+
 }
 
 func controller(op Operation) func(w http.ResponseWriter, r *http.Request) {
