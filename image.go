@@ -159,7 +159,7 @@ func calculateDestinationFitDimension(imageWidth, imageHeight, fitWidth, fitHeig
 		fitHeight = int(math.Round(float64(fitWidth) * float64(imageHeight) / float64(imageWidth)))
 	} else {
 		// constrained by height
-		fitWidth = int(math.Round(float64(fitHeight) * float64(imageWidth) / float64(imageHeight)))
+		fitWidth = int(math.Ceil(float64(fitHeight) * float64(imageWidth) / float64(imageHeight)))
 	}
 
 	return fitWidth, fitHeight
