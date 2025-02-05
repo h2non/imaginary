@@ -1,4 +1,4 @@
-name: Authenticator Service CI
+name: Imaginary CI
 on: push
 jobs:
   build-docker:
