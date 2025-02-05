@@ -1,0 +1,20 @@
+name: Authenticator Service CI
+on: push
+jobs:
+  build-docker:
+    permissions:
+      contents: "read"
+      id-token: "write"
+    uses: ortoo/github-actions/.github/workflows/build-docker.yml@main
+    with:
+      image_name: europe-west2-docker.pkg.dev/thekey-prod/ortoo-public/imaginary
+  deploy:
+    needs: [build-docker]
+    if: github.ref == 'refs/heads/master'
+    permissions:
+      contents: "read"
+      id-token: "write"
+    uses: ortoo/github-actions/.github/workflows/deployment.yml@main
+    with:
+      image_name: europe-west2-docker.pkg.dev/thekey-prod/ortoo-public/imaginary
+      datetime: ${{ needs.build-docker.outputs.datetime }}

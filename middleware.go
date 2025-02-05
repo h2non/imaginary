@@ -66,23 +66,26 @@ func throttleError(err error) http.Handler {
 }
 
 func throttle(next http.Handler, o ServerOptions) http.Handler {
-	store, err := memstore.New(65536)
-	if err != nil {
-		return throttleError(err)
-	}
+    store, err := memstore.New(65536)
+    if err != nil {
+        return throttleError(err)
+    }
 
-	quota := throttled.RateQuota{MaxRate: throttled.PerSec(o.Concurrency), MaxBurst: o.Burst}
-	rateLimiter, err := throttled.NewGCRARateLimiter(store, quota)
-	if err != nil {
-		return throttleError(err)
-	}
+    // Wrap the store with context support
+    ctxStore := throttled.WrapStoreWithContext(store)
 
-	httpRateLimiter := throttled.HTTPRateLimiter{
-		RateLimiter: rateLimiter,
-		VaryBy:      &throttled.VaryBy{Method: true},
-	}
+    quota := throttled.RateQuota{MaxRate: throttled.PerSec(o.Concurrency), MaxBurst: o.Burst}
+    rateLimiter, err := throttled.NewGCRARateLimiterCtx(ctxStore, quota)
+    if err != nil {
+        return throttleError(err)
+    }
 
-	return httpRateLimiter.RateLimit(next)
+    httpRateLimiter := throttled.HTTPRateLimiterCtx{
+        RateLimiter: rateLimiter,
+        VaryBy:      &throttled.VaryBy{Method: true},
+    }
+
+    return httpRateLimiter.RateLimit(next)
 }
 
 func validate(next http.Handler, o ServerOptions) http.Handler {

@@ -176,60 +176,65 @@ func TestExtract(t *testing.T) {
 }
 
 func TestTypeAuto(t *testing.T) {
-	cases := []struct {
-		acceptHeader string
-		expected     string
-	}{
-		{"", "jpeg"},
-		{"image/webp,*/*", "webp"},
-		{"image/png,*/*", "png"},
-		{"image/webp;q=0.8,image/jpeg", "webp"},
-		{"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8", "webp"}, // Chrome
-	}
+    cases := []struct {
+        acceptHeader string
+        expected     string
+    }{
+        {"", "jpeg"},
+        {"image/webp,*/*", "webp"},
+        {"image/png,*/*", "png"},
+        {"image/webp;q=0.8,image/jpeg", "webp"},
+        {"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8", "webp"}, // Chrome
+    }
 
-	for _, test := range cases {
-		ts := testServer(controller(Crop))
-		buf := readFile("large.jpg")
-		url := ts.URL + "?width=300&type=auto"
-		defer ts.Close()
+    for _, test := range cases {
+        ts := testServer(controller(Crop))
+        buf := readFile("large.jpg")
+        url := ts.URL + "?width=300&type=auto"
+        defer ts.Close()
 
-		req, _ := http.NewRequest(http.MethodPost, url, buf)
-		req.Header.Add("Content-Type", "image/jpeg")
-		req.Header.Add("Accept", test.acceptHeader)
-		res, err := http.DefaultClient.Do(req)
-		if err != nil {
-			t.Fatal("Cannot perform the request")
-		}
+        req, _ := http.NewRequest(http.MethodPost, url, buf)
+        req.Header.Add("Content-Type", "image/jpeg")
+        req.Header.Add("Accept", test.acceptHeader)
 
-		if res.StatusCode != 200 {
-			t.Fatalf("Invalid response status: %s", res.Status)
-		}
+        // Add logging to debug the request
+        t.Logf("Testing with URL: %s", url)
+        t.Logf("Accept header: %s", test.acceptHeader)
 
-		if res.Header.Get("Content-Length") == "" {
-			t.Fatal("Empty content length response")
-		}
+        res, err := http.DefaultClient.Do(req)
+        if err != nil {
+            t.Fatal("Cannot perform the request")
+        }
 
-		image, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if len(image) == 0 {
-			t.Fatalf("Empty response body")
-		}
+        if res.StatusCode != 200 {
+            t.Fatalf("Invalid response status: %s", res.Status)
+        }
 
-		err = assertSize(image, 300, 1080)
-		if err != nil {
-			t.Error(err)
-		}
+        if res.Header.Get("Content-Length") == "" {
+            t.Fatal("Empty content length response")
+        }
 
-		if bimg.DetermineImageTypeName(image) != test.expected {
-			t.Fatalf("Invalid image type")
-		}
+        image, err := ioutil.ReadAll(res.Body)
+        if err != nil {
+            t.Fatal(err)
+        }
+        if len(image) == 0 {
+            t.Fatalf("Empty response body")
+        }
 
-		if res.Header.Get("Vary") != "Accept" {
-			t.Fatal("Vary header not set correctly")
-		}
-	}
+        err = assertSize(image, 300, 1080)
+        if err != nil {
+            t.Error(err)
+        }
+
+        if bimg.DetermineImageTypeName(image) != test.expected {
+            t.Fatalf("Invalid image type")
+        }
+
+        if res.Header.Get("Vary") != "Accept" {
+            t.Fatal("Vary header not set correctly")
+        }
+    }
 }
 
 func TestFit(t *testing.T) {
@@ -406,10 +411,16 @@ func TestMountInvalidPath(t *testing.T) {
 }
 
 func controller(op Operation) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		buf, _ := ioutil.ReadAll(r.Body)
-		imageHandler(w, r, buf, op, ServerOptions{MaxAllowedPixels: 18.0})
-	}
+    return func(w http.ResponseWriter, r *http.Request) {
+        buf, _ := ioutil.ReadAll(r.Body)
+        
+        // Add logging to debug the request
+        fmt.Printf("Received request: %s %s\n", r.Method, r.URL)
+        fmt.Printf("Headers: %v\n", r.Header)
+        fmt.Printf("Body length: %d\n", len(buf))
+        
+        imageHandler(w, r, buf, op, ServerOptions{MaxAllowedPixels: 18.0})
+    }
 }
 
 func testServer(fn func(w http.ResponseWriter, r *http.Request)) *httptest.Server {
