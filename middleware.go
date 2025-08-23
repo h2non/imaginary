@@ -120,7 +120,7 @@ func authorizeClient(next http.Handler, o ServerOptions) http.Handler {
 			key = r.URL.Query().Get("key")
 		}
 
-		if key != o.APIKey {
+		if !hmac.Equal([]byte(key), []byte(o.APIKey)) {
 			ErrorReply(r, w, ErrInvalidAPIKey, o)
 			return
 		}
