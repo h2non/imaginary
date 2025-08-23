@@ -8,6 +8,8 @@ import (
 	"io/ioutil"
 	"math"
 	"net/http"
+	"net/url"
+	"strconv"
 	"strings"
 
 	"github.com/h2non/bimg"
@@ -331,25 +333,82 @@ func WatermarkImage(buf []byte, o ImageOptions) (Image, error) {
 	if o.Image == "" {
 		return Image{}, NewError("Missing required param: image", http.StatusBadRequest)
 	}
-	response, err := http.Get(o.Image)
+
+	var imageBuf []byte
+	var err error
+
+	watermarkURL, err := url.Parse(o.Image)
 	if err != nil {
-		return Image{}, NewError(fmt.Sprintf("Unable to retrieve watermark image. %s", o.Image), http.StatusBadRequest)
+		return Image{}, NewError(fmt.Sprintf("Invalid watermark image URL: %s", o.Image), http.StatusBadRequest)
 	}
-	defer func() {
-		_ = response.Body.Close()
-	}()
 
-	bodyReader := io.LimitReader(response.Body, 1e6)
+	if watermarkURL.Scheme == "http" || watermarkURL.Scheme == "https" {
+		defaultMaxSize := 10 * 1024 * 1024
 
-	imageBuf, err := ioutil.ReadAll(bodyReader)
-	if len(imageBuf) == 0 {
-		errMessage := "Unable to read watermark image"
-
+		headReq, err := http.NewRequest(http.MethodHead, o.Image, nil)
 		if err != nil {
-			errMessage = fmt.Sprintf("%s. %s", errMessage, err.Error())
+			return Image{}, NewError(fmt.Sprintf("Unable to create HEAD request for watermark image: %s", o.Image), http.StatusBadRequest)
 		}
 
-		return Image{}, NewError(errMessage, http.StatusBadRequest)
+		headRes, err := http.DefaultClient.Do(headReq)
+		if err != nil {
+			return Image{}, NewError(fmt.Sprintf("Unable to retrieve watermark image headers: %s", o.Image), http.StatusBadRequest)
+		}
+		_ = headRes.Body.Close()
+
+		if headRes.StatusCode < 200 || headRes.StatusCode > 206 {
+			return Image{}, NewError(fmt.Sprintf("Error fetching watermark image headers: (status=%d) (url=%s)", headRes.StatusCode, o.Image), headRes.StatusCode)
+		}
+
+		contentLength, _ := strconv.Atoi(headRes.Header.Get("Content-Length"))
+		if contentLength > defaultMaxSize {
+			return Image{}, NewError(fmt.Sprintf("Watermark image Content-Length %d exceeds maximum allowed %d bytes", contentLength, defaultMaxSize), http.StatusBadRequest)
+		}
+
+		response, err := http.Get(o.Image)
+		if err != nil {
+			return Image{}, NewError(fmt.Sprintf("Unable to retrieve watermark image: %s", o.Image), http.StatusBadRequest)
+		}
+		defer func() {
+			_ = response.Body.Close()
+		}()
+
+		if response.StatusCode != 200 {
+			return Image{}, NewError(fmt.Sprintf("Error fetching watermark image: (status=%d) (url=%s)", response.StatusCode, o.Image), response.StatusCode)
+		}
+
+		limit := defaultMaxSize
+		if contentLength > 0 && contentLength > limit {
+			limit = contentLength
+		}
+
+		bodyReader := io.LimitReader(response.Body, int64(limit))
+		imageBuf, err = ioutil.ReadAll(bodyReader)
+		if err != nil {
+			return Image{}, NewError(fmt.Sprintf("Unable to read watermark image body: %s", err.Error()), http.StatusBadRequest)
+		}
+
+		if len(imageBuf) >= limit {
+			return Image{}, NewError(fmt.Sprintf("Watermark image body size exceeds maximum allowed %d bytes", limit), http.StatusBadRequest)
+		}
+	} else {
+		response, err := http.Get(o.Image)
+		if err != nil {
+			return Image{}, NewError(fmt.Sprintf("Unable to retrieve watermark image: %s", o.Image), http.StatusBadRequest)
+		}
+		defer func() {
+			_ = response.Body.Close()
+		}()
+
+		bodyReader := io.LimitReader(response.Body, 1e6)
+		imageBuf, err = ioutil.ReadAll(bodyReader)
+		if err != nil {
+			return Image{}, NewError(fmt.Sprintf("Unable to read watermark image body: %s", err.Error()), http.StatusBadRequest)
+		}
+	}
+
+	if len(imageBuf) == 0 {
+		return Image{}, NewError("Unable to read watermark image: empty response", http.StatusBadRequest)
 	}
 
 	opts := BimgOptions(o)
