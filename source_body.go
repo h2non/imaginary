@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -46,16 +48,40 @@ func readFormBody(r *http.Request) ([]byte, error) {
 	}
 	defer file.Close()
 
-	buf, err := ioutil.ReadAll(file)
+	defaultMaxSize := 10 * 1024 * 1024
+	limitedReader := io.LimitReader(file, int64(defaultMaxSize))
+
+	buf, err := ioutil.ReadAll(limitedReader)
+	if err != nil {
+		return nil, err
+	}
+
 	if len(buf) == 0 {
 		err = ErrEmptyBody
+	}
+
+	// Check if we actually read the full content (indicating the limit was reached)
+	if len(buf) >= defaultMaxSize {
+		return nil, fmt.Errorf("form file size exceeds maximum allowed %d bytes", defaultMaxSize)
 	}
 
 	return buf, err
 }
 
 func readRawBody(r *http.Request) ([]byte, error) {
-	return ioutil.ReadAll(r.Body)
+	defaultMaxSize := 10 * 1024 * 1024
+
+	limitedReader := io.LimitReader(r.Body, int64(defaultMaxSize))
+	buf, err := ioutil.ReadAll(limitedReader)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(buf) >= defaultMaxSize {
+		return nil, fmt.Errorf("request body size exceeds maximum allowed %d bytes", defaultMaxSize)
+	}
+
+	return buf, nil
 }
 
 func init() {
