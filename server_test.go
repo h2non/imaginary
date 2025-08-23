@@ -190,7 +190,7 @@ func TestTypeAuto(t *testing.T) {
 	for _, test := range cases {
 		ts := testServer(controller(Crop))
 		buf := readFile("large.jpg")
-		url := ts.URL + "?width=300&type=auto"
+		url := ts.URL + "?width=300&height=169&type=auto"
 		defer ts.Close()
 
 		req, _ := http.NewRequest(http.MethodPost, url, buf)
