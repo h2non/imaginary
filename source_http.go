@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -65,10 +66,28 @@ func (s *HTTPImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, 
 		return nil, NewError(fmt.Sprintf("error fetching remote http image: (status=%d) (url=%s)", res.StatusCode, req.URL.String()), res.StatusCode)
 	}
 
-	// Read the body
-	buf, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return nil, fmt.Errorf("unable to create image from response body: %s (url=%s)", req.URL.String(), err)
+	// Read the body with the stricter size limit
+	var buf []byte
+	if s.Config.MaxAllowedSize > 0 {
+		contentLength, _ := strconv.Atoi(res.Header.Get("Content-Length"))
+		limit := s.Config.MaxAllowedSize
+		if contentLength > 0 && contentLength > limit {
+			limit = contentLength
+		}
+
+		limitedReader := io.LimitReader(res.Body, int64(limit))
+		buf, err = ioutil.ReadAll(limitedReader)
+		if err != nil {
+			return nil, fmt.Errorf("unable to create image from response body: %s (url=%s)", req.URL.String(), err)
+		}
+		if len(buf) >= limit {
+			return nil, fmt.Errorf("response body size exceeds maximum allowed %d bytes", limit)
+		}
+	} else {
+		buf, err = ioutil.ReadAll(res.Body)
+		if err != nil {
+			return nil, fmt.Errorf("unable to create image from response body: %s (url=%s)", req.URL.String(), err)
+		}
 	}
 	return buf, nil
 }
