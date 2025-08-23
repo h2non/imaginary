@@ -190,7 +190,7 @@ func TestTypeAuto(t *testing.T) {
 	for _, test := range cases {
 		ts := testServer(controller(Crop))
 		buf := readFile("large.jpg")
-		url := ts.URL + "?width=300&type=auto"
+		url := ts.URL + "?width=300&height=169&type=auto"
 		defer ts.Close()
 
 		req, _ := http.NewRequest(http.MethodPost, url, buf)
@@ -217,7 +217,7 @@ func TestTypeAuto(t *testing.T) {
 			t.Fatalf("Empty response body")
 		}
 
-		err = assertSize(image, 300, 1080)
+		err = assertSize(image, 300, 169)
 		if err != nil {
 			t.Error(err)
 		}
@@ -406,10 +406,9 @@ func TestMountInvalidPath(t *testing.T) {
 }
 
 func controller(op Operation) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		buf, _ := ioutil.ReadAll(r.Body)
-		imageHandler(w, r, buf, op, ServerOptions{MaxAllowedPixels: 18.0})
-	}
+	opts := ServerOptions{MaxAllowedPixels: 18.0}
+	LoadSources(opts)
+	return imageController(opts, op)
 }
 
 func testServer(fn func(w http.ResponseWriter, r *http.Request)) *httptest.Server {

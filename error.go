@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -56,7 +55,14 @@ func NewError(err string, code int) Error {
 func sendErrorResponse(w http.ResponseWriter, httpStatusCode int, err error) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpStatusCode)
-	_, _ = w.Write([]byte(fmt.Sprintf("{\"error\":\"%s\", \"status\": %d}", err.Error(), httpStatusCode)))
+
+	errorResponse := map[string]interface{}{
+		"error":  err.Error(),
+		"status": httpStatusCode,
+	}
+
+	jsonData, _ := json.Marshal(errorResponse)
+	_, _ = w.Write(jsonData)
 }
 
 func replyWithPlaceholder(req *http.Request, w http.ResponseWriter, errCaller Error, o ServerOptions) error {
