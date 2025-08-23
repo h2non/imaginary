@@ -147,7 +147,7 @@ func shouldRestrictOrigin(url *url.URL, origins []*url.URL) bool {
 			}
 		}
 
-		if origin.Host[0:2] == "*." {
+		if strings.HasPrefix(origin.Host, "*.") {
 			// Testing if "*.example.org" matches "example.org"
 			if url.Host == origin.Host[2:] {
 				if strings.HasPrefix(url.Path, origin.Path) {
@@ -156,7 +156,7 @@ func shouldRestrictOrigin(url *url.URL, origins []*url.URL) bool {
 			}
 
 			// Testing if "*.example.org" matches "foo.example.org"
-			if strings.HasSuffix(url.Host, origin.Host[1:]) {
+			if len(origin.Host) >= 2 && strings.HasSuffix(url.Host, origin.Host[1:]) {
 				if strings.HasPrefix(url.Path, origin.Path) {
 					return false
 				}
