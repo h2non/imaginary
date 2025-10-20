@@ -70,14 +70,15 @@ func throttle(next http.Handler, o ServerOptions) http.Handler {
 	if err != nil {
 		return throttleError(err)
 	}
+	wrappedStore := throttled.WrapStoreWithContext(store)
 
 	quota := throttled.RateQuota{MaxRate: throttled.PerSec(o.Concurrency), MaxBurst: o.Burst}
-	rateLimiter, err := throttled.NewGCRARateLimiter(store, quota)
+	rateLimiter, err := throttled.NewGCRARateLimiterCtx(wrappedStore, quota)
 	if err != nil {
 		return throttleError(err)
 	}
 
-	httpRateLimiter := throttled.HTTPRateLimiter{
+	httpRateLimiter := throttled.HTTPRateLimiterCtx{
 		RateLimiter: rateLimiter,
 		VaryBy:      &throttled.VaryBy{Method: true},
 	}
