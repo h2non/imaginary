@@ -74,6 +74,8 @@ func determineAcceptMimeType(accept string) string {
 			return "png"
 		case "image/jpeg":
 			return "jpeg"
+		case "image/avif":
+			return "avif"
 		}
 	}
 
