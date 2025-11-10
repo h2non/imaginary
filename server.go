@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -17,6 +18,7 @@ import (
 type ServerOptions struct {
 	Port               int
 	Burst              int
+	UnixSocket         string
 	Concurrency        int
 	HTTPCacheTTL       int
 	HTTPReadTimeout    int
@@ -98,6 +100,13 @@ func Server(o ServerOptions) {
 }
 
 func listenAndServe(s *http.Server, o ServerOptions) error {
+	if o.UnixSocket != "" {
+		listener, err := net.Listen("unix", o.UnixSocket)
+		if err != nil {
+			return err
+		}
+		return s.Serve(listener)
+	}
 	if o.CertFile != "" && o.KeyFile != "" {
 		return s.ListenAndServeTLS(o.CertFile, o.KeyFile)
 	}

@@ -18,6 +18,7 @@ import (
 
 var (
 	aAddr               = flag.String("a", "", "Bind address")
+	aUnixSocket         = flag.String("unix-socket", "", "Path to the unix socket to listen on. If specified - address and port flags are ignored")
 	aPort               = flag.Int("p", 8088, "Port to listen")
 	aVers               = flag.Bool("v", false, "Show version")
 	aVersl              = flag.Bool("version", false, "Show version")
@@ -58,6 +59,7 @@ const usage = `imaginary %s
 
 Usage:
   imaginary -p 80
+  imaginary -unix-socket /var/run/imaginary.sock
   imaginary -cors
   imaginary -concurrency 10
   imaginary -path-prefix /api/v1
@@ -76,6 +78,7 @@ Usage:
 Options:
 
   -a <addr>                  Bind address [default: *]
+  -unix-socket               Path to the unix socket to listen on. If specified - address and port flags are ignored
   -p <port>                  Bind port [default: 8088]
   -h, -help                  Show help
   -v, -version               Show version
@@ -138,6 +141,7 @@ func main() {
 	opts := ServerOptions{
 		Port:               port,
 		Address:            *aAddr,
+		UnixSocket:         *aUnixSocket,
 		CORS:               *aCors,
 		AuthForwarding:     *aAuthForwarding,
 		EnableURLSource:    *aEnableURLSource,
