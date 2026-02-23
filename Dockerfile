@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1.4
 
-ARG GOLANG_VERSION=1.19
+ARG GOLANG_VERSION=1.25
 FROM golang:${GOLANG_VERSION}-bullseye as builder
+
 
 ARG IMAGINARY_VERSION=dev
 ARG LIBVIPS_VERSION=8.14.1
@@ -115,7 +116,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
 ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so
 
 # Server port to listen
-ENV PORT 9000
+ENV PORT=9000
 
 # Drop privileges for non-UID mapped environments
 USER nobody

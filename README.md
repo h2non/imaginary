@@ -1,4 +1,4 @@
-# imaginary [![Build Status](https://travis-ci.org/h2non/imaginary.svg)](https://travis-ci.org/h2non/imaginary) [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Docker Registry](https://img.shields.io/docker/pulls/h2non/imaginary.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Fly.io](https://img.shields.io/badge/deploy-fly.io-blue.svg)](https://fly.io/launch/github/h2non/imaginary)
+# imaginary [![Docker](https://img.shields.io/badge/docker-h2non/imaginary-blue.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Docker Registry](https://img.shields.io/docker/pulls/h2non/imaginary.svg)](https://hub.docker.com/r/h2non/imaginary/) [![Fly.io](https://img.shields.io/badge/deploy-fly.io-blue.svg)](https://fly.io/launch/github/h2non/imaginary)
 
 **[Fast](#benchmarks) HTTP [microservice](http://microservices.io/patterns/microservices.html)** written in Go **for high-level image processing** backed by [bimg](https://github.com/h2non/bimg) and [libvips](https://github.com/jcupitt/libvips). `imaginary` can be used as private or public HTTP service for massive image processing with first-class support for [Docker](#docker) & [Fly.io](#flyio).
 It's almost dependency-free and only uses [`net/http`](http://golang.org/pkg/net/http/) native package without additional abstractions for better [performance](#performance).
@@ -108,7 +108,7 @@ docker pull h2non/imaginary
 
 Start the container with optional flags (default listening on port 9000)
 ```
-docker run -p 9000:9000 h2non/imaginary -cors -gzip
+docker run -p 9000:9000 h2non/imaginary -cors
 ```
 
 Start the container enabling remote URL source image processing via GET requests and `url` query param.
@@ -237,7 +237,7 @@ MALLOC_ARENA_MAX=2 imaginary -p 9000 -enable-url-source
 
 ### Graceful shutdown
 
-When you use a cluster, it is necessary to control how the deployment is executed, and it is very useful to finish the containers in a controlled.
+When you use a cluster, it is necessary to control how the deployment is executed, and it is very useful to finish the containers in a controlled manner.
 
 You can use the next command:
 
@@ -1094,7 +1094,7 @@ Self-documented JSON operation schema:
 - **zoom** - Same as [`/zoom`](#get--post-zoom) endpoint.
 - **convert** - Same as [`/convert`](#get--post-convert) endpoint.
 - **watermark** - Same as [`/watermark`](#get--post-watermark) endpoint.
-- **watermarkimage** - Same as [`/watermarkimage`](#get--post-watermarkimage) endpoint.
+- **watermarkImage** - Same as [`/watermarkimage`](#get--post-watermarkimage) endpoint.
 - **blur** - Same as [`/blur`](#get--post-blur) endpoint.
 
 ###### Example

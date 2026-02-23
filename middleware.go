@@ -11,8 +11,8 @@ import (
 
 	"github.com/h2non/bimg"
 	"github.com/rs/cors"
-	"gopkg.in/throttled/throttled.v2"
-	"gopkg.in/throttled/throttled.v2/store/memstore"
+	"github.com/throttled/throttled/v2"
+	"github.com/throttled/throttled/v2/store/memstore"
 )
 
 func Middleware(fn func(http.ResponseWriter, *http.Request), o ServerOptions) http.Handler {
@@ -70,14 +70,15 @@ func throttle(next http.Handler, o ServerOptions) http.Handler {
 	if err != nil {
 		return throttleError(err)
 	}
+	wrappedStore := throttled.WrapStoreWithContext(store)
 
 	quota := throttled.RateQuota{MaxRate: throttled.PerSec(o.Concurrency), MaxBurst: o.Burst}
-	rateLimiter, err := throttled.NewGCRARateLimiter(store, quota)
+	rateLimiter, err := throttled.NewGCRARateLimiterCtx(wrappedStore, quota)
 	if err != nil {
 		return throttleError(err)
 	}
 
-	httpRateLimiter := throttled.HTTPRateLimiter{
+	httpRateLimiter := throttled.HTTPRateLimiterCtx{
 		RateLimiter: rateLimiter,
 		VaryBy:      &throttled.VaryBy{Method: true},
 	}

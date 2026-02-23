@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"path"
 	"strings"
 )
@@ -18,16 +20,24 @@ func NewFileSystemImageSource(config *SourceConfig) ImageSource {
 }
 
 func (s *FileSystemImageSource) Matches(r *http.Request) bool {
-	return r.Method == http.MethodGet && s.getFileParam(r) != ""
+	file, err := s.getFileParam(r)
+	if err != nil {
+		return false
+	}
+	return r.Method == http.MethodGet && file != ""
 }
 
 func (s *FileSystemImageSource) GetImage(r *http.Request) ([]byte, error) {
-	file := s.getFileParam(r)
+	file, err := s.getFileParam(r)
+	if err != nil {
+		return nil, err
+	}
+
 	if file == "" {
 		return nil, ErrMissingParamFile
 	}
 
-	file, err := s.buildPath(file)
+	file, err = s.buildPath(file)
 	if err != nil {
 		return nil, err
 	}
@@ -51,8 +61,13 @@ func (s *FileSystemImageSource) read(file string) ([]byte, error) {
 	return buf, nil
 }
 
-func (s *FileSystemImageSource) getFileParam(r *http.Request) string {
-	return r.URL.Query().Get("file")
+func (s *FileSystemImageSource) getFileParam(r *http.Request) (string, error) {
+	unescaped, err := url.QueryUnescape(r.URL.Query().Get("file"))
+	if err != nil{
+		return "", fmt.Errorf("failed to unescape file param: %w", err)
+	}
+
+	return unescaped, nil
 }
 
 func init() {
