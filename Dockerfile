@@ -1,35 +1,60 @@
-ARG GOLANG_VERSION=1.17
-FROM golang:${GOLANG_VERSION}-bullseye AS builder
+# syntax=docker/dockerfile:1.4
+
+ARG GOLANG_VERSION=1.25
+FROM golang:${GOLANG_VERSION}-bullseye as builder
+
 
 ARG IMAGINARY_VERSION=dev
-ARG LIBVIPS_VERSION=8.12.2
-ARG GOLANGCILINT_VERSION=1.29.0
+ARG LIBVIPS_VERSION=8.14.1
+ARG GOLANGCILINT_VERSION=1.51.1
 
-# Installs libvips + required libraries
+ENV LIBSPNG_VERSION="0.7.3"
+ENV LIBSPNG_URL="https://github.com/randy408/libspng/archive/refs/tags/v${LIBSPNG_VERSION}.tar.gz"
+
+#ENV PDFIUM_VERSION="5579"
+#ENV PDFIUM_URL="https://github.com/bblanchon/pdfium-binaries/releases/download/chromium/${PDFIUM_VERSION}/pdfium-linux-arm64.tgz"
+#
+## Installs libvips + required libraries
+#COPY <<EOF /usr/lib/pkgconfig/pdfium.pc
+#prefix=/usr
+#exec_prefix=\${prefix}
+#includedir=\${prefix}/include
+#libdir=\${exec_prefix}/lib/aarch64-linux-gnu
+#
+#Name: pdfium
+#Description: pdfium
+#Version: ${PDFIUM_VERSION}
+#Cflags: -I\${includedir}
+#Libs: -L\${libdir} -lpdfium
+#EOF
+
 RUN DEBIAN_FRONTEND=noninteractive \
   apt-get update && \
   apt-get install --no-install-recommends -y \
   ca-certificates \
-  automake build-essential curl \
+  automake build-essential curl meson scons file \
   gobject-introspection gtk-doc-tools libglib2.0-dev libjpeg62-turbo-dev libpng-dev \
   libwebp-dev libtiff5-dev libgif-dev libexif-dev libxml2-dev libpoppler-glib-dev \
   swig libmagickwand-dev libpango1.0-dev libmatio-dev libopenslide-dev libcfitsio-dev \
-  libgsf-1-dev fftw3-dev liborc-0.4-dev librsvg2-dev libimagequant-dev libheif-dev && \
+  libgsf-1-dev fftw3-dev liborc-0.4-dev librsvg2-dev libimagequant-dev libheif-dev \
+  libexpat1-dev libgirepository1.0-dev libglib2.0-dev liblcms2-dev libnifti2-dev libniftiio-dev libopenexr-dev \
+  libopenjp2-7-dev patchelf pkg-config && \
   cd /tmp && \
-  curl -fsSLO https://github.com/libvips/libvips/releases/download/v${LIBVIPS_VERSION}/vips-${LIBVIPS_VERSION}.tar.gz && \
-  tar zvxf vips-${LIBVIPS_VERSION}.tar.gz && \
+  curl -L "${LIBSPNG_URL}" | tar -xzf- && \
+  cd /tmp/libspng-${LIBSPNG_VERSION} && \
+  meson build --buildtype=release && \
+  cd /tmp/libspng-${LIBSPNG_VERSION}/build && \
+  ninja && ninja install && \
+#  cd /usr && \
+#  curl -L "${PDFIUM_URL}" | tar -xzf- && \
+  cd /tmp && \
+  curl -fsSLO https://github.com/libvips/libvips/releases/download/v${LIBVIPS_VERSION}/vips-${LIBVIPS_VERSION}.tar.xz && \
+  tar xJf vips-${LIBVIPS_VERSION}.tar.xz && \
   cd /tmp/vips-${LIBVIPS_VERSION} && \
-	CFLAGS="-g -O3" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -g -O3" \
-    ./configure \
-    --disable-debug \
-    --disable-dependency-tracking \
-    --disable-introspection \
-    --disable-static \
-    --enable-gtk-doc-html=no \
-    --enable-gtk-doc=no \
-    --enable-pyvips8=no && \
-  make && \
-  make install && \
+  CFLAGS="-g -O3" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -g -O3" meson setup build-dir --buildtype=release && \
+  cd /tmp/vips-${LIBVIPS_VERSION}/build-dir && \
+  CFLAGS="-g -O3" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -g -O3" meson compile && \
+  CFLAGS="-g -O3" CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -g -O3" meson install && \
   ldconfig
 
 # Installing golangci-lint
@@ -81,7 +106,8 @@ RUN DEBIAN_FRONTEND=noninteractive \
   procps libglib2.0-0 libjpeg62-turbo libpng16-16 libopenexr25 \
   libwebp6 libwebpmux3 libwebpdemux2 libtiff5 libgif7 libexif12 libxml2 libpoppler-glib8 \
   libmagickwand-6.q16-6 libpango1.0-0 libmatio11 libopenslide0 libjemalloc2 \
-  libgsf-1-114 fftw3 liborc-0.4-0 librsvg2-2 libcfitsio9 libimagequant0 libheif1 && \
+  libgsf-1-114 fftw3 liborc-0.4-0 librsvg2-2 libcfitsio9 libimagequant0 libheif1 \
+  liblcms2-2 libopenexr25 libopenjp2-7 libnifti2-2 libniftiio2 && \
   ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so && \
   apt-get autoremove -y && \
   apt-get autoclean && \
@@ -94,6 +120,8 @@ ENV PORT=9000
 
 # Drop privileges for non-UID mapped environments
 USER nobody
+
+VOLUME /config
 
 # Run the entrypoint command by default when the container starts.
 ENTRYPOINT ["/usr/local/bin/imaginary"]

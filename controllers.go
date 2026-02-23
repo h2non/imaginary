@@ -70,6 +70,8 @@ func determineAcceptMimeType(accept string) string {
 		switch mediaType {
 		case "image/webp":
 			return "webp"
+		// case "image/avif":
+		//	return "avif"
 		case "image/png":
 			return "png"
 		case "image/jpeg":
@@ -90,6 +92,11 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 		if err == nil && kind.MIME.Value != "" {
 			mimeType = kind.MIME.Value
 		}
+	}
+
+	// Use magick to process bmp image
+	if mimeType == "image/bmp" {
+		mimeType = "image/magick"
 	}
 
 	// Infer text/plain responses as potential SVG image
@@ -136,11 +143,13 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 	}
 
 	image, err := operation.Run(buf, opts)
+
+	// Ensure the Vary header is set when an error occurs
+	if vary != "" {
+		w.Header().Set("Vary", vary)
+	}
+
 	if err != nil {
-		// Ensure the Vary header is set when an error occurs
-		if vary != "" {
-			w.Header().Set("Vary", vary)
-		}
 		ErrorReply(r, w, NewError("Error while processing the image: "+err.Error(), http.StatusBadRequest), o)
 		return
 	}
@@ -148,16 +157,17 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 	// Expose Content-Length response header
 	w.Header().Set("Content-Length", strconv.Itoa(len(image.Body)))
 	w.Header().Set("Content-Type", image.Mime)
-	if image.Mime != "application/json" && o.ReturnSize {
-		meta, err := bimg.Metadata(image.Body)
-		if err == nil {
-			w.Header().Set("Image-Width", strconv.Itoa(meta.Size.Width))
-			w.Header().Set("Image-Height", strconv.Itoa(meta.Size.Height))
+	if image.Mime != "application/json" {
+		if o.ReturnSize {
+			meta, err := bimg.Metadata(image.Body)
+			if err == nil {
+				w.Header().Set("Image-Width", strconv.Itoa(meta.Size.Width))
+				w.Header().Set("Image-Height", strconv.Itoa(meta.Size.Height))
+			}
 		}
+		w.Header().Set("X-Compression-Rate", fmt.Sprintf(`%.2f`, float64(len(image.Body))/float64(len(buf))))
 	}
-	if vary != "" {
-		w.Header().Set("Vary", vary)
-	}
+
 	_, _ = w.Write(image.Body)
 }
 

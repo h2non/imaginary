@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"gopkg.in/yaml.v2"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/url"
@@ -52,6 +54,7 @@ var (
 	aCpus               = flag.Int("cpus", runtime.GOMAXPROCS(-1), "Number of cpu cores to use")
 	aLogLevel           = flag.String("log-level", "info", "Define log level for http-server. E.g: info,warning,error")
 	aReturnSize         = flag.Bool("return-size", false, "Return the image size in the HTTP headers")
+	aReferrerPolicy     = flag.String("referrer-policy", "no", "How to set the HTTP Referer header when requesting image from HTTP. E.g: no, origin, unsafe, url-host, url-dir, site-file(a YAML config file)")
 )
 
 const usage = `imaginary %s
@@ -110,6 +113,7 @@ Options:
   -log-level                 Set log level for http-server. E.g: info,warning,error [default: info].
                              Or can use the environment variable GOLANG_LOG=info.
   -return-size               Return the image size with X-Width and X-Height HTTP header. [default: disabled].
+  -referrer-policy           How to set the HTTP Referer header when requesting image from HTTP. E.g: no, origin, unsafe, url-host, url-dir, site-file(a YAML config file). [default: no].
 `
 
 type URLSignature struct {
@@ -134,6 +138,11 @@ func main() {
 
 	port := getPort(*aPort)
 	urlSignature := getURLSignature(*aURLSignatureKey)
+
+	referrerPolicy, err := parseReferrerPolicy(*aReferrerPolicy)
+	if err != nil {
+		log.Printf("ReferrerPolicy Config errors: %s", err)
+	}
 
 	opts := ServerOptions{
 		Port:               port,
@@ -163,6 +172,7 @@ func main() {
 		MaxAllowedPixels:   *aMaxAllowedPixels,
 		LogLevel:           getLogLevel(*aLogLevel),
 		ReturnSize:         *aReturnSize,
+		ReferrerPolicy:     referrerPolicy,
 	}
 
 	// Show warning if gzip flag is passed
@@ -251,6 +261,43 @@ func getLogLevel(logLevel string) string {
 		logLevel = logLevelEnv
 	}
 	return logLevel
+}
+
+func parseReferrerPolicy(s string) (ReferrerPolicy, error) {
+	defaultPolicy := NoReferrer
+	policy := ReferrerPolicy{
+		Default: defaultPolicy,
+	}
+
+	switch s {
+	case URLHostReferrer:
+		policy.Default = URLHostReferrer
+	case URLDirReferrer:
+		policy.Default = URLDirReferrer
+	case OriginReferrer:
+		policy.Default = OriginReferrer
+	case UnsafeReferrer:
+		policy.Default = UnsafeReferrer
+	case NoReferrer:
+		policy.Default = NoReferrer
+	default:
+		file, err := os.Open(s)
+		if err != nil {
+			// If does not exist and config file was not specificly specified then return ErrNoConfigFile found.
+			if os.IsNotExist(err) {
+				return policy, fmt.Errorf("referrer policy file %s is not existed", s)
+			}
+			return policy, fmt.Errorf("referrer policy file %s cannot be opened because %s ", s, err)
+		}
+		defer file.Close()
+		if err := yaml.NewDecoder(file).Decode(&policy); err != nil {
+			if err == io.EOF {
+				return policy, fmt.Errorf("referrer policy file %s was empty", s)
+			}
+			return policy, fmt.Errorf("error parsing YAML in referrer policy file at "+s+"with error: %s", err)
+		}
+	}
+	return policy, nil
 }
 
 func showUsage() {

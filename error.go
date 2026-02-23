@@ -49,7 +49,7 @@ func (e Error) HTTPCode() int {
 }
 
 func NewError(err string, code int) Error {
-	err = strings.Replace(err, "\n", "", -1)
+	err = strings.ReplaceAll(err, "\n", "")
 	return Error{Message: err, Code: code}
 }
 

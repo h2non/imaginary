@@ -1,0 +1,6 @@
+default: url-host
+sites:
+  - url: tva1.moyu.im
+    refer: i.jandan.net
+  - url: "*.moyu.im"
+    refer: jandan.net

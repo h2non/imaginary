@@ -45,10 +45,29 @@ type ServerOptions struct {
 	AllowedOrigins     []*url.URL
 	LogLevel           string
 	ReturnSize         bool
+	ReferrerPolicy     ReferrerPolicy
 }
 
 // Endpoints represents a list of endpoint names to disable.
 type Endpoints []string
+
+const (
+	NoReferrer      = "no"
+	OriginReferrer  = "origin"
+	UnsafeReferrer  = "unsafe"
+	URLHostReferrer = "url-host"
+	URLDirReferrer  = "url-dir"
+)
+
+type ReferrerSite struct {
+	URL   string `yaml:"url"`
+	Refer string `yaml:"refer"`
+}
+
+type ReferrerPolicy struct {
+	Default string         `yaml:"default"`
+	Sites   []ReferrerSite `yaml:"sites"`
+}
 
 // IsValid validates if a given HTTP request endpoint is valid or not.
 func (e Endpoints) IsValid(r *http.Request) bool {
@@ -93,7 +112,7 @@ func Server(o ServerOptions) {
 	}()
 
 	if err := server.Shutdown(ctx); err != nil {
-		log.Fatalf("Server Shutdown Failed:%+v", err)
+		log.Printf("Server Shutdown Failed:%+v", err)
 	}
 }
 

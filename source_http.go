@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -44,7 +46,7 @@ func (s *HTTPImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, 
 			return nil, fmt.Errorf("error fetching remote http image headers: %v", err)
 		}
 		_ = res.Body.Close()
-		if res.StatusCode < 200 && res.StatusCode > 206 {
+		if res.StatusCode < 200 || res.StatusCode > 206 {
 			return nil, NewError(fmt.Sprintf("error fetching remote http image headers: (status=%d) (url=%s)", res.StatusCode, req.URL.String()), res.StatusCode)
 		}
 
@@ -95,6 +97,32 @@ func (s *HTTPImageSource) setForwardHeaders(req *http.Request, ireq *http.Reques
 	}
 }
 
+func (s *HTTPImageSource) setRefererHeader(req *http.Request, ireq *http.Request, url *url.URL) {
+	policy := s.Config.ReferrerPolicy
+	if len(policy.Sites) != 0 {
+		for _, site := range policy.Sites {
+			match, err := filepath.Match(site.URL, url.Host)
+			if err != nil {
+				return
+			}
+			if match {
+				req.Header.Set("Referer", url.Scheme+"://"+site.Refer)
+				return
+			}
+		}
+	}
+	switch policy.Default {
+	case URLHostReferrer:
+		req.Header.Set("Referer", url.Scheme+"://"+url.Host)
+	case URLDirReferrer:
+		req.Header.Set("Referer", url.Scheme+"://"+url.Host+path.Dir(url.Path))
+	case OriginReferrer:
+		req.Header.Set("Referer", ireq.URL.Scheme+"://"+ireq.Host)
+	case UnsafeReferrer:
+		req.Header.Set("Referer", ireq.Referer())
+	}
+}
+
 func parseURL(request *http.Request) (*url.URL, error) {
 	return url.Parse(request.URL.Query().Get(URLQueryKey))
 }
@@ -111,6 +139,10 @@ func newHTTPRequest(s *HTTPImageSource, ireq *http.Request, method string, url *
 	// Forward auth header to the target server, if necessary
 	if s.Config.AuthForwarding || s.Config.Authorization != "" {
 		s.setAuthorizationHeader(req, ireq)
+	}
+
+	if s.Config.ReferrerPolicy.Default != NoReferrer {
+		s.setRefererHeader(req, ireq, url)
 	}
 
 	return req

@@ -16,6 +16,7 @@ type SourceConfig struct {
 	ForwardHeaders []string
 	AllowedOrigins []*url.URL
 	MaxAllowedSize int
+	ReferrerPolicy ReferrerPolicy
 }
 
 var imageSourceMap = make(map[ImageSourceType]ImageSource)
@@ -40,6 +41,7 @@ func LoadSources(o ServerOptions) {
 			AllowedOrigins: o.AllowedOrigins,
 			MaxAllowedSize: o.MaxAllowedSize,
 			ForwardHeaders: o.ForwardHeaders,
+			ReferrerPolicy: o.ReferrerPolicy,
 		})
 	}
 }
