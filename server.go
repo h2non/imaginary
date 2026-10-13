@@ -34,6 +34,8 @@ type ServerOptions struct {
 	PathPrefix         string
 	APIKey             string
 	Mount              string
+	TmpDir             string
+	SpoolThreshold     int
 	CertFile           string
 	KeyFile            string
 	Authorization      string
