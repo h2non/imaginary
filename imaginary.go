@@ -36,6 +36,8 @@ var (
 	aMaxAllowedPixels   = flag.Float64("max-allowed-resolution", 18.0, "Restrict maximum resolution of the image (in megapixels)")
 	aKey                = flag.String("key", "", "Define API key for authorization")
 	aMount              = flag.String("mount", "", "Mount server local directory")
+	aTmpDir             = flag.String("tmp-dir", "", "Directory for request bodies too large to hold in memory [default: the system's]")
+	aSpoolThreshold     = flag.Int("spool-threshold", defaultSpoolThreshold, "Size in bytes above which a request body is spooled to -tmp-dir instead of read into memory; 0 spools every body")
 	aCertFile           = flag.String("certfile", "", "TLS certificate file path")
 	aKeyFile            = flag.String("keyfile", "", "TLS private key file path")
 	aAuthorization      = flag.String("authorization", "", "Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization")
@@ -85,6 +87,8 @@ Options:
   -disable-endpoints         Comma separated endpoints to disable. E.g: form,crop,rotate,health [default: ""]
   -key <key>                 Define API key for authorization
   -mount <path>              Mount server local directory
+  -tmp-dir <path>            Directory for request bodies too large to hold in memory [default: the system's]
+  -spool-threshold <bytes>   Size above which a request body is spooled to -tmp-dir; 0 spools every body [default: 4194304]
   -http-cache-ttl <num>      The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>   HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num>  HTTP write timeout in seconds [default: 30]
@@ -149,6 +153,8 @@ func main() {
 		Concurrency:        *aConcurrency,
 		Burst:              *aBurst,
 		Mount:              *aMount,
+		TmpDir:             *aTmpDir,
+		SpoolThreshold:     *aSpoolThreshold,
 		CertFile:           *aCertFile,
 		KeyFile:            *aKeyFile,
 		Placeholder:        *aPlaceholder,
@@ -173,6 +179,10 @@ func main() {
 	// Create a memory release goroutine
 	if *aMRelease > 0 {
 		memoryRelease(*aMRelease)
+	}
+
+	if *aSpoolThreshold < 0 {
+		exitWithError("-spool-threshold must not be negative")
 	}
 
 	// Check if the mount directory exists, if present

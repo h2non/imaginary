@@ -45,7 +45,15 @@ func imageController(o ServerOptions, operation Operation) func(http.ResponseWri
 			return
 		}
 
-		buf, err := imageSource.GetImage(req)
+		var buf []byte
+		var err error
+		if source, ok := imageSource.(ReleasingImageSource); ok {
+			var release func()
+			buf, release, err = source.GetImageReleasing(req)
+			defer release()
+		} else {
+			buf, err = imageSource.GetImage(req)
+		}
 		if err != nil {
 			if xerr, ok := err.(Error); ok {
 				ErrorReply(req, w, xerr, o)
