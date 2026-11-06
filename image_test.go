@@ -2,6 +2,8 @@ package main
 
 import (
 	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
@@ -177,4 +179,29 @@ func TestCalculateDestinationFitDimension(t *testing.T) {
 		}
 	}
 
+}
+
+func TestWatermarkImageAllowedOrigins(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		buf, _ := ioutil.ReadAll(readFile("test.png"))
+		_, _ = w.Write(buf)
+	}))
+	defer ts.Close()
+	defer LoadSources(ServerOptions{})
+	buf, _ := ioutil.ReadAll(readFile("imaginary.jpg"))
+	opts := ImageOptions{Image: ts.URL + "/watermark.png"}
+
+	t.Run("Allowed origin", func(t *testing.T) {
+		LoadSources(ServerOptions{AllowedOrigins: parseOrigins(ts.URL)})
+		if _, err := WatermarkImage(buf, opts); err != nil {
+			t.Errorf("Expected the watermark image to be fetched: %s", err)
+		}
+	})
+
+	t.Run("Not allowed origin", func(t *testing.T) {
+		LoadSources(ServerOptions{AllowedOrigins: parseOrigins("https://example.org")})
+		if _, err := WatermarkImage(buf, opts); err == nil {
+			t.Error("Expected the watermark image origin to be rejected")
+		}
+	})
 }

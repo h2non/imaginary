@@ -148,6 +148,12 @@ func shouldRestrictOrigin(url *url.URL, origins []*url.URL) bool {
 	return true
 }
 
+// isAllowedOrigin tells whether the -allowed-origins of the URL source allow u.
+func isAllowedOrigin(u *url.URL) bool {
+	s, ok := imageSourceMap[ImageSourceTypeHTTP].(*HTTPImageSource)
+	return !ok || !shouldRestrictOrigin(u, s.Config.AllowedOrigins)
+}
+
 func init() {
 	RegisterSource(ImageSourceTypeHTTP, NewHTTPImageSource)
 }

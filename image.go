@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"math"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/h2non/bimg"
@@ -330,6 +331,9 @@ func Watermark(buf []byte, o ImageOptions) (Image, error) {
 func WatermarkImage(buf []byte, o ImageOptions) (Image, error) {
 	if o.Image == "" {
 		return Image{}, NewError("Missing required param: image", http.StatusBadRequest)
+	}
+	if u, err := url.Parse(o.Image); err != nil || !isAllowedOrigin(u) {
+		return Image{}, NewError(fmt.Sprintf("Not allowed watermark image origin: %s", o.Image), http.StatusBadRequest)
 	}
 	response, err := http.Get(o.Image)
 	if err != nil {
